@@ -2,8 +2,10 @@ import argparse
 import json
 import os
 import sys
+import numpy as np
 from typing import Type
 from ai2thor.controller import Controller
+from scipy.spatial import distance
 
 sys.path.append(".")
 import resources.robots as robots
@@ -32,9 +34,10 @@ class Knowledge_Graph:
         c.step(dict(action="Initialize", agentMode="default", snapGrid=False,
                     gridSize=0.25, rotateStepDegrees=20, visibilityDistance=100,
                     fieldOfView=90, agentCount=1))
-
+        
+        agent_position = c.last_event.metadata["agent"]["position"]
         objects = c.last_event.metadata["objects"]
-
+        
         reachable_positions_event = c.step(action="GetReachablePositions")
         reachable_positions = reachable_positions_event.metadata["actionReturn"]
 
@@ -45,6 +48,7 @@ class Knowledge_Graph:
         with open(out_path, "w") as f:
             json.dump({
                 "floor_plan": self.floor_no,
+                "agent_position": agent_position,
                 "objects": objects,
                 "reachable_positions": reachable_positions,
             }, f, indent=2)
@@ -69,6 +73,51 @@ class Knowledge_Graph:
 
         return triplets
     
+    def relation_graph(self, objects):
+        triplets = []
+        for obj in objects:
+            if obj.get("receptacleObjectIds"):
+                obj_id = obj["objectId"]
+                obj_openable = obj["openable"]
+                for child_id in obj["receptacleObjectIds"]:
+                    if obj_openable:
+                        triplets.append((child_id, "inside", obj_id))
+                    else:
+                        triplets.append((child_id, 'on', obj_id))
+
+        return triplets
+
+    def reachibility_graph(self, agent_position, objects, reachable_positions):
+        triplets = []
+        reachable_positions_tuple = [(p["x"], p["z"]) for p in reachable_positions]
+        for obj in objects:
+            obj_id = obj["objectId"]
+            obj_pos = obj["position"]
+            obj_node = [obj_pos['x'], obj_pos['z']]
+            distances = distance.cdist([obj_node], reachable_positions_tuple)[0]
+            closest_idx = int(np.argmin(distances))
+            triplets.append((obj_id, "has_location", f"location_{closest_idx}"))
+
+        if isinstance(agent_position, list):
+            for i, position in enumerate(agent_position):
+                pos_node = [position["x"], position["z"]]
+                pos_distances = distance.cdist([pos_node], reachable_positions_tuple)[0]
+                closest_pos_idx = int(np.argmin(pos_distances))
+                triplets.append((robots.robots[i]["name"], "has_location", f"location_{closest_pos_idx}"))
+        else:
+            pos_node = [agent_position["x"], agent_position["z"]]
+            pos_distances = distance.cdist([pos_node], reachable_positions_tuple)[0]
+            closest_pos_idx = int(np.argmin(pos_distances))
+            triplets.append((robots.robots[0]["name"], "has_location", f"location_{closest_pos_idx}"))
+
+        return triplets
+    
+    def build_all(self, data):
+        property_triplets = self.property_graph(data["objects"])
+        relation_triplets = self.relation_graph(data["objects"])
+        reach_triplets = self.reachibility_graph(data["agent_position"], data["objects"], data["reachable_positions"])
+        return {"property": property_triplets, "relation": relation_triplets, "reach": reach_triplets}
+
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -86,9 +135,8 @@ if __name__ == "__main__":
     with open(out_path) as f:
         data = json.load(f)
 
-    print(len(kg.property_graph(data["objects"])))
+    triplets = kg.build_all(data)
 
-    # print(f"Wrote {len(data['objects'])} objects and {len(data['reachable_positions'])} reachable positions to {out_path}")
-    # if data["objects"]:
-    #     print("\nSample object (first in list):")
-    #     print(json.dumps(data["objects"][0], indent=2))
+    print(f"G_property: {len(triplets['property'])} triplets")
+    print(f"G_relation: {len(triplets['relation'])} triplets")
+    print(f"G_reach: {len(triplets['reach'])} triplets")
