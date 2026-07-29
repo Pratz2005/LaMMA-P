@@ -32,10 +32,11 @@
 
   (:action PickupObject
     :parameters (?robot - robot ?object - object ?location - object)
-    :precondition (and 
+    :precondition (and
                     (at-location ?object ?location)
                     (at ?robot ?location)
                     (not(inaction ?robot))
+                    (not (object-close ?robot ?location))
     )
     :effect (and
               (holding ?robot ?object)
@@ -45,10 +46,11 @@
 
   (:action PutObject
     :parameters (?robot - robot ?object  - object ?location - object)
-    :precondition (and 
+    :precondition (and
                     (holding ?robot ?object)
                     (at ?robot ?location)
                     (not(inaction ?robot))
+                    (not (object-close ?robot ?location))
     )
     :effect (and
               (at-location ?object ?location)
@@ -93,6 +95,7 @@
     :effect (and
                 (not(inaction ?robot))
                 (object-open ?robot ?object)
+                (not (object-close ?robot ?object))
     )
   )
 
@@ -119,6 +122,7 @@
     :effect (and
               (not(inaction ?robot))
               (object-close ?robot ?object)
+              (not (object-open ?robot ?object))
   )
   )
 

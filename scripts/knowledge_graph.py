@@ -2,46 +2,97 @@ import argparse
 import json
 import os
 import sys
+from collections import defaultdict
 import numpy as np
 from typing import Type
 from ai2thor.controller import Controller
 from scipy.spatial import distance
 
 sys.path.append(".")
-import resources.robots as robots
+import resources.robots as robots_module
 
-        
+
+def sanitize_objects(objects: list) -> tuple[list, dict]:
+    """Replace AI2-THOR objectIds (e.g. "Apple|-00.47|+01.15|+00.48") with
+    legal PDDL symbols (e.g. "Apple_1").
+
+    PDDL names must start with a letter and contain only letters, digits,
+    and hyphens/underscores afterwards - the raw AI2-THOR ids contain '|',
+    '.', and '+', which break the Fast Downward parser. Returns the
+    rewritten object list plus an id_map (safe_name -> original objectId)
+    so plans can be mapped back to real AI2-THOR objects at execution time.
+    """
+    counters = defaultdict(int)
+    id_map = {}
+    sanitized = []
+
+    for obj in objects:
+        raw_id = obj["objectId"]
+        obj_type = obj.get("objectType", "Object")
+        counters[obj_type] += 1
+        safe_name = f"{obj_type}_{counters[obj_type]}"
+
+        id_map[safe_name] = raw_id
+
+        new_obj = dict(obj)
+        new_obj["objectId"] = safe_name
+        new_obj["objectIdRaw"] = raw_id
+        sanitized.append(new_obj)
+
+    raw_to_safe = {raw: safe for safe, raw in id_map.items()}
+    for obj in sanitized:
+        if obj.get("receptacleObjectIds"):
+            obj["receptacleObjectIds"] = [
+                raw_to_safe.get(child_id, child_id) for child_id in obj["receptacleObjectIds"]
+            ]
+
+    return sanitized, id_map
+
 
 class Knowledge_Graph:
-    def __init__(self, controller: Type[Controller], floor_no: int, height: int = 1000, width: int = 1000):
+    def __init__(self, controller: Type[Controller], floor_no: int, height: int = 1000, width: int = 1000,
+                 robots: list = None):
         self.controller = controller
         self.floor_no = floor_no
         self.height = height
         self.width = width
+        self.controller_instance = None
+        # Only the robots actually spawned for this session should ever reach
+        # the LLM - otherwise it has no way to know robot3..robot28 aren't real.
+        self.robots = robots if robots is not None else robots_module.robots
         self.capability_flags = ["pickupable", "openable", "breakable", "sliceable", "toggleable", "moveable", "cookable", "dirtyable", "canFillWithLiquid", "canBeUsedUp"]
         self.state_flags = ["isOpen", "isBroken", "isCooked", "isDirty", "isFilledWithLiquid", "isSliced", "isToggled", "isUsedUp", "isPickedUp", "isHeatSource", "isColdSource"]
 
-    def capture_metadata(self, output_dir: str) -> str:
+    def capture_metadata(self, output_dir: str, num_agents: int = 1, keep_alive: bool = False) -> str:
         """Reset an AI2-THOR scene and dump raw object + reachability metadata to JSON.
 
-        This is a one-shot fixture capture for offline graph-builder development —
-        no agents, no movement, no image rendering.
+        By default this is a one-shot fixture capture (no agents beyond the one
+        required to query reachable positions, no image rendering). Pass
+        keep_alive=True to leave the Controller running afterwards (stored on
+        self.controller_instance) so a caller can reuse the same session for
+        execution instead of opening a second, unsynced one.
         """
         c = self.controller(height=self.height, width=self.width)
         c.reset(scene=f"FloorPlan{self.floor_no}")
 
-        # Single default agent is enough to query reachable positions for the scene.
         c.step(dict(action="Initialize", agentMode="default", snapGrid=False,
                     gridSize=0.25, rotateStepDegrees=20, visibilityDistance=100,
-                    fieldOfView=90, agentCount=1))
-        
-        agent_position = c.last_event.metadata["agent"]["position"]
+                    fieldOfView=90, agentCount=num_agents))
+
+        if num_agents > 1:
+            agent_position = [e.metadata["agent"]["position"] for e in c.last_event.events]
+        else:
+            agent_position = c.last_event.metadata["agent"]["position"]
+
         objects = c.last_event.metadata["objects"]
-        
+
         reachable_positions_event = c.step(action="GetReachablePositions")
         reachable_positions = reachable_positions_event.metadata["actionReturn"]
 
-        c.stop()
+        if keep_alive:
+            self.controller_instance = c
+        else:
+            c.stop()
 
         os.makedirs(output_dir, exist_ok=True)
         out_path = os.path.join(output_dir, f"FloorPlan{self.floor_no}_metadata.json")
@@ -67,7 +118,7 @@ class Knowledge_Graph:
             for state in self.state_flags:
                 triplets.append((object_id, state, obj.get(state)))
 
-        for r in robots.robots:
+        for r in self.robots:
             for skill in r["skills"]:
                 triplets.append((r["name"], "has_capability", skill))
 
@@ -103,12 +154,12 @@ class Knowledge_Graph:
                 pos_node = [position["x"], position["z"]]
                 pos_distances = distance.cdist([pos_node], reachable_positions_tuple)[0]
                 closest_pos_idx = int(np.argmin(pos_distances))
-                triplets.append((robots.robots[i]["name"], "has_location", f"location_{closest_pos_idx}"))
+                triplets.append((self.robots[i]["name"], "has_location", f"location_{closest_pos_idx}"))
         else:
             pos_node = [agent_position["x"], agent_position["z"]]
             pos_distances = distance.cdist([pos_node], reachable_positions_tuple)[0]
             closest_pos_idx = int(np.argmin(pos_distances))
-            triplets.append((robots.robots[0]["name"], "has_location", f"location_{closest_pos_idx}"))
+            triplets.append((self.robots[0]["name"], "has_location", f"location_{closest_pos_idx}"))
 
         return triplets
     
