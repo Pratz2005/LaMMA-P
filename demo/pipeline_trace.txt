@@ -1,0 +1,174 @@
+==============================================================================
+KG-LaMMA-P PIPELINE TRACE
+==============================================================================
+task    : Put the vase on the dining table and open the book
+dataset : data/final_test/FloorPlan201.json  index 2
+scene   : AI2-THOR FloorPlan201
+robots  : robot1 = dataset robot25 [GoToObject PickupObject PutObject]
+          robot2 = dataset robot23 [GoToObject OpenObject CloseObject]
+model   : Qwen2-7B-Instruct   temperature 0  seed 0
+
+==============================================================================
+STEP 1  AI2-THOR METADATA  (raw, 47 objects x 42 fields)
+==============================================================================
+Book       openable=True  isOpen=False pickupable=True  toggleable=False
+DeskLamp   openable=False isOpen=False pickupable=False toggleable=True
+Vase       openable=False isOpen=False pickupable=True  toggleable=False
+
+==============================================================================
+STEP 2  KNOWLEDGE GRAPH  (built mechanically - no LLM)
+==============================================================================
+property 581 triplets   relation 53   reach 48
+
+-- property graph, task-relevant entities --
+   (has_capability Book_1 pickupable)
+   (has_capability Book_1 openable)   <<< THE FACT THE MODEL LATER DROPS
+   (isOpen Book_1 False)
+   (has_capability Chair_2 moveable)
+   (isOpen Chair_2 False)
+   (has_capability DeskLamp_1 toggleable)
+   (has_capability DeskLamp_1 moveable)
+   (isOpen DeskLamp_1 False)
+   (has_capability DiningTable_1 moveable)
+   (isOpen DiningTable_1 False)
+   (has_capability SideTable_1 moveable)
+   (isOpen SideTable_1 False)
+   (has_capability Vase_1 pickupable)
+   (has_capability Vase_1 breakable)
+   (isOpen Vase_1 False)
+
+-- property graph, robot skills --
+   (has_capability robot1 GoToObject)
+   (has_capability robot1 PickupObject)
+   (has_capability robot1 PutObject)
+   (has_capability robot2 GoToObject)
+   (has_capability robot2 OpenObject)
+   (has_capability robot2 CloseObject)
+
+-- relation graph, task-relevant --
+   (on DiningTable_1 Chair_1)
+   (on DiningTable_1 Chair_2)
+   (on Book_1 Chair_2)
+   (on DiningTable_1 Chair_3)
+   (on DiningTable_1 Chair_4)
+   (on DiningTable_1 Chair_5)
+   (on DiningTable_1 Chair_6)
+   (on Laptop_1 DiningTable_1)
+   (on CreditCard_1 DiningTable_1)
+   (on Plate_1 DiningTable_1)
+   (on Book_1 DiningTable_1)
+   (on Newspaper_1 DiningTable_1)
+   (on Pencil_1 DiningTable_1)
+   (on Pen_1 DiningTable_1)
+   (on SideTable_1 Floor_1)
+   (on DiningTable_1 Floor_1)
+   (on Chair_2 Floor_1)
+   (on DeskLamp_1 SideTable_1)
+   (on Vase_1 SideTable_1)
+   (on KeyChain_1 SideTable_1)
+
+==============================================================================
+STEP 3  STAGE 1 - GOAL
+==============================================================================
+```pddl
+(at-location Vase_1 DiningTable_1)
+(object-open ?robot Book_1)
+(switch-on ?robot DeskLamp_1)
+```
+
+>>> correctly derives object-open, but invents a DeskLamp subgoal
+
+==============================================================================
+STEP 4  STAGE 2 - RELATION
+==============================================================================
+```pddl
+(:init
+ (on Vase_1 SideTable_1)
+ (on Book_1 Chair_2)
+)
+```
+
+>>> both facts correct
+
+==============================================================================
+STEP 5  STAGE 3 - PROPERTY
+==============================================================================
+```pddl
+(:init
+ (has_capability robot1 GoToObject)
+ (has_capability robot1 PickupObject)
+ (has_capability robot1 PutObject)
+ (has_capability robot2 GoToObject)
+ (has_capability robot2 OpenObject)
+ (has_capability robot2 CloseObject)
+ (has_capability Vase_1 pickupable)
+ (isClosed Vase_1)
+ (at-location Vase_1 SideTable_1)
+ (has_capability Book_1 pickupable)
+ (isClosed Book_1)
+ (at-location Book_1 Chair_2)
+)
+```
+
+>>> openable DROPPED - it was given this in its own prompt
+
+==============================================================================
+STEP 6  STAGE 4 - REACH
+==============================================================================
+(:init
+ (has_location ArmChair_1 location_130)
+ (has_location ArmChair_2 location_229)
+ (has_location Book_1 location_230)
+ (has_location Bowl_1 location_136)
+ (has_location Box_1 location_164)
+   ... 44 more lines
+
+==============================================================================
+STEP 7  STAGE 5 - PDDL
+==============================================================================
+    (at-location Vase_1 SideTable_1)
+  (:goal
+      (at-location Vase_1 DiningTable_1)
+      (holding robot1 Book_1)
+      (switch-on robot1 DeskLamp_1)
+   (full file: 5_pddl.out.txt)
+
+>>> goal drifts: object-open -> holding
+
+==============================================================================
+STEP 8  PROBLEM PDDL  (after 38 syntax-only repairs)
+==============================================================================
+(openable book_1) present in :init ?  NO   <<< the omission propagated
+(:goal
+    (and
+      (at-location vase_1 diningtable_1)
+      (holding robot1 book_1) -> Changed Goal
+      (switch-on robot1 desklamp_1)
+    )
+  )
+
+==============================================================================
+STEP 9  FAST DOWNWARD PLAN
+==============================================================================
+   (gotoobject robot1 chair_2)
+   (gotoobject robot2 sidetable_1)
+   (pickupobject robot2 vase_1 sidetable_1)   
+   (gotoobject robot2 diningtable_1)
+   (putobject robot2 vase_1 diningtable_1) 
+   (pickupobject robot1 book_1 chair_2)
+   (gotoobject robot1 desklamp_1)   <<< HALLUCINATED - no lamp in the task
+   (switchon robot1 desklamp_1)   <<< HALLUCINATED
+   ; cost = 8 (unit cost)
+
+   NO OpenObject ANYWHERE   <<< task requires Book state OPENED
+
+==============================================================================
+STEP 10  VERDICT
+==============================================================================
+planner  : Solution found, 8 steps, exit 0
+task     : NOT ACCOMPLISHED - the book is never opened
+
+errors, by layer:
+  stage 1  invented (switch-on ?robot DeskLamp_1)          LLM hallucination
+  stage 3  dropped  (has_capability Book_1 openable)       LLM hallucination
+  stage 5  goal drift object-open -> holding               LLM hallucination

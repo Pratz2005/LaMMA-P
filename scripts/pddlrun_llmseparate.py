@@ -601,105 +601,108 @@ class FileProcessor:
             raise PDDLError(f"Error parsing BDDL file: {str(e)}")
 
 class LLMHandler:
-    """Handles interactions with Language Models (LLMs).
-    
+    """Talks to a locally served, OpenAI-compatible model (vLLM serving Qwen2).
 
+    This used to call OpenAI directly and branched on whether the model name
+    contained "gpt". Both are gone:
+
+    * There is no OpenAI path any more. Everything goes to `base_url`, which
+      defaults to the vLLM server started by scripts/nscc/*.pbs.
+    * The endpoint is always /v1/chat/completions. The old
+      `if "gpt" not in version` test sent every non-OpenAI model to the legacy
+      completions endpoint, which is exactly wrong for an instruct model like
+      Qwen2-7B-Instruct.
+    * temperature defaults to 0. vLLM otherwise adopts Qwen's recommended
+      sampling (temperature 0.7) and results stop being reproducible - fatal
+      for a study whose whole point is attributing errors to the model.
     """
-    
-    def __init__(self, api_key_file: str):
-        """Initialize the LLM handler.
-        
-        Args:
-            api_key_file (str): Path to the API key file
+
+    DEFAULT_BASE_URL = "http://localhost:8000/v1"
+    DEFAULT_MODEL = "Qwen/Qwen2-7B-Instruct"
+
+    def __init__(self, api_key_file: Optional[str] = None, base_url: Optional[str] = None,
+                 model: Optional[str] = None):
+        """Args are all optional; environment variables win when unset.
+
+        api_key_file is accepted only so existing callers keep working - a
+        local vLLM server needs no credential and ignores whatever is sent.
         """
-        self.setup_api(api_key_file)
-    
-    def setup_api(self, api_key_file: str) -> None:
-        """Set up the OpenAI API key."""
-        try:
-            
-            try:
-                api_key = Path(api_key_file + '.txt').read_text().strip()
-                if not api_key:
-                    raise ValueError("API key file is empty")
-                openai.api_key = api_key
-                print("Successfully loaded API key from", api_key_file + '.txt')
-            except FileNotFoundError:
-                # Try without .txt extension
-                try:
-                    api_key = Path(api_key_file).read_text().strip()
-                    if not api_key:
-                        raise ValueError("API key file is empty")
-                    openai.api_key = api_key
-                    print("Successfully loaded API key from", api_key_file)
-                except FileNotFoundError:
-                    raise LLMError(f"API key file not found: {api_key_file} or {api_key_file}.txt")
-        except Exception as e:
-            raise LLMError(f"Error reading API key file: {str(e)}")
-    
+        self.base_url = base_url or os.environ.get("KGLAMP_LLM_BASE_URL", self.DEFAULT_BASE_URL)
+        self.model = model or os.environ.get("KGLAMP_MODEL", self.DEFAULT_MODEL)
+
+        from openai import OpenAI
+        self.client = OpenAI(base_url=self.base_url, api_key="EMPTY")
+        print(f"LLMHandler -> {self.base_url} (model {self.model})")
+
     def query_model(
-        self, 
-        prompt: Union[str, List[Dict]], 
-        gpt_version: str, 
+        self,
+        prompt: Union[str, List[Dict]],
+        model: Optional[str] = None,
         max_tokens: int = DEFAULT_MAX_TOKENS,
         temperature: float = DEFAULT_TEMPERATURE,
         stop: Optional[List[str]] = None,
-        logprobs: Optional[int] = 1,
-        frequency_penalty: float = 0
+        logprobs: Optional[int] = None,
+        frequency_penalty: float = 0,
+        seed: int = 0,
+        repetition_penalty: Optional[float] = None,
     ) -> Tuple[dict, str]:
-        """the language model 
-        
+        """Send a chat completion and return (response, text).
+
         Args:
-            prompt: Either a string or a list of message dicts
-            gpt_version: The model version to use
-            max_tokens: Maximum number of tokens in the response
-            temperature: Sampling temperature
-            stop: Optional list of stop sequences
-            logprobs: Optional number of logprobs to return
-            frequency_penalty: Frequency penalty for token generation
-        
-        Returns:
-            Tuple of (full response object, generated text)
-            
+            prompt: a message list, or a bare string which is wrapped as a
+                single user turn.
+            model: override the configured model. A legacy "gpt-*" name is
+                ignored with a warning rather than honoured - there is no
+                OpenAI backend to serve it.
         """
+        if model and model.startswith("gpt"):
+            print(f"  [LLMHandler] ignoring legacy model name {model!r}; using {self.model}")
+            model = None
+        model = model or self.model
+
+        messages = prompt if isinstance(prompt, list) else [{"role": "user", "content": prompt}]
+
+        # repetition_penalty is not in the OpenAI schema; vLLM accepts it via
+        # extra_body. Greedy decoding on a small model loops without it.
+        extra_body = {}
+        if repetition_penalty is not None:
+            extra_body["repetition_penalty"] = repetition_penalty
+
         retry_delay = DEFAULT_RETRY_DELAY
-        
         for attempt in range(MAX_RETRIES):
             try:
-                if "gpt" not in gpt_version:
-                    response = openai.completions.create(
-                        model=gpt_version, 
-                        prompt=prompt, 
-                        max_tokens=max_tokens, 
-                        temperature=temperature, 
-                        stop=stop, 
-                        logprobs=logprobs, 
-                        frequency_penalty=frequency_penalty
-                    )
-                    return response, response.choices[0].text.strip()
-                else:
-                    response = openai.chat.completions.create(
-                        model=gpt_version, 
-                        messages=prompt, 
-                        max_tokens=max_tokens, 
-                        temperature=temperature, 
-                        frequency_penalty=frequency_penalty
-                    )
-                    return response, response.choices[0].message.content.strip()
-                    
+                response = self.client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                    stop=stop,
+                    frequency_penalty=frequency_penalty,
+                    seed=seed,
+                    extra_body=extra_body or None,
+                )
+                return response, response.choices[0].message.content.strip()
+
+            except openai.APIConnectionError as e:
+                # Nearly always "the vLLM server is not up yet / not running".
+                raise LLMError(
+                    f"Cannot reach the model server at {self.base_url}: {e}. "
+                    "Is vllm serve running, and is KGLAMP_LLM_BASE_URL correct?"
+                )
+
             except openai.RateLimitError:
                 if attempt < MAX_RETRIES - 1:
                     time.sleep(retry_delay)
-                    retry_delay *= 2  # Exponential backoff
+                    retry_delay *= 2
                     continue
                 raise LLMError("Rate limit exceeded")
-                
+
             except (openai.APIError, openai.APITimeoutError) as e:
                 if attempt < MAX_RETRIES - 1:
                     time.sleep(retry_delay)
                     continue
                 raise LLMError(f"API Error after all retries: {str(e)}")
-                
+
             except Exception as e:
                 raise LLMError(f"Unexpected error in LLM query: {str(e)}")
 
@@ -716,40 +719,33 @@ class PDDLValidator:
         self.llm = llm_handler
         self.file_processor = file_processor
     
-    def validate_problem(self, domain_file: str, problem_file: str, gpt_version: str) -> None:
+    def validate_problem(self, domain_file: str, problem_file: str, model: str = None) -> None:
         """Validate a PDDL problem file against its domain.
 
-
+        The old two-branch version dispatched on whether the model name held
+        "gpt", and the else-branch referenced self.gpt_version which this class
+        never defines - it would have raised AttributeError on any OpenAI model.
+        Single chat path now.
         """
         try:
             domain_content = self.file_processor.read_file(domain_file)
             problem_content = self.file_processor.read_file(problem_file)
-            
+
             prompt = (
                 f"Domain Description:\n{domain_content}\n\n"
                 f"Problem Description:\n{problem_content}\n\n"
                 "Validate the preconditions in problem file to ensure all precondition listed object "
-
             )
-            
-            if "gpt" not in gpt_version:
-                _, validated_text = self.llm.query_model(
-                    prompt=prompt,
-                    gpt_version=gpt_version,
-                    max_tokens=1000,
-                    stop=["def"],
-                    frequency_penalty=0.30
-                )
-            else:
-                messages = [
-                    {"role": "system", "content": "You are a Robot PDDL problem Expert"},
-                    {"role": "user", "content": prompt}
-                ]
-                _, validated_text = self.llm.query_model(messages, self.gpt_version, max_tokens=1400, frequency_penalty=0.4)
-            
+
+            messages = [
+                {"role": "system", "content": "You are a Robot PDDL problem Expert"},
+                {"role": "user", "content": prompt},
+            ]
+            _, validated_text = self.llm.query_model(messages, model, max_tokens=1400)
+
             # Save the validated content back to the problem file
             self.file_processor.write_file(problem_file, validated_text)
-            
+
         except Exception as e:
             raise ValidationError(f"Error validating PDDL problem: {str(e)}")
 
@@ -772,8 +768,14 @@ class PDDLPlanner:
     
         """
         try:
+            # --plan-file is not optional: without it Fast Downward writes the
+            # plan to ./sas_plan in the CWD, so concurrent runs overwrite each
+            # other and the plan cannot be traced back to its problem. stdout
+            # (captured below) holds only search statistics, never the actions.
+            plan_path = problem_file.replace('.pddl', '.plan')
             command = [
                 self.planner_path,
+                "--plan-file", plan_path,
                 "--alias",
                 "seq-opt-lmcut",
                 domain_file,
@@ -1966,13 +1968,16 @@ def parse_arguments() -> argparse.Namespace:
         required=False,  # Changed from True
         help="Required unless --bddl-file is provided"
     )
-    parser.add_argument("--openai-api-key-file", type=str, default="api_key")
-    parser.add_argument(
-        "--gpt-version",
-        type=str,
-        default="gpt-4o",
-        choices=['gpt-3.5-turbo', 'gpt-4o', 'gpt-3.5-turbo-16k']
-    )
+    parser.add_argument("--openai-api-key-file", type=str, default="api_key",
+                        help="unused - kept so old invocations do not break")
+    # No OpenAI models. Everything runs against a local vLLM server; the
+    # choices= list is gone so any locally served model name is accepted.
+    parser.add_argument("--model", dest="gpt_version", type=str,
+                        default=os.environ.get("KGLAMP_MODEL", "Qwen/Qwen2-7B-Instruct"),
+                        help="model name as served by vLLM")
+    parser.add_argument("--base-url", type=str,
+                        default=os.environ.get("KGLAMP_LLM_BASE_URL", "http://localhost:8000/v1"),
+                        help="OpenAI-compatible endpoint of the local model server")
     parser.add_argument(
         "--prompt-decompse-set",
         type=str,

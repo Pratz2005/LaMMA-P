@@ -1,0 +1,16 @@
+```pddl
+(:init
+ (has_capability robot1 GoToObject)
+ (has_capability robot1 PickupObject)
+ (has_capability robot1 PutObject)
+ (has_capability robot2 GoToObject)
+ (has_capability robot2 OpenObject)
+ (has_capability robot2 CloseObject)
+ (has_capability Vase_1 pickupable)
+ (isClosed Vase_1)
+ (at-location Vase_1 SideTable_1)
+ (has_capability Book_1 pickupable)
+ (isClosed Book_1)
+ (at-location Book_1 Chair_2)
+)
+```

@@ -1,0 +1,96 @@
+[workspace]
+name = "lamma-p"
+version = "0.1.0"
+description = "KG-grounded PDDL planning with local LLMs on NSCC"
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+# Base is deliberately EMPTY. Anything declared here is forced into every
+# environment, including `serve` -- and the two environments need different
+# Python versions (see below). A conda-pinned numpy here is also what made the
+# first vllm solve unsatisfiable, so keep this section bare.
+[dependencies]
+
+# ---------------------------------------------------------------------------
+# study: the environment YOUR code runs in. Python 3.9 to match the existing
+# `lammap` conda env, so ai2thor and the current scripts behave identically.
+# Light enough to use interactively on the login node.
+#
+# Note: ai2thor 5.0.0 declares no requires_python, so 3.9 is not strictly
+# forced by it -- we match lammap because it is known-good, not because we must.
+# ---------------------------------------------------------------------------
+[feature.study.dependencies]
+python = "3.9.*"
+numpy = ">=1.24,<2.1"
+scipy = ">=1.10"
+# ai2thor 5.0's CloudRendering (headless) backend is Vulkan-based and shells out
+# to `vulkaninfo` before launching Unity. Compute nodes do not ship vulkan-tools,
+# so without these the capture dies with
+#   RuntimeError: vulkaninfo failed to run, please ask your administrator...
+# The NVIDIA driver supplies the actual ICD; these just provide the loader and
+# the query tool ai2thor looks for.
+vulkan-tools = "*"
+libvulkan-loader = "*"
+
+[feature.study.pypi-dependencies]
+openai = ">=1.40"
+ai2thor = "==5.0.0"
+opencv-python = ">=4.8"
+
+# ---------------------------------------------------------------------------
+# serve: vLLM only, activated exclusively inside a PBS GPU job. Python 3.11
+# because vllm 0.11.2 requires >=3.10. This version does NOT have to match the
+# study env -- the pipeline reaches vLLM over HTTP on :8000 and never imports
+# it, so the two are fully decoupled.
+#
+# vllm is pinned exactly and the pin is load-bearing. THREE cluster constraints
+# must hold at once; most vllm releases fail at least one. Do not bump without
+# re-checking all three.
+#
+# --- Constraint 1: glibc 2.28 (RHEL 8.10) ---------------------------------
+# Every wheel in the tree must be manylinux_2_28 or older. vllm's own tag:
+#   <= 0.11.2        manylinux1       ok
+#   0.12.0 - 0.19.1  manylinux_2_31   too new
+#   0.20.x           manylinux_2_35   too new
+#   0.21.0           manylinux_2_24   ok
+#   0.22.0 - 0.28.0  manylinux_2_28   ok on its own, but fails constraint 2
+#
+# --- Constraint 2: no Rust toolchain --------------------------------------
+# vllm 0.22+ hard-pins llguidance>=1.7.0,<1.8.0, and llguidance ships a
+# manylinux_2_17 wheel only for cp314-cp314t. For ordinary CPython (cp39-abi3)
+# 1.7.x publishes manylinux_2_31 ONLY -- so uv falls back to building it from
+# Rust source, and there is no cargo/rustc here. That is the confusing
+# "maturin failed / could not compile serde" error.
+# vllm 0.11.2 pins llguidance>=1.3.0,<1.4.0; 1.3.0 ships manylinux_2_17. ok
+#
+# --- Constraint 3: CUDA driver is 12.8 ------------------------------------
+# `module avail cuda` tops out at cuda/12.8.1 and the driver reports 12080.
+# CUDA MAJOR versions are not backward compatible: a 12.8 driver cannot run
+# cu130 binaries. Which torch a vllm release pins therefore decides it:
+#   vllm 0.10.2/0.11.0 -> torch 2.8.0  -> nvidia cu12   ok
+#   vllm 0.11.1/0.11.2 -> torch 2.9.0  -> nvidia cu12   ok  <- verified +cu128
+#   vllm 0.21.0        -> torch 2.11.0 -> nvidia cu13   FAILS
+# This is what rules out 0.21.0, which otherwise passes 1 and 2.
+#
+# 0.11.2 is the newest release satisfying all three.
+# (If you ever need Python 3.9 in THIS env too, drop to vllm 0.11.0 + torch
+# 2.8.0 + llguidance 0.7.30 -- all have compatible wheels.)
+# ---------------------------------------------------------------------------
+[feature.serve.dependencies]
+python = "3.11.*"
+
+[feature.serve.pypi-dependencies]
+vllm = "==0.11.2"
+huggingface-hub = ">=0.24"
+# openai is here too, not just in `study`, so the PBS job can run its own
+# smoke-test client without needing the study env installed on the GPU node.
+openai = ">=1.40"
+
+# Separate solve groups: this is what lets the two environments resolve
+# different Python versions independently.
+[environments]
+default = { features = ["study"], solve-group = "study" }
+serve = { features = ["serve"], solve-group = "gpu" }
+
+[tasks]
+smoke = "python scripts/smoke_llm.py"

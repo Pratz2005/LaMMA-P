@@ -1,0 +1,64 @@
+#!/bin/bash
+#PBS -N gpu-probe
+#PBS -P personal-mehr0004
+#PBS -q normal
+#PBS -l select=1:ngpus=1:ncpus=8:mem=32gb
+#PBS -l walltime=00:10:00
+#PBS -j oe
+#PBS -o logs/probe_gpu.log
+
+# Diagnostic only - no model, no serving. Answers one question: does the CUDA
+# driver on the GPU nodes support the torch build pixi resolved?
+#
+# torch 2.11.0+cu130 needs a CUDA 13.0 driver (>= 580.x). The login node reports
+# 12.8, but it has no real GPU so that reading may be a stub. CUDA major
+# versions are NOT backward compatible, so if the GPU nodes are also on 12.8,
+# vllm will hard-fail at startup and we need a cu128 torch build instead.
+
+set -u
+cd "$PBS_O_WORKDIR" || exit 1
+
+export PATH="$HOME/.pixi/bin:$PATH"
+export HF_HOME=/scratch/users/ntu/mehr0004/hf-cache
+
+echo "=================== node ==================="
+hostname
+echo
+echo "=================== nvidia-smi ==================="
+nvidia-smi || echo "!! nvidia-smi not found or failed"
+echo
+echo "=================== driver / runtime versions ==================="
+nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv 2>/dev/null \
+    || echo "!! could not query driver version"
+echo
+echo "=================== what torch sees ==================="
+pixi run -e serve python - <<'PY'
+import torch
+print("torch version      :", torch.__version__)
+print("built for CUDA     :", torch.version.cuda)
+print("cuda.is_available():", torch.cuda.is_available())
+if torch.cuda.is_available():
+    print("device count       :", torch.cuda.device_count())
+    print("device 0           :", torch.cuda.get_device_name(0))
+    cap = torch.cuda.get_device_capability(0)
+    print("compute capability :", f"{cap[0]}.{cap[1]}")
+    free, total = torch.cuda.mem_get_info()
+    print(f"VRAM               : {free/1e9:.1f} GB free / {total/1e9:.1f} GB total")
+    # Actually touch the GPU - is_available() alone can pass while real kernels fail.
+    x = torch.randn(2048, 2048, device="cuda")
+    print("matmul on GPU      : OK", (x @ x).sum().item() != 0)
+else:
+    print()
+    print("!! CUDA NOT AVAILABLE - read the warning above.")
+    print("!! If it says the driver is too old, we need a cu128 torch build:")
+    print("!!   pixi.toml -> pin torch to +cu128 via download.pytorch.org index")
+PY
+
+echo
+echo "=================== container fallback ==================="
+# Only relevant if the driver turns out to be too old for any pip torch build.
+echo -n "singularity: "; command -v singularity || echo "absent"
+echo -n "docker     : "; command -v docker      || echo "absent"
+
+echo
+echo "=================== done ==================="

@@ -1,3 +1,4 @@
+
 import argparse
 import json
 import os
@@ -6,6 +7,7 @@ from collections import defaultdict
 import numpy as np
 from typing import Type
 from ai2thor.controller import Controller
+from ai2thor.platform import CloudRendering
 from scipy.spatial import distance
 
 sys.path.append(".")
@@ -50,8 +52,11 @@ def sanitize_objects(objects: list) -> tuple[list, dict]:
 
 
 class Knowledge_Graph:
-    def __init__(self, controller: Type[Controller], floor_no: int, height: int = 1000, width: int = 1000,
-                 robots: list = None):
+    def __init__(self, controller: Type[Controller] = None, floor_no: int = 1,
+                 height: int = 1000, width: int = 1000, robots: list = None):
+        # controller defaults to None: building graphs from a cached fixture
+        # needs no simulator at all, and requiring one would force every
+        # CPU-only run to have a GPU available.
         self.controller = controller
         self.floor_no = floor_no
         self.height = height
@@ -72,11 +77,20 @@ class Knowledge_Graph:
         self.controller_instance) so a caller can reuse the same session for
         execution instead of opening a second, unsynced one.
         """
-        c = self.controller(height=self.height, width=self.width)
+        if self.controller is None:
+            self.controller = Controller
+
+        # On headless GPU servers (no X11/GLX), set AI2THOR_PLATFORM=CloudRendering
+        # to render via EGL directly instead of the default X11-based Linux64 build.
+        controller_kwargs = {"height": self.height, "width": self.width}
+        if os.environ.get("AI2THOR_PLATFORM") == "CloudRendering":
+            controller_kwargs["platform"] = CloudRendering
+
+        c = self.controller(**controller_kwargs)
         c.reset(scene=f"FloorPlan{self.floor_no}")
 
         c.step(dict(action="Initialize", agentMode="default", snapGrid=False,
-                    gridSize=0.25, rotateStepDegrees=20, visibilityDistance=100,
+                    gridSize=0.25, rotateStepDegrees=20, visibilityDistance=5,
                     fieldOfView=90, agentCount=num_agents))
 
         if num_agents > 1:
@@ -191,3 +205,4 @@ if __name__ == "__main__":
     print(f"G_property: {len(triplets['property'])} triplets")
     print(f"G_relation: {len(triplets['relation'])} triplets")
     print(f"G_reach: {len(triplets['reach'])} triplets")
+

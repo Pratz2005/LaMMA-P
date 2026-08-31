@@ -1,0 +1,5 @@
+```pddl
+(at-location Vase_1 DiningTable_1)
+(object-open ?robot Book_1)
+(switch-on ?robot DeskLamp_1)
+```

@@ -1,0 +1,155 @@
+#!/bin/bash
+#PBS -N kg-task
+#PBS -P personal-mehr0004
+#PBS -q normal
+#PBS -l select=1:ngpus=1:ncpus=16:mem=64gb
+#PBS -l walltime=01:00:00
+#PBS -j oe
+#PBS -o logs/kg_task.log
+
+# One task, end to end:
+#   1. capture the AI2-THOR scene into a fixture (GPU, headless EGL) if missing
+#   2. serve Qwen2-7B with vLLM
+#   3. run the 5-stage KG pipeline and diff every generated fact against the KG
+#
+# Defaults to FloorPlan201 task 0 - "Put the watch and Keychain inside the
+# drawer" - the case from the paper. Override with -v:
+#   qsub -v FLOOR=15,TASK=3,DATASET=data/final_test/FloorPlan15pddl.json \
+#        scripts/nscc/run_task.pbs
+
+set -u
+cd "$PBS_O_WORKDIR" || exit 1
+
+# PBS spools stdout and only writes -o at job END, so a running job looks silent
+# for minutes. /home is shared with the compute nodes, so tee-ing to a file here
+# lets you `tail -f` progress from the login node while the job runs.
+mkdir -p logs
+LIVE_LOG="logs/live_${PBS_JOBID%%.*}.log"
+exec > >(tee "$LIVE_LOG") 2>&1
+echo "live log: $LIVE_LOG   (tail -f from the login node)"
+
+FLOOR="${FLOOR:-201}"
+TASK="${TASK:-0}"
+DATASET="${DATASET:-data/final_test/FloorPlan201.json}"
+
+export PATH="$HOME/.pixi/bin:$PATH"
+export HF_HOME=/scratch/users/ntu/mehr0004/hf-cache
+export HF_HUB_OFFLINE=1
+export VLLM_CACHE_ROOT=/scratch/users/ntu/mehr0004/vllm-cache   # keep off the 50G home quota
+
+# Fast Downward's search binary is built with gcc 12.3 (the system g++ 8.5
+# cannot compile its C++20 use of std::string::starts_with / .contains), so its
+# libstdc++ must be on the runtime path or the planner dies with a link error.
+export LD_LIBRARY_PATH=/app/apps/gcc/12.3.0-nscc/lib64:${LD_LIBRARY_PATH:-}
+
+MODEL=Qwen/Qwen2-7B-Instruct
+PORT=8000
+SERVER_LOG="logs/vllm_${PBS_JOBID%%.*}.log"
+FIXTURE="resources/kg_fixtures/FloorPlan${FLOOR}_metadata.json"
+
+echo "=================== node ==================="
+hostname
+nvidia-smi || { echo "!! no GPU visible"; exit 1; }
+
+# PBS hands out GPUs by UUID; vllm does int() on CUDA_VISIBLE_DEVICES and dies.
+# Map UUID -> index rather than hardcoding 0.
+echo "CUDA_VISIBLE_DEVICES as given: ${CUDA_VISIBLE_DEVICES:-<unset>}"
+if [[ "${CUDA_VISIBLE_DEVICES:-}" == GPU-* ]]; then
+    mapped=""
+    IFS=',' read -ra _uuids <<< "$CUDA_VISIBLE_DEVICES"
+    for _u in "${_uuids[@]}"; do
+        _u="$(echo "$_u" | xargs)"
+        _idx=$(nvidia-smi --query-gpu=index,uuid --format=csv,noheader \
+               | awk -F',' -v u="$_u" '{gsub(/ /,"",$1); gsub(/ /,"",$2)} $2==u {print $1}')
+        [ -z "$_idx" ] && { echo "!! cannot map UUID $_u"; exit 1; }
+        mapped="${mapped:+$mapped,}$_idx"
+    done
+    export CUDA_VISIBLE_DEVICES="$mapped"
+fi
+echo "CUDA_VISIBLE_DEVICES using   : ${CUDA_VISIBLE_DEVICES:-<unset>}"
+
+# --------------------------------------------------------------------------
+# 1. scene fixture
+# --------------------------------------------------------------------------
+echo
+echo "=================== scene fixture ==================="
+if [ -f "$FIXTURE" ]; then
+    echo "reusing $FIXTURE"
+else
+    # ai2thor 5.0 CloudRendering is Vulkan-based, not EGL. Two things must line
+    # up: `vulkaninfo` on PATH (supplied by the vulkan-tools conda package in
+    # the study env) and an ICD manifest pointing at the NVIDIA driver, which
+    # lives on the host rather than in the conda prefix. Without the ICD the
+    # loader finds zero devices and Unity fails with no useful message.
+    for icd in /usr/share/vulkan/icd.d/nvidia_icd.json \
+               /etc/vulkan/icd.d/nvidia_icd.json; do
+        [ -f "$icd" ] && { export VK_ICD_FILENAMES="$icd"; break; }
+    done
+    echo "VK_ICD_FILENAMES = ${VK_ICD_FILENAMES:-<none found>}"
+    echo "--- vulkaninfo summary ---"
+    pixi run vulkaninfo --summary 2>&1 | head -25 || echo "(vulkaninfo failed)"
+    echo "--------------------------"
+
+    echo "capturing FloorPlan${FLOOR} from AI2-THOR..."
+    AI2THOR_PLATFORM=CloudRendering \
+        pixi run python scripts/knowledge_graph.py --floor-plan "$FLOOR" \
+        || { echo "!! scene capture failed"; exit 1; }
+    [ -f "$FIXTURE" ] || { echo "!! capture produced no $FIXTURE"; exit 1; }
+fi
+ls -la "$FIXTURE"
+
+# --------------------------------------------------------------------------
+# 2. vLLM
+# --------------------------------------------------------------------------
+echo
+echo "=================== starting vLLM ==================="
+# Sampling is set per-request by the client (temperature 0, seed 0,
+# repetition_penalty 1.05), NOT here. An earlier version passed
+# --generation-config vllm, which stripped Qwen's recommended repetition
+# penalty; combined with greedy decoding that produced verbatim repetition
+# loops in the relation stage. Leave the model's config alone.
+pixi run -e serve vllm serve "$MODEL" \
+    --port "$PORT" \
+    --max-model-len 8192 \
+    --gpu-memory-utilization 0.90 \
+    > "$SERVER_LOG" 2>&1 &
+SERVER_PID=$!
+
+cleanup() {
+    echo "--- shutting down vLLM (pid $SERVER_PID) ---"
+    kill "$SERVER_PID" 2>/dev/null
+    wait "$SERVER_PID" 2>/dev/null
+}
+trap cleanup EXIT INT TERM
+
+echo "vLLM pid $SERVER_PID, log -> $SERVER_LOG"
+DEADLINE=$((SECONDS + 900))
+until curl -sf "http://localhost:${PORT}/health" > /dev/null 2>&1; do
+    if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+        echo "!! vLLM died during startup:"; tail -40 "$SERVER_LOG"; exit 1
+    fi
+    if [ "$SECONDS" -ge "$DEADLINE" ]; then
+        echo "!! timed out waiting for /health:"; tail -40 "$SERVER_LOG"; exit 1
+    fi
+    sleep 5
+done
+echo "server up after ${SECONDS}s"
+
+# --------------------------------------------------------------------------
+# 3. pipeline + hallucination check
+# --------------------------------------------------------------------------
+echo
+echo "=================== pipeline ==================="
+export KGLAMP_LLM_BASE_URL="http://localhost:${PORT}/v1"
+export KGLAMP_MODEL="$MODEL"
+
+pixi run python scripts/run_kg_task.py \
+    --dataset "$DATASET" \
+    --task-index "$TASK" \
+    --floor-plan "$FLOOR" \
+    --fixture "$FIXTURE"
+RC=$?
+
+echo
+echo "=================== done (exit $RC) ==================="
+exit $RC
