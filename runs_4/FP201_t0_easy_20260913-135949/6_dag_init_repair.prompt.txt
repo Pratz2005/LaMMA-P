@@ -1,0 +1,154 @@
+You are the repair step of a symbolic robot planning pipeline. You edit exactly
+one thing: the (:init ...) block of a PDDL problem file. You add ground facts to
+it. You never delete a fact, and you never touch (:objects ...) or (:goal ...).
+
+## 1. What went wrong
+Task: Put the watch and Keychain inside the drawer
+
+A planner was given the problem file below and returned a plan it reported as
+solved. A safety check then compared that plan against the scene's knowledge
+graph - facts read mechanically from the simulator's object metadata, not
+written by any model - and found the plan does something the world does not
+allow:
+
+    missing_predecessor: Open(drawer_1) must happen before Put(watch_1, drawer_1)
+    missing_predecessor: Open(drawer_1) must happen before Put(keychain_1, drawer_1)
+
+The plan is not the thing to fix. The plan is correct for the problem file it
+was given; the problem file is wrong about the world. A fact the knowledge graph
+asserts is missing from (:init ...), and PDDL uses the closed-world assumption,
+so a fact that is not written down is FALSE. The omission did not leave the
+planner uncertain - it told the planner the opposite. Silence granted permission.
+
+## 2. Ground truth - what the knowledge graph asserts about these entities
+Every line below is true of the scene right now. Some of them are already
+written into section 3 and some are not; working out which is part of the job.
+
+    (Drawer_1, isOpen, False)
+    (Drawer_1, has_capability, openable)
+    (KeyChain_1, has_capability, pickupable)
+    (Watch_1, has_capability, pickupable)
+
+## 3. The problem file the planner was actually given
+These are the only names you may use as arguments. An atom naming anything not
+declared here is rejected.
+
+(:objects
+    robot1 robot2 robot3 - robot
+    armchair_1 armchair_2 book_1 bowl_1 box_1 chair_1 - object
+    chair_2 chair_3 chair_4 chair_5 chair_6 coffeetable_1 - object
+    creditcard_1 desklamp_1 diningtable_1 drawer_1 drawer_2 floorlamp_1 - object
+    garbagecan_1 houseplant_1 keychain_1 laptop_1 lightswitch_1 location_0 - object
+    location_124 location_130 location_136 location_150 location_160 location_164 - object
+    location_167 location_173 location_181 location_189 location_191 location_193 - object
+    location_195 location_213 location_226 location_229 location_23 location_230 - object
+    location_232 location_233 location_47 location_57 location_70 location_75 - object
+    location_77 location_78 location_93 location_99 newspaper_1 painting_1 - object
+    pen_1 pencil_1 pillow_1 plate_1 remotecontrol_1 shelf_1 - object
+    shelf_2 shelf_3 sidetable_1 sidetable_2 sidetable_3 sofa_1 - object
+    statue_1 television_1 tissuebox_1 tvstand_1 vase_1 watch_1 - object
+    window_1 window_2 - object
+  )
+
+(:init
+    (at robot1 location_0)
+    (at robot2 location_0)
+    (at robot3 location_0)
+    (at-location watch_1 sidetable_3)
+    (at-location keychain_1 sidetable_1)
+    (openable watch_1)
+    (pickupable watch_1)
+    (openable keychain_1)
+    (pickupable keychain_1)
+    (openable drawer_1)
+    (pickupable drawer_1)
+    (openable drawer_2)
+    (pickupable drawer_2)
+  )
+
+## 4. The vocabulary you may write in
+The facts in section 2 are in the knowledge graph's notation. (:init ...) is in
+the domain's, and they are not the same words. The domain declares these
+predicates and no others:
+
+    at at-location break cleaned holding inaction
+    object-close object-open openable pickupable sliceable sliced
+    switch-off switch-on toggleable
+
+Translate with this table:
+
+    (X, has_capability, openable)              ->  (openable x)
+    (X, has_capability, pickupable)            ->  (pickupable x)
+    (X, has_capability, sliceable)             ->  (sliceable x)
+    (X, has_capability, toggleable)            ->  (toggleable x)
+    (X, isBroken, True)                        ->  (break x)
+    (X, isOpen, False)                         ->  (object-close x)
+    (X, isOpen, True)                          ->  (object-open x)
+    (X, isSliced, True)                        ->  (sliced x)
+    (X, isToggled, False)                      ->  (switch-off x)
+    (X, isToggled, True)                       ->  (switch-on x)
+
+Read these predicate names carefully; two of them are easy to misread:
+
+    (object-close x)   x is CLOSED - shut. It has nothing to do with distance,
+                       and does NOT mean "close to" or "near" anything. This is
+                       the predicate for a container whose door is shut.
+    (object-open x)    x is OPEN. The exact opposite of the line above.
+
+A container that is shut is (object-close x). Asserting (object-open x) about a
+shut container states the opposite of the truth.
+
+Fast Downward drops a predicate it does not know WITHOUT REPORTING AN ERROR, so
+a line in the wrong vocabulary is not a repair that fails loudly - it is a repair
+that appears to happen and changes nothing. Two spellings in particular are NOT
+domain predicates and must never appear: the graph's (isOpen X false) and the
+property stage's (isClosed X). Write every predicate and every object in lower
+case, and name objects exactly as the (:objects ...) block declares them -
+Drawer_1 in the graph is drawer_1 in the problem file.
+
+## 5. How to choose what to add
+Add the smallest set of facts that makes the initial state true - not the set
+that makes the plan look acceptable. Two rules:
+
+  a. Every atom you write must be one section 2 asserts. You are restoring facts
+     that were dropped, not inventing new ones. Never add a fact because it
+     makes an action possible; add it because it is true. Note that the false
+     repair is available to you here and would clear the violation just as well:
+     do not take it.
+  b. A blocking fact needs its release. (object-close x) stops PutObject until x
+     is opened, but OpenObject requires (openable x) as a POSITIVE precondition.
+     If you write (object-close x) and (openable x) is not already in the :init
+     above, write it as well - otherwise you seal the container and turn a wrong
+     plan into no plan at all.
+
+  c. CHECK THE POLARITY BEFORE YOU WRITE. Section 2 gives each fact with its
+     truth value, and the table in section 4 has an entry for each value
+     separately. isOpen False and isOpen True are different facts with
+     different predicates. Find the section 2 line for the entity, read its
+     value, and take the matching row of the table - do not pick the predicate
+     that merely sounds related. Asserting the opposite value is the single
+     most common way this step goes wrong, and it is worse than adding nothing:
+     it clears the violation while leaving the world description false.
+
+Do not repeat an atom that is already present in the :init above.
+
+## 6. Worked example - a different scene. Copy the shape, not the content.
+The container below is a footlocker, which does not exist in your scene. If an
+object name from this example appears in your answer, you have copied instead
+of reasoning, and the answer is wrong.
+
+    graph facts   (Footlocker_1, has_capability, openable)
+                  (Footlocker_1, isOpen, False)
+    violation     missing_predecessor: Open(footlocker_1) must happen before
+                  Put(plunger_1, footlocker_1)
+    :init had     (at-location plunger_1 sinkbasin_1)
+                  (pickupable plunger_1)
+    answer
+(object-close footlocker_1)
+(openable footlocker_1)
+
+## 7. Output format
+Output only the atoms to add, one per line. No prose, no explanation, no
+numbering, no bullets, no code fences, no blank lines between atoms. Each line
+must be exactly one balanced S-expression that starts with '(' and ends with
+')'. If nothing needs to be added, output the single word NONE.

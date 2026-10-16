@@ -1,0 +1,21 @@
+INFO     planner time limit: None
+INFO     planner memory limit: None
+
+INFO     Running translator.
+INFO     translator stdin: None
+INFO     translator time limit: None
+INFO     translator memory limit: None
+INFO     translator command line string: /scratch/users/ntu/mehr0004/pixi-envs/lamma-p-8228362785854327053/envs/default/bin/python3 /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/translate/translate.py resources/robot3_guarded.pddl resources/kglamp_problems/floorplan201_problem.pddl --sas-file output.sas
+Parsing...
+
+error: duplicate object 'book_1'
+error: duplicate object 'chair_2'
+error: duplicate object 'diningtable_1'
+error: duplicate object 'laptop_1'
+error: duplicate object 'sidetable_1'
+error: duplicate object 'vase_1'
+please check :constants and :objects definitions
+translate exit code: 31
+
+Driver aborting after translate
+INFO     Planner time: 0.09s

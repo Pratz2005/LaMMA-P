@@ -16,6 +16,7 @@ resources/kglamp_problems/
 sas_plan
 *.plan
 !demo/*.plan
+!runs/**/*.plan
 
 # Fast Downward build artifacts - must be compiled on each machine
 downward/builds/

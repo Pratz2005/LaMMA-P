@@ -1,0 +1,148 @@
+## 1. Contextual Example
+Reachability links entities (objects and robots) to discrete navigable locations,
+grounding goals and actions to reachable target positions.
+- Location: (has_location ?entity ?location) — the entity is nearest to that discrete location.
+
+Example:
+(has_location ObjectA_1 location_901)
+(has_location robotX location_902)
+
+## 2. Task Constraints
+Relation: ### :init
+
+```
+(on Vase_1 SideTable_1)
+(on Book_1 Chair_2)
+```
+Property: ### :init
+
+```
+(has_capability robot1 GoToObject)
+(has_capability robot1 PickupObject)
+(has_capability robot1 PutObject)
+(has_capability robot2 GoToObject)
+(has_capability robot2 OpenObject)
+(has_capability robot2 CloseObject)
+
+(has_capability ArmChair_1 moveable)
+(has_capability ArmChair_2 moveable)
+(has_capability Book_1 pickupable)
+(has_capability Book_1 openable)
+(has_capability Bowl_1 pickupable)
+(has_capability Bowl_1 breakable)
+(has_capability Bowl_1 dirtyable)
+(has_capability Bowl_1 canFillWithLiquid)
+(has_capability Box_1 pickupable)
+(has_capability Box_1 openable)
+(has_capability Chair_1 moveable)
+(has_capability Chair_2 moveable)
+(has_capability Chair_3 moveable)
+(has_capability Chair_4 moveable)
+(has_capability Chair_5 moveable)
+(has_capability Chair_6 moveable)
+(has_capability CoffeeTable_1 moveable)
+(has_capability CreditCard_1 pickupable)
+(has_capability DeskLamp_1 toggleable)
+(has_capability DeskLamp_1 moveable)
+(has_capability DiningTable_1 moveable)
+(has_capability Drawer_1 openable)
+(has_capability Drawer_2 openable)
+(has_capability FloorLamp_1 toggleable)
+(has_capability FloorLamp_1 moveable)
+(has_capability GarbageCan_1 moveable)
+(has_capability HousePlant_1 moveable)
+(has_capability HousePlant_1 canFillWithLiquid)
+(has_capability KeyChain_1 pickupable)
+(has_capability Laptop_1 pickupable)
+(has_capability Laptop_1 openable)
+(has_capability Laptop_1 breakable)
+(has_capability Laptop_1 toggleable)
+(has_capability LightSwitch_1 toggleable)
+(has_capability Newspaper_1 pickupable)
+(has_capability Pen_1 pickupable)
+(has_capability Pencil_1 pickupable)
+(has_capability Pillow_1 pickupable)
+(has_capability Plate_1 pickupable)
+(has_capability Plate_1 breakable)
+(has_capability Plate_1 dirtyable)
+(has_capability RemoteControl_1 pickupable)
+(has_capability SideTable_1 moveable)
+(has_capability SideTable_2 moveable)
+(has_capability SideTable_3 moveable)
+(has_capability Sofa_1 moveable)
+(has_capability Statue_1 pickupable)
+(has_capability Statue_1 breakable)
+(has_capability Television_1 breakable)
+(has_capability Television_1 toggleable)
+(has_capability Television_1 moveable)
+(has_capability TissueBox_1 pickupable)
+(has_capability TVStand_1 moveable)
+(has_capability Vase_1 pickupable)
+(has_capability Vase_1 breakable)
+(has_capability Watch_1 pickupable)
+(has_capability Window_1 breakable)
+(has_capability Window_2 breakable)
+
+(has_capability robotX pickup)
+(has_capability robotX put)
+
+(at-location Vase_1 SideTable_1)
+(at-location Book_1 Chair_2)
+```
+
+## 3. Output Format
+Location Tuples:
+(has_location ArmChair_1 location_130)
+(has_location ArmChair_2 location_229)
+(has_location Book_1 location_230)
+(has_location Bowl_1 location_136)
+(has_location Box_1 location_164)
+(has_location Chair_1 location_57)
+(has_location Chair_2 location_230)
+(has_location Chair_3 location_195)
+(has_location Chair_4 location_99)
+(has_location Chair_5 location_77)
+(has_location Chair_6 location_23)
+(has_location CoffeeTable_1 location_189)
+(has_location CreditCard_1 location_93)
+(has_location Curtains_1 location_192)
+(has_location DeskLamp_1 location_193)
+(has_location DiningTable_1 location_233)
+(has_location Drawer_1 location_160)
+(has_location Drawer_2 location_232)
+(has_location Floor_1 location_213)
+(has_location FloorLamp_1 location_213)
+(has_location GarbageCan_1 location_75)
+(has_location HousePlant_1 location_78)
+(has_location KeyChain_1 location_150)
+(has_location Laptop_1 location_124)
+(has_location LightSwitch_1 location_70)
+(has_location Newspaper_1 location_47)
+(has_location Painting_1 location_232)
+(has_location Pen_1 location_23)
+(has_location Pencil_1 location_57)
+(has_location Pillow_1 location_107)
+(has_location Plate_1 location_57)
+(has_location RemoteControl_1 location_78)
+(has_location Shelf_1 location_189)
+(has_location Shelf_2 location_191)
+(has_location Shelf_3 location_189)
+(has_location SideTable_1 location_160)
+(has_location SideTable_2 location_78)
+(has_location SideTable_3 location_232)
+(has_location Sofa_1 location_136)
+(has_location Statue_1 location_231)
+(has_location Television_1 location_202)
+(has_location TissueBox_1 location_181)
+(has_location TVStand_1 location_191)
+(has_location Vase_1 location_167)
+(has_location Watch_1 location_232)
+(has_location Window_1 location_173)
+(has_location Window_2 location_226)
+(has_location robot1 location_0)
+
+Generate the reachability condition as a PDDL (:init) format.
+1. Relations: Only include predicates of type "has_location".
+2. Relevance: Only include entities that are related to the Relation or Property. Ignore irrelevant background clutter.
+
+## 4. Generate Reachability Tuple

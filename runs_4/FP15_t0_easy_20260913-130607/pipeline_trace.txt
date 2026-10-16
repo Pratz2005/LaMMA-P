@@ -1,0 +1,287 @@
+==============================================================================
+KG-LaMMA-P PIPELINE TRACE
+==============================================================================
+task     : Put apple in fridge and switch off the light
+dataset  : data/final_test/FloorPlan15.json  index 0
+tier     : easy   (MAT-THOR: easy / complex / vague)
+scene    : AI2-THOR FloorPlan15
+fixture  : resources/kg_fixtures/FloorPlan15_metadata.json
+robot    : robot1 = dataset robot1  ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'SwitchOn', 'SwitchOff', 'PickupObject', 'PutObject', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject']
+robot    : robot2 = dataset robot2  ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'SwitchOn', 'SwitchOff', 'PickupObject', 'PutObject', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject']
+robot    : robot3 = dataset robot3  ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'SwitchOn', 'SwitchOff', 'PickupObject', 'PutObject', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject']
+model    : Qwen/Qwen2-7B-Instruct   temperature 0  seed 0  repetition_penalty 1.05
+gt states: [{'name': 'Fridge', 'contains': ['Apple'], 'state': 'None'}, {'name': 'LightSwitch', 'contains': [], 'state': 'OFF'}]
+
+==============================================================================
+KNOWLEDGE GRAPH  (built mechanically from AI2-THOR metadata, no LLM)
+==============================================================================
+property 150   relation 32   reach 63   entities 87
+
+-- affordances of task-relevant objects --
+   (has_capability Apple_1 pickupable)
+   (has_capability Apple_1 sliceable)
+   (has_capability Fridge_1 openable)
+   (has_capability LightSwitch_1 toggleable)
+
+-- open/closed state (only meaningful for openable objects) --
+   (isOpen Fridge_1 False)   [CLOSED - needs (openable) to be opened]
+
+-- robot skills --
+   (has_capability robot1 GoToObject)
+   (has_capability robot1 OpenObject)
+   (has_capability robot1 CloseObject)
+   (has_capability robot1 BreakObject)
+   (has_capability robot1 SliceObject)
+   (has_capability robot1 SwitchOn)
+   (has_capability robot1 SwitchOff)
+   (has_capability robot1 PickupObject)
+   (has_capability robot1 PutObject)
+   (has_capability robot1 DropHandObject)
+   (has_capability robot1 ThrowObject)
+   (has_capability robot1 PushObject)
+   (has_capability robot1 PullObject)
+   (has_capability robot2 GoToObject)
+   (has_capability robot2 OpenObject)
+   (has_capability robot2 CloseObject)
+   (has_capability robot2 BreakObject)
+   (has_capability robot2 SliceObject)
+   (has_capability robot2 SwitchOn)
+   (has_capability robot2 SwitchOff)
+   (has_capability robot2 PickupObject)
+   (has_capability robot2 PutObject)
+   (has_capability robot2 DropHandObject)
+   (has_capability robot2 ThrowObject)
+   (has_capability robot2 PushObject)
+   (has_capability robot2 PullObject)
+   (has_capability robot3 GoToObject)
+   (has_capability robot3 OpenObject)
+   (has_capability robot3 CloseObject)
+   (has_capability robot3 BreakObject)
+   (has_capability robot3 SliceObject)
+   (has_capability robot3 SwitchOn)
+   (has_capability robot3 SwitchOff)
+   (has_capability robot3 PickupObject)
+   (has_capability robot3 PutObject)
+   (has_capability robot3 DropHandObject)
+   (has_capability robot3 ThrowObject)
+   (has_capability robot3 PushObject)
+   (has_capability robot3 PullObject)
+
+-- relations touching task objects --
+   (on Apple_1 CounterTop_1)
+   (on Fridge_1 Floor_1)
+   (inside Egg_1 Fridge_1)
+
+==============================================================================
+STAGE 1 - GOAL
+==============================================================================
+Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Apple_1 Fridge_1)
+(switch-off LightSwitch_1)
+```
+   >>> UNDECLARED_OBJECT: lightswitch_1
+
+==============================================================================
+STAGE 2 - RELATION
+==============================================================================
+```pddl
+(:init
+ (inside Apple_1 Fridge_1)
+ (inside Kettle_1 Cabinet_8)
+ (inside Cup_1 Cabinet_9)
+ (on Mug_1 CoffeeMachine_1)
+ (on Plate_1 CounterTop_1)
+ (on WineBottle_1 CounterTop_1)
+ (on Mug_1 CounterTop_1)
+ (on Tomato_1 CounterTop_1)
+ (on Toaster_1 CounterTop_1)
+ (on Potato_1 CounterTop_1)
+ (on DishSponge_1 CounterTop_1)
+ (on SoapBottle_1 CounterTop_1)
+ (on Spatula_1 CounterTop_2)
+ (on Bowl_1 CounterTop_2)
+ (inside Egg_1 Fridge_1)
+ (on butterknife_1 SinkBasin_1)
+ (on Pot_1 StoveBurner_1)
+ (on Pot_1 StoveBurner_2)
+)
+```
+   >>> CONTRADICTION: (inside apple_1 fridge_1)
+   >>> CONTRADICTION: (on potato_1 countertop_1)
+
+==============================================================================
+STAGE 3 - PROPERTY
+==============================================================================
+```pddl
+(:init
+ (has_capability Apple_1 pickupable)
+ (has_capability Apple_1 sliceable)
+ (has_capability Bowl_1 pickupable)
+ (has_capability Bowl_1 dirtyable)
+ (has_capability Bowl_1 canFillWithLiquid)
+ (has_capability Cabinet_8 openable)
+ (has_capability Cabinet_9 openable)
+ (has_capability Fridge_1 openable)
+ (has_capability Kettle_1 pickupable)
+ (has_capability Kettle_1 openable)
+ (has_capability Kettle_1 canFillWithLiquid)
+ (has_capability Cabinet_1 openable)
+ (has_capability Cabinet_2 openable)
+ (has_capability Cabinet_3 openable)
+ (has_capability Cabinet_4 openable)
+ (has_capability Cabinet_5 openable)
+ (has_capability Cabinet_6 openable)
+ (has_capability Cabinet_7 openable)
+ (has_capability Cabinet_10 openable)
+ (has_capability Cabinet_11 openable)
+ (has_capability CoffeeMachine_1 breakable)
+ (has_capability CoffeeMachine_1 toggleable)
+ (has_capability CoffeeMachine_1 moveable)
+ (isHeatSource CoffeeMachine_1)
+ (has_capability Cup_1 pickupable)
+ (has_capability Cup_1 breakable)
+ (has_capability Cup_1 dirtyable)
+ (has_capability Cup_1 canFillWithLiquid)
+ (has_capability DiningTable_1 moveable)
+ (has_capability DishSponge_1 pickupable)
+ (has_capability Drawer_1 openable)
+ (has_capability Drawer_2 openable)
+ (has_capability Drawer_3 openable)
+ (has_capability Egg_1 pickupable)
+ (has_capability Egg_1 breakable)
+ (has_capability Egg_1 sliceable)
+ (has_capability Faucet_1 toggleable)
+ (has_capability Fork_1 pickupable)
+ (has_capability Fridge_1 openable)
+ (isColdSource Fridge_1)
+ (has_capability GarbageBag_1 moveable)
+ (has_capability GarbageCan_1 moveable)
+ (has_capability Kettle_1 pickupable)
+ (has_capability Kettle_1 openable)
+ (has_capability Kettle_1 canFillWithLiquid)
+ (has_capability Mug_1 pickupable)
+ (has_capability Mug_1 breakable)
+ (has_capability Mug_1 dirtyable)
+ (has_capability Mug_1 canFillWithLiquid)
+ (has_capability Pan_1 pickupable)
+ (has_capability Pan_1 dirtyable)
+ (has_capability PepperShaker_1 pickupable)
+ (has_capability Plate_1 pickupable)
+ (has_capability Plate_1 breakable)
+ (has_capability Plate_1 dirtyable)
+ (has_capability Pot_1 pickupable)
+ (has_capability Pot_1 dirtyable)
+ (has_capability Pot_1 canFillWithLiquid)
+ (has_capability Potato_1 pickupable)
+ (has_capability Potato_1 sliceable)
+ (has_capability Potato_1 cookable)
+ (has_capability SaltShaker_1 pickupable)
+ (has_capability SoapBottle_1 pickupable)
+ (has_capability Spatula_1 pickupable)
+ (has_capability Spoon_1 pickupable)
+ (has_capability Stool_1 moveable)
+ (has_capability Toaster_1 toggleable)
+ (has_capability Toaster_1 moveable)
+ (isHeatSource Toaster_1)
+ (has_capability Tomato_1 pickupable)
+ (has_capability Tomato_1 sliceable)
+ (has_capability WineBottle_1 pickupable)
+ (has_capability WineBottle_1 breakable)
+ (has_capability WineBottle_1 canFillWithLiquid)
+ (isFilledWithLiquid WineBottle_1)
+ (has_capability robot1 GoToObject)
+ (has_capability robot1 OpenObject)
+ (has_capability robot1 CloseObject)
+ (has_capability robot1 BreakObject)
+ (has_capability robot1 SliceObject)
+ (has_capability robot1 SwitchOn)
+ (has_capability robot1 SwitchOff)
+ (has_capability robot1 PickupObject)
+ (has_capability robot1 PutObject)
+ (has_capability robot1 DropHandObject)
+ (has_capability robot1 ThrowObject)
+ (has_capability robot1 PushObject)
+ (has_capability robot1 PullObject)
+)
+```
+
+==============================================================================
+STAGE 4 - REACH
+==============================================================================
+(:init
+ (has_location Apple_1 location_100)
+ (has_location Bowl_1 location_92)
+ (has_location Cabinet_1 location_101)
+ (has_location Cabinet_2 location_101)
+ (has_location Cabinet_3 location_100)
+ (has_location Cabinet_4 location_89)
+ (has_location Cabinet_5 location_91)
+   ... 50 more lines
+
+==============================================================================
+STAGE 5 - PDDL
+==============================================================================
+```pddl
+(define (problem kitchen_cleaning)
+  (:domain robot3)
+  (:objects
+    robot1 - robot
+    Apple_1 Bowl_1 Cabinet_1 Cabinet_2 Cabinet_3 Cabinet_4 Cabinet_5 Cabinet_6 Cabinet_7 Cabinet_8 Cabinet_9 Cabinet_10 Cabinet_11 CoffeeMachine_1 CounterTop_1 CounterTop_2 Cup_1 DiningTable_1 DishSponge_1 Drawer_1 Drawer_2 Drawer_3 Egg_1 Faucet_1 Floor_1 Fork_1 Fridge_1 GarbageBag_1 GarbageCan_1 Kettle_1 Mug_1 Pan_1 PepperShaker_1 Plate_1 Pot_1 Potato_1 SaltShaker_1 Sink_1 SinkBasin_1 SoapBottle_1 Spatula_1 Spoon_1 Stool_1 StoveBurner_1 StoveBurner_2 StoveBurner_3 StoveBurner_4 StoveKnob_1 StoveKnob_2 StoveKnob_3 StoveKnob_4 Toaster_1 Tomato_1 WineBottle_1 - object
+    location_100 location_92 location_101 location_89 location_91 location_80 location_106 location_60 location_61 location_3 location_108 location_44 location_77 location_112
+  )
+  (:init
+    (at robot1 location_0)
+    (at-location Apple_1 location_100)
+    (at-location Bowl_1 location_92)
+    (at-location Cabinet_1 location_101)
+    (at-location Cabinet_2 location_101)
+    (at-location Cabinet_3 location_100)
+    (at-location Cabinet_4 location_89)
+    (at-location Cabinet_5 location_91)
+    (at-location Cabinet_6 location_80)
+    (at-location Cabinet_7 location_100)
+    (at-location Cabinet_8 location_91)
+   ... 54 more lines (full text in 5_pddl.out.txt)
+
+==============================================================================
+PROBLEM PDDL  (after 24 syntax-only repairs)
+==============================================================================
+(openable ...) for ['fridge_1']:  ABSENT   <<< dropped by the model
+(pickupable ...) for ['apple_1']:  ABSENT   <<< dropped by the model
+(sliceable ...) for ['apple_1']:  ABSENT   <<< dropped by the model
+(toggleable ...) for ['lightswitch_1']:  ABSENT   <<< dropped by the model
+
+(:goal
+    (and
+      (at-location Apple_1 Fridge_1)
+      (switch-off LightSwitch_1)
+    )
+
+==============================================================================
+FAST DOWNWARD PLAN
+==============================================================================
+   (gotoobject robot1 lightswitch_1)
+   (gotoobject robot2 location_100)
+   (pickupobject robot2 apple_1 location_100)
+   (gotoobject robot2 fridge_1)
+   (putobject robot2 apple_1 fridge_1)
+   (switchoff robot1 lightswitch_1)
+
+==============================================================================
+VERDICT
+==============================================================================
+planner  : Solution found, 6 steps
+task     : accomplished
+
+findings : 33
+   DROPPED_CRITICAL_FACT    x16   e.g. cabinet_2
+   UNDECLARED_OBJECT        x8    e.g. location_0
+   MISSING_AFFORDANCE       x4    e.g. (pickupable apple_1)
+   CONTRADICTION            x2    e.g. (inside apple_1 fridge_1)
+   MISSING_ROBOT            x2    e.g. robot2
+   UNSOLVABLE               x1    e.g. no plan
+
+the knowledge graph is derived mechanically from AI2-THOR metadata.
+every fact above marked <<< was present in the graph and in the prompt.

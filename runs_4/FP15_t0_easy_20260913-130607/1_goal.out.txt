@@ -1,0 +1,6 @@
+Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Apple_1 Fridge_1)
+(switch-off LightSwitch_1)
+```

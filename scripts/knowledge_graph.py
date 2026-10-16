@@ -130,7 +130,17 @@ class Knowledge_Graph:
                     triplets.append((object_id, "has_capability", capability))
 
             for state in self.state_flags:
-                triplets.append((object_id, state, obj.get(state)))
+                value = obj.get(state)
+                if value is True:
+                    triplets.append((object_id, state, True))
+                elif state == "isOpen" and value is False and obj.get("openable"):
+                    # A closed openable container blocks pickup/put on its
+                    # contents, so "closed" needs a positive fact - see
+                    # property_prompt.format_property_triplet. Emitting it for
+                    # non-openable objects instead produced (isClosed Floor_1),
+                    # (isClosed CounterTop_1) and 60-odd others per scene, which
+                    # buried the handful that carry planning consequences.
+                    triplets.append((object_id, state, False))
 
         for r in self.robots:
             for skill in r["skills"]:

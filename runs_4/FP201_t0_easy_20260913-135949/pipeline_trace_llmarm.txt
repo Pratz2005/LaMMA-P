@@ -1,0 +1,524 @@
+==============================================================================
+KG-LaMMA-P PIPELINE TRACE
+==============================================================================
+task     : Put the watch and Keychain inside the drawer
+dataset  : data/final_test/FloorPlan201.json  index 0
+tier     : easy   (MAT-THOR: easy / complex / vague)
+scene    : AI2-THOR FloorPlan201
+fixture  : resources/kg_fixtures/FloorPlan201_metadata.json
+robot    : robot1 = dataset robot2  ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'SwitchOn', 'SwitchOff', 'PickupObject', 'PutObject', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject']
+robot    : robot2 = dataset robot3  ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'SwitchOn', 'SwitchOff', 'PickupObject', 'PutObject', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject']
+robot    : robot3 = dataset robot5  ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'SwitchOn', 'SwitchOff', 'PickupObject', 'PutObject', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject']
+model    : Qwen/Qwen2-7B-Instruct   temperature 0  seed 0  repetition_penalty 1.05
+gt states: [{'name': 'Drawer', 'contains': ['Watch', 'KeyChain'], 'state': None}]
+
+==============================================================================
+KNOWLEDGE GRAPH  (built mechanically from AI2-THOR metadata, no LLM)
+==============================================================================
+property 105   relation 53   reach 48   entities 83
+
+-- affordances of task-relevant objects --
+   (has_capability Book_1 pickupable)
+   (has_capability Book_1 openable)
+   (has_capability Drawer_1 openable)
+   (has_capability Drawer_2 openable)
+   (has_capability KeyChain_1 pickupable)
+   (has_capability Watch_1 pickupable)
+
+-- open/closed state (only meaningful for openable objects) --
+   (isOpen Book_1 False)   [CLOSED - needs (openable) to be opened]
+   (isOpen Drawer_1 False)   [CLOSED - needs (openable) to be opened]
+   (isOpen Drawer_2 False)   [CLOSED - needs (openable) to be opened]
+
+-- robot skills --
+   (has_capability robot1 GoToObject)
+   (has_capability robot1 OpenObject)
+   (has_capability robot1 CloseObject)
+   (has_capability robot1 BreakObject)
+   (has_capability robot1 SliceObject)
+   (has_capability robot1 SwitchOn)
+   (has_capability robot1 SwitchOff)
+   (has_capability robot1 PickupObject)
+   (has_capability robot1 PutObject)
+   (has_capability robot1 DropHandObject)
+   (has_capability robot1 ThrowObject)
+   (has_capability robot1 PushObject)
+   (has_capability robot1 PullObject)
+   (has_capability robot2 GoToObject)
+   (has_capability robot2 OpenObject)
+   (has_capability robot2 CloseObject)
+   (has_capability robot2 BreakObject)
+   (has_capability robot2 SliceObject)
+   (has_capability robot2 SwitchOn)
+   (has_capability robot2 SwitchOff)
+   (has_capability robot2 PickupObject)
+   (has_capability robot2 PutObject)
+   (has_capability robot2 DropHandObject)
+   (has_capability robot2 ThrowObject)
+   (has_capability robot2 PushObject)
+   (has_capability robot2 PullObject)
+   (has_capability robot3 GoToObject)
+   (has_capability robot3 OpenObject)
+   (has_capability robot3 CloseObject)
+   (has_capability robot3 BreakObject)
+   (has_capability robot3 SliceObject)
+   (has_capability robot3 SwitchOn)
+   (has_capability robot3 SwitchOff)
+   (has_capability robot3 PickupObject)
+   (has_capability robot3 PutObject)
+   (has_capability robot3 DropHandObject)
+   (has_capability robot3 ThrowObject)
+   (has_capability robot3 PushObject)
+   (has_capability robot3 PullObject)
+
+-- relations touching task objects --
+   (on Book_1 Chair_2)
+   (on Book_1 DiningTable_1)
+   (on KeyChain_1 SideTable_1)
+   (on Watch_1 SideTable_3)
+
+==============================================================================
+STAGE 1 - GOAL
+==============================================================================
+Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Watch_1 Drawer_1)
+(at-location KeyChain_1 Drawer_1)
+```
+
+==============================================================================
+STAGE 2 - RELATION
+==============================================================================
+(:init
+(on Watch_1 SideTable_3)
+(on KeyChain_1 SideTable_1))
+
+==============================================================================
+STAGE 3 - PROPERTY
+==============================================================================
+```pddl
+(:init
+(has_capability ArmChair_1 moveable)
+(has_capability ArmChair_2 moveable)
+(has_capability Book_1 pickupable)
+(has_capability Book_1 openable)
+(has_capability Bowl_1 pickupable)
+(has_capability Bowl_1 breakable)
+(has_capability Bowl_1 dirtyable)
+(has_capability Bowl_1 canFillWithLiquid)
+(has_capability Box_1 pickupable)
+(has_capability Box_1 openable)
+(has_capability Chair_1 moveable)
+(has_capability Chair_2 moveable)
+(has_capability Chair_3 moveable)
+(has_capability Chair_4 moveable)
+(has_capability Chair_5 moveable)
+(has_capability Chair_6 moveable)
+(has_capability CoffeeTable_1 moveable)
+(has_capability CreditCard_1 pickupable)
+(has_capability DeskLamp_1 toggleable)
+(has_capability DeskLamp_1 moveable)
+(has_capability DiningTable_1 moveable)
+(has_capability Drawer_1 openable)
+(has_capability Drawer_2 openable)
+(has_capability FloorLamp_1 toggleable)
+(has_capability FloorLamp_1 moveable)
+(has_capability GarbageCan_1 moveable)
+(has_capability HousePlant_1 moveable)
+(has_capability HousePlant_1 canFillWithLiquid)
+(has_capability KeyChain_1 pickupable)
+(has_capability Laptop_1 pickupable)
+(has_capability Laptop_1 openable)
+(has_capability Laptop_1 breakable)
+(has_capability Laptop_1 toggleable)
+(has_capability LightSwitch_1 toggleable)
+(has_capability Newspaper_1 pickupable)
+(has_capability Pen_1 pickupable)
+(has_capability Pencil_1 pickupable)
+(has_capability Pillow_1 pickupable)
+(has_capability Plate_1 pickupable)
+(has_capability Plate_1 breakable)
+(has_capability Plate_1 dirtyable)
+(has_capability RemoteControl_1 pickupable)
+(has_capability SideTable_1 moveable)
+(has_capability SideTable_2 moveable)
+(has_capability SideTable_3 moveable)
+(has_capability Sofa_1 moveable)
+(has_capability Statue_1 pickupable)
+(has_capability Statue_1 breakable)
+(has_capability Television_1 breakable)
+(has_capability Television_1 toggleable)
+(has_capability Television_1 moveable)
+(has_capability TissueBox_1 pickupable)
+(has_capability TVStand_1 moveable)
+(has_capability Vase_1 pickupable)
+(has_capability Vase_1 breakable)
+(has_capability Watch_1 pickupable)
+(has_capability robot1 GoToObject)
+(has_capability robot1 OpenObject)
+(has_capability robot1 CloseObject)
+(has_capability robot1 PickupObject)
+(has_capability robot1 PutObject)
+(has_capability robot1 DropHandObject)
+(has_capability robot1 ThrowObject)
+(has_capability robot1 PushObject)
+(has_capability robot1 PullObject)
+(has_capability robot2 GoToObject)
+(has_capability robot2 OpenObject)
+(has_capability robot2 CloseObject)
+(has_capability robot2 PickupObject)
+(has_capability robot2 PutObject)
+(has_capability robot2 DropHandObject)
+(has_capability robot2 ThrowObject)
+(has_capability robot2 PushObject)
+(has_capability robot2 PullObject)
+(has_capability robot3 GoToObject)
+(has_capability robot3 OpenObject)
+(has_capability robot3 CloseObject)
+(has_capability robot3 PickupObject)
+(has_capability robot3 PutObject)
+(has_capability robot3 DropHandObject)
+(has_capability robot3 ThrowObject)
+(has_capability robot3 PushObject)
+(has_capability robot3 PullObject)
+)
+```
+
+==============================================================================
+STAGE 4 - REACH
+==============================================================================
+(:init
+(has_location ArmChair_1 location_130)
+(has_location ArmChair_2 location_229)
+(has_location Book_1 location_230)
+(has_location Bowl_1 location_136)
+(has_location Box_1 location_164)
+(has_location Chair_1 location_57)
+(has_location Chair_2 location_230)
+   ... 40 more lines
+
+==============================================================================
+STAGE 5 - PDDL
+==============================================================================
+```pddl
+(define (problem example_problem)
+  (:domain robot3)
+  (:objects
+    robot1 robot2 robot3
+    Watch_1 KeyChain_1
+    Drawer_1 Drawer_2
+    SideTable_1 SideTable_2 SideTable_3
+    ArmChair_1 ArmChair_2
+    Book_1 Bowl_1 Box_1
+    Chair_1 Chair_2 Chair_3 Chair_4 Chair_5 Chair_6
+    CoffeeTable_1
+    CreditCard_1
+    DeskLamp_1
+    DiningTable_1
+    FloorLamp_1
+    GarbageCan_1
+    HousePlant_1
+    Laptop_1
+    LightSwitch_1
+   ... 87 more lines (full text in 5_pddl.out.txt)
+
+==============================================================================
+PROBLEM PDDL  (after 127 syntax-only repairs)
+==============================================================================
+(openable ...) for ['drawer_1', 'drawer_2', 'book_1']:  PRESENT
+(pickupable ...) for ['book_1', 'keychain_1', 'watch_1']:  PRESENT
+
+(:goal
+    (and
+      (at-location Watch_1 Drawer_1)
+      (at-location KeyChain_1 Drawer_1)
+    )
+
+==============================================================================
+FAST DOWNWARD PLAN
+==============================================================================
+   (gotoobject robot1 sidetable_1)
+   (pickupobject robot1 keychain_1 sidetable_1)
+   (gotoobject robot1 sidetable_3)
+   (pickupobject robot1 watch_1 sidetable_3)
+   (gotoobject robot1 drawer_1)
+   (putobject robot1 watch_1 drawer_1)
+   (putobject robot1 keychain_1 drawer_1)
+
+==============================================================================
+VERDICT
+==============================================================================
+planner  : Solution found, 7 steps
+task     : accomplished
+
+findings : 61
+   INVENTED_PREDICATE       x48   e.g. (on watch_1 sidetable_3)
+   UNDECLARED_OBJECT        x5    e.g. location_0
+   DROPPED_CRITICAL_FACT    x3    e.g. drawer_1
+   DUPLICATE_DECLARATION    x2    e.g. location_230
+   UNSUPPORTED_FACT         x2    e.g. (at robot2 location_0)
+   INVALID_PDDL             x1    e.g. error: duplicate object 'location_230'; error: dupli
+
+the knowledge graph is derived mechanically from AI2-THOR metadata.
+every fact above marked <<< was present in the graph and in the prompt.
+
+
+==============================================================================
+SAFETY-DAG CHECK   (reads the GRAPH, not the generated PDDL)
+==============================================================================
+domain   : resources/robot3_guarded.pddl
+planner  : Solution found, 9 steps
+
+derived 2 ordering edge(s) from the knowledge graph:
+   [VIOLATED] Open(drawer_1)  <  Put(watch_1, drawer_1)      [open_before_put]
+   [VIOLATED] Open(drawer_1)  <  Put(keychain_1, drawer_1)      [open_before_put]
+
+violations: 2
+   missing_predecessor: required Open(drawer_1) before Put(watch_1, drawer_1)
+   missing_predecessor: required Open(drawer_1) before Put(keychain_1, drawer_1)
+
+The planner reported success. The check runs regardless of planner
+success, which is why it sees this at all.
+
+==============================================================================
+10. LLM REPAIR   (the atom is produced by the model)
+==============================================================================
+The other cases in this pack repair the file deterministically: the DAG
+derived the ordering constraint from the graph, so it already holds the atom
+and writes it in. This case does not write it in. The DAG detects - it is still
+what notices a plan the planner called solved - and then the missing fact is
+asked for.
+
+The model is asked for a FACT. Not for a plan, not for a repair strategy, not
+for a rewritten problem file: for the ground atoms that belong in (:init ...)
+and are not there. It is shown the violation, the knowledge-graph triplets for
+the entities that violation names, the (:init ...) the planner was given, and
+the domain's predicate vocabulary with a translation table. It is not shown the
+answer: the graph facts appear in the graph's notation, not pre-rendered as the
+PDDL atoms it is supposed to emit, and the worked example is a different scene
+with a different container.
+
+model: Qwen/Qwen2-7B-Instruct
+
+--- THE PROMPT ---------------------------------------------------------------
+You are the repair step of a symbolic robot planning pipeline. You edit exactly
+one thing: the (:init ...) block of a PDDL problem file. You add ground facts to
+it. You never delete a fact, and you never touch (:objects ...) or (:goal ...).
+
+## 1. What went wrong
+Task: Put the watch and Keychain inside the drawer
+
+A planner was given the problem file below and returned a plan it reported as
+solved. A safety check then compared that plan against the scene's knowledge
+graph - facts read mechanically from the simulator's object metadata, not
+written by any model - and found the plan does something the world does not
+allow:
+
+    missing_predecessor: Open(drawer_1) must happen before Put(watch_1, drawer_1)
+    missing_predecessor: Open(drawer_1) must happen before Put(keychain_1, drawer_1)
+
+The plan is not the thing to fix. The plan is correct for the problem file it
+was given; the problem file is wrong about the world. A fact the knowledge graph
+asserts is missing from (:init ...), and PDDL uses the closed-world assumption,
+so a fact that is not written down is FALSE. The omission did not leave the
+planner uncertain - it told the planner the opposite. Silence granted permission.
+
+## 2. Ground truth - what the knowledge graph asserts about these entities
+Every line below is true of the scene right now. Some of them are already
+written into section 3 and some are not; working out which is part of the job.
+
+    (Drawer_1, isOpen, False)
+    (Drawer_1, has_capability, openable)
+    (KeyChain_1, has_capability, pickupable)
+    (Watch_1, has_capability, pickupable)
+
+## 3. The problem file the planner was actually given
+These are the only names you may use as arguments. An atom naming anything not
+declared here is rejected.
+
+(:objects
+    robot1 robot2 robot3 - robot
+    armchair_1 armchair_2 book_1 bowl_1 box_1 chair_1 - object
+    chair_2 chair_3 chair_4 chair_5 chair_6 coffeetable_1 - object
+    creditcard_1 desklamp_1 diningtable_1 drawer_1 drawer_2 floorlamp_1 - object
+    garbagecan_1 houseplant_1 keychain_1 laptop_1 lightswitch_1 location_0 - object
+    location_124 location_130 location_136 location_150 location_160 location_164 - object
+    location_167 location_173 location_181 location_189 location_191 location_193 - object
+    location_195 location_213 location_226 location_229 location_23 location_230 - object
+    location_232 location_233 location_47 location_57 location_70 location_75 - object
+    location_77 location_78 location_93 location_99 newspaper_1 painting_1 - object
+    pen_1 pencil_1 pillow_1 plate_1 remotecontrol_1 shelf_1 - object
+    shelf_2 shelf_3 sidetable_1 sidetable_2 sidetable_3 sofa_1 - object
+    statue_1 television_1 tissuebox_1 tvstand_1 vase_1 watch_1 - object
+    window_1 window_2 - object
+  )
+
+(:init
+    (at robot1 location_0)
+    (at robot2 location_0)
+    (at robot3 location_0)
+    (at-location watch_1 sidetable_3)
+    (at-location keychain_1 sidetable_1)
+    (openable watch_1)
+    (pickupable watch_1)
+    (openable keychain_1)
+    (pickupable keychain_1)
+    (openable drawer_1)
+    (pickupable drawer_1)
+    (openable drawer_2)
+    (pickupable drawer_2)
+  )
+
+## 4. The vocabulary you may write in
+The facts in section 2 are in the knowledge graph's notation. (:init ...) is in
+the domain's, and they are not the same words. The domain declares these
+predicates and no others:
+
+    at at-location break cleaned holding inaction
+    object-close object-open openable pickupable sliceable sliced
+    switch-off switch-on toggleable
+
+Translate with this table:
+
+    (X, has_capability, openable)              ->  (openable x)
+    (X, has_capability, pickupable)            ->  (pickupable x)
+    (X, has_capability, sliceable)             ->  (sliceable x)
+    (X, has_capability, toggleable)            ->  (toggleable x)
+    (X, isBroken, True)                        ->  (break x)
+    (X, isOpen, False)                         ->  (object-close x)
+    (X, isOpen, True)                          ->  (object-open x)
+    (X, isSliced, True)                        ->  (sliced x)
+    (X, isToggled, False)                      ->  (switch-off x)
+    (X, isToggled, True)                       ->  (switch-on x)
+
+Read these predicate names carefully; two of them are easy to misread:
+
+    (object-close x)   x is CLOSED - shut. It has nothing to do with distance,
+                       and does NOT mean "close to" or "near" anything. This is
+                       the predicate for a container whose door is shut.
+    (object-open x)    x is OPEN. The exact opposite of the line above.
+
+A container that is shut is (object-close x). Asserting (object-open x) about a
+shut container states the opposite of the truth.
+
+Fast Downward drops a predicate it does not know WITHOUT REPORTING AN ERROR, so
+a line in the wrong vocabulary is not a repair that fails loudly - it is a repair
+that appears to happen and changes nothing. Two spellings in particular are NOT
+domain predicates and must never appear: the graph's (isOpen X false) and the
+property stage's (isClosed X). Write every predicate and every object in lower
+case, and name objects exactly as the (:objects ...) block declares them -
+Drawer_1 in the graph is drawer_1 in the problem file.
+
+## 5. How to choose what to add
+Add the smallest set of facts that makes the initial state true - not the set
+that makes the plan look acceptable. Two rules:
+
+  a. Every atom you write must be one section 2 asserts. You are restoring facts
+     that were dropped, not inventing new ones. Never add a fact because it
+     makes an action possible; add it because it is true. Note that the false
+     repair is available to you here and would clear the violation just as well:
+     do not take it.
+  b. A blocking fact needs its release. (object-close x) stops PutObject until x
+     is opened, but OpenObject requires (openable x) as a POSITIVE precondition.
+     If you write (object-close x) and (openable x) is not already in the :init
+     above, write it as well - otherwise you seal the container and turn a wrong
+     plan into no plan at all.
+
+  c. CHECK THE POLARITY BEFORE YOU WRITE. Section 2 gives each fact with its
+     truth value, and the table in section 4 has an entry for each value
+     separately. isOpen False and isOpen True are different facts with
+     different predicates. Find the section 2 line for the entity, read its
+     value, and take the matching row of the table - do not pick the predicate
+     that merely sounds related. Asserting the opposite value is the single
+     most common way this step goes wrong, and it is worse than adding nothing:
+     it clears the violation while leaving the world description false.
+
+Do not repeat an atom that is already present in the :init above.
+
+## 6. Worked example - a different scene. Copy the shape, not the content.
+The container below is a footlocker, which does not exist in your scene. If an
+object name from this example appears in your answer, you have copied instead
+of reasoning, and the answer is wrong.
+
+    graph facts   (Footlocker_1, has_capability, openable)
+                  (Footlocker_1, isOpen, False)
+    violation     missing_predecessor: Open(footlocker_1) must happen before
+                  Put(plunger_1, footlocker_1)
+    :init had     (at-location plunger_1 sinkbasin_1)
+                  (pickupable plunger_1)
+    answer
+(object-close footlocker_1)
+(openable footlocker_1)
+
+## 7. Output format
+Output only the atoms to add, one per line. No prose, no explanation, no
+numbering, no bullets, no code fences, no blank lines between atoms. Each line
+must be exactly one balanced S-expression that starts with '(' and ends with
+')'. If nothing needs to be added, output the single word NONE.
+--- THE MODEL'S REPLY --------------------------------------------------------
+(object-close drawer_1)
+(object-open drawer_2)
+
+--- SCREENING ----------------------------------------------------------------
+Three passes stand between that reply and the problem file. A model that
+answers in the property stage's vocabulary, or names an object the file does
+not declare, or asserts something the graph does not - each of those would
+otherwise be written straight into :init, and the first two would be dropped by
+Fast Downward without an error, so the repair would appear to happen and change
+nothing.
+
+  1. syntax      one balanced (predicate arg ...) per line; prose discarded
+  2. vocabulary  predicate declared by the domain, arguments declared by the
+                 problem file
+  3. truth       the atom must be one the knowledge graph asserts
+
+   accepted  + (object-close drawer_1)      -> :init
+   REJECTED  x (object-open drawer_2)       the knowledge graph does not assert this - it is a new claim about the world, not a restored fact
+
+--- AGAINST THE DETERMINISTIC REPAIR -----------------------------------------
+The injector, on this same violation, would have written:
+
+   (object-close drawer_1)
+
+   model agreed with : (object-close drawer_1)
+   model missed      : nothing
+   model added extra : nothing
+
+Only the third pass can tell the difference between the two atoms that clear
+this violation. (object-close drawer_1) is true and (object-open drawer_1) is
+false, and both satisfy PutObject's precondition well enough for the planner to
+stop complaining - the second one by making the wrong plan legal instead of
+making the world right. The graph decides which is which; the model does not.
+
+Nothing else is touched. Not the goal, not the objects, not any other fact.
+
+==============================================================================
+REPLAN
+==============================================================================
+planner: Solution found
+   (gotoobject robot1 drawer_1)
+   (openobject robot1 drawer_1)   <-- INSERTED BY THE PLANNER
+   (gotoobject robot1 sidetable_1)
+   (pickupobject robot1 keychain_1 sidetable_1)
+   (gotoobject robot1 drawer_1)
+   (putobject robot1 keychain_1 drawer_1)
+   (gotoobject robot1 sidetable_3)
+   (pickupobject robot1 watch_1 sidetable_3)
+   (gotoobject robot1 drawer_1)
+   (putobject robot1 watch_1 drawer_1)
+
+==============================================================================
+VERDICT
+==============================================================================
+   plan before repair : 9 actions, 0 of them OpenObject
+   plan after  repair : 10 actions, 1 of them OpenObject
+   DAG violations     : 2  ->  0
+   atoms injected     : (object-close drawer_1)
+   model calls        : 2  (bounded retry on a fully rejected reply; the
+                        screens gate every attempt and no deterministic
+                        fallback stands behind them)
+
+   repair source      : LANGUAGE MODEL  (Qwen/Qwen2-7B-Instruct)
+   outcome            : REPAIRED
+   The task is now actually accomplished.

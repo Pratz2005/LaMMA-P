@@ -12,8 +12,8 @@ grounding goals and actions to reachable target positions.
 - Location: (has_location ?entity ?location) — the entity is nearest to that discrete location.
 
 Example:
-(has_location Microwave_1 location_1)
-(has_location RobotA location_3)
+(has_location ObjectA_1 location_901)
+(has_location robotX location_902)
 
 ## 2. Task Constraints
 Relation: {relation}

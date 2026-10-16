@@ -1,0 +1,6 @@
+(gotoobject robot1 lightswitch_1)
+(gotoobject robot2 location_100)
+(pickupobject robot2 apple_1 location_100)
+(gotoobject robot2 fridge_1)
+(putobject robot2 apple_1 fridge_1)
+(switchoff robot1 lightswitch_1)

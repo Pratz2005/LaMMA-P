@@ -1,0 +1,110 @@
+## 1. Contextual Example
+Properties describe object attributes and robot capabilities that constrain feasible actions.
+- Capability: (has_capability ?entity ?skill) — the entity (object or robot) supports that skill/action.
+- State: (?state ?obj) — the object currently has that boolean state true. If a state is false, omit it
+  entirely; PDDL's closed-world assumption means any predicate not listed in :init is already false.
+  Exception: openable containers that start closed (isOpen: false) must be stated explicitly as
+  (isClosed ?obj) — a closed container blocks pickup/put actions targeting it, so this fact is safety-critical
+  and must never be silently dropped like other false states.
+
+Example:
+(has_capability ObjectA_1 pickupable)
+(isOpen ReceptacleA_1)
+(isClosed ReceptacleB_1)
+(has_capability robotX pickup)
+
+## 2. Scenario
+Goal: Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Vase_1 DiningTable_1)
+(object-open Book_1)
+```
+Task: Put the vase on the dining table and open the book
+Relation: ### :init
+
+```
+(on Vase_1 SideTable_1)
+(on Book_1 Chair_2)
+```
+
+## 3. Object Properties
+Property Tuples:
+(has_capability ArmChair_1 moveable)
+(has_capability ArmChair_2 moveable)
+(has_capability Book_1 pickupable)
+(has_capability Book_1 openable)
+(isClosed Book_1)
+(has_capability Bowl_1 pickupable)
+(has_capability Bowl_1 breakable)
+(has_capability Bowl_1 dirtyable)
+(has_capability Bowl_1 canFillWithLiquid)
+(has_capability Box_1 pickupable)
+(has_capability Box_1 openable)
+(isOpen Box_1)
+(has_capability Chair_1 moveable)
+(has_capability Chair_2 moveable)
+(has_capability Chair_3 moveable)
+(has_capability Chair_4 moveable)
+(has_capability Chair_5 moveable)
+(has_capability Chair_6 moveable)
+(has_capability CoffeeTable_1 moveable)
+(has_capability CreditCard_1 pickupable)
+(has_capability DeskLamp_1 toggleable)
+(has_capability DeskLamp_1 moveable)
+(isToggled DeskLamp_1)
+(has_capability DiningTable_1 moveable)
+(has_capability Drawer_1 openable)
+(isClosed Drawer_1)
+(has_capability Drawer_2 openable)
+(isClosed Drawer_2)
+(has_capability FloorLamp_1 toggleable)
+(has_capability FloorLamp_1 moveable)
+(isToggled FloorLamp_1)
+(has_capability GarbageCan_1 moveable)
+(has_capability HousePlant_1 moveable)
+(has_capability HousePlant_1 canFillWithLiquid)
+(has_capability KeyChain_1 pickupable)
+(has_capability Laptop_1 pickupable)
+(has_capability Laptop_1 openable)
+(has_capability Laptop_1 breakable)
+(has_capability Laptop_1 toggleable)
+(isOpen Laptop_1)
+(has_capability LightSwitch_1 toggleable)
+(isToggled LightSwitch_1)
+(has_capability Newspaper_1 pickupable)
+(has_capability Pen_1 pickupable)
+(has_capability Pencil_1 pickupable)
+(has_capability Pillow_1 pickupable)
+(has_capability Plate_1 pickupable)
+(has_capability Plate_1 breakable)
+(has_capability Plate_1 dirtyable)
+(has_capability RemoteControl_1 pickupable)
+(has_capability SideTable_1 moveable)
+(has_capability SideTable_2 moveable)
+(has_capability SideTable_3 moveable)
+(has_capability Sofa_1 moveable)
+(has_capability Statue_1 pickupable)
+(has_capability Statue_1 breakable)
+(has_capability Television_1 breakable)
+(has_capability Television_1 toggleable)
+(has_capability Television_1 moveable)
+(has_capability TissueBox_1 pickupable)
+(has_capability TVStand_1 moveable)
+(has_capability Vase_1 pickupable)
+(has_capability Vase_1 breakable)
+(has_capability Watch_1 pickupable)
+(has_capability Window_1 breakable)
+(has_capability Window_2 breakable)
+(has_capability robot1 GoToObject)
+(has_capability robot1 PickupObject)
+(has_capability robot1 PutObject)
+(has_capability robot2 GoToObject)
+(has_capability robot2 OpenObject)
+(has_capability robot2 CloseObject)
+
+## 4. Output Constraints
+Generate the property condition as a PDDL (:init) format.
+1. Relations: Only include predicates of type "has_capability" (capabilities) or object/robot state predicates.
+2. Relevance: Only include entities that are related to the Goal, Task, or Relation. Ignore irrelevant background clutter.
+3. Never use "not" in this output. Only list positive facts — a state that is false should simply be omitted.

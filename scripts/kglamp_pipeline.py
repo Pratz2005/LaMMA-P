@@ -16,7 +16,9 @@ from scripts.pddl_prompt import build_pddl_prompt
 from scripts.pddlrun_llmseparate import LLMHandler, FileProcessor, PDDLPlanner
 import resources.robots as robots_module
 
-DOMAIN_FILE = "resources/robot3.pddl"
+# Overridable so a batch can pin the domain it was designed against without
+# editing the working tree. Default is unchanged.
+DOMAIN_FILE = os.environ.get("KGLAMP_DOMAIN", "resources/robot3.pddl")
 
 # Per-stage token budgets. The old code used a single max_tokens=500 for every
 # call, which silently truncates.
@@ -40,6 +42,13 @@ STAGE_TOKENS = {
 # blocks of (on Floor_1 X) emitted twice. Keeping the penalty preserves
 # determinism while suppressing the loop.
 REPETITION_PENALTY = 1.05
+
+# The served context window. max_tokens is a budget for the COMPLETION, but the
+# server rejects the request if prompt + max_tokens exceeds the context:
+#   400 'max_tokens' is too large: 6144 ... maximum context length is 8192
+# Qwen2-7B supports 32768; serve with --max-model-len 32768 to match.
+CONTEXT_LIMIT = int(os.environ.get("KGLAMP_CONTEXT_LIMIT", "32768"))
+RESERVE = 512          # headroom for chat-template tokens we cannot count here
 
 
 def extract_pddl_block(text: str) -> str:
@@ -156,6 +165,15 @@ class KGLAMP:
 
     def ask(self, prompt, stage: Optional[str] = None):
         max_tokens = STAGE_TOKENS.get(stage, 1536) if stage else 1536
+        # Clamp so prompt + completion can never exceed the context. ~3 chars
+        # per token is a deliberate under-estimate of the token count, which
+        # makes the clamp conservative rather than optimistic.
+        est_prompt = len(prompt) // 3
+        budget = CONTEXT_LIMIT - est_prompt - RESERVE
+        if budget < max_tokens:
+            max_tokens = max(256, budget)
+            print(f"  [clamp] {stage}: max_tokens -> {max_tokens} "
+                  f"(prompt ~{est_prompt} tok, context {CONTEXT_LIMIT})")
         # temperature=0 for reproducibility; an unreproducible hallucination is
         # not evidence of anything.
         resp, text = self.llm.query_model(

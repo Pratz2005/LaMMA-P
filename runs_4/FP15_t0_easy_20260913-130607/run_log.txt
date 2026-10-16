@@ -1,0 +1,951 @@
+task       : Put apple in fridge and switch off the light
+dataset    : data/final_test/FloorPlan15.json [index 0]
+floor plan : FloorPlan15
+model      : Qwen/Qwen2-7B-Instruct  (temperature 0, seed 0)
+robots     : [('robot1', 1), ('robot2', 2), ('robot3', 3)]
+ground truth object_states: [{'name': 'Fridge', 'contains': ['Apple'], 'state': 'None'}, {'name': 'LightSwitch', 'contains': [], 'state': 'OFF'}]
+
+======================================================================
+KNOWLEDGE GRAPH (ground truth given to the model)
+======================================================================
+property triplets : 150 (122 capabilities, 28 meaningful states)
+relation triplets : 32
+reach triplets    : 63
+distinct entities : 87
+
+capabilities / affordances as ground truth:
+  (has_capability Apple_1 pickupable)
+  (has_capability Apple_1 sliceable)
+  (has_capability Blinds_1 openable)
+  (has_capability Bowl_1 pickupable)
+  (has_capability Bowl_1 dirtyable)
+  (has_capability Bowl_1 canFillWithLiquid)
+  (has_capability Bread_1 pickupable)
+  (has_capability Bread_1 sliceable)
+  (has_capability ButterKnife_1 pickupable)
+  (has_capability Cabinet_1 openable)
+  (has_capability Cabinet_2 openable)
+  (has_capability Cabinet_3 openable)
+  (has_capability Cabinet_4 openable)
+  (has_capability Cabinet_5 openable)
+  (has_capability Cabinet_6 openable)
+  (has_capability Cabinet_7 openable)
+  (has_capability Cabinet_8 openable)
+  (has_capability Cabinet_9 openable)
+  (has_capability Cabinet_10 openable)
+  (has_capability Cabinet_11 openable)
+  (has_capability CoffeeMachine_1 breakable)
+  (has_capability CoffeeMachine_1 toggleable)
+  (has_capability CoffeeMachine_1 moveable)
+  (has_capability Cup_1 pickupable)
+  (has_capability Cup_1 breakable)
+  (has_capability Cup_1 dirtyable)
+  (has_capability Cup_1 canFillWithLiquid)
+  (has_capability DiningTable_1 moveable)
+  (has_capability DishSponge_1 pickupable)
+  (has_capability Drawer_1 openable)
+  (has_capability Drawer_2 openable)
+  (has_capability Drawer_3 openable)
+  (has_capability Egg_1 pickupable)
+  (has_capability Egg_1 breakable)
+  (has_capability Egg_1 sliceable)
+  (has_capability Faucet_1 toggleable)
+  (has_capability Fork_1 pickupable)
+  (has_capability Fridge_1 openable)
+  (has_capability GarbageBag_1 moveable)
+  (has_capability GarbageCan_1 moveable)
+  (has_capability Kettle_1 pickupable)
+  (has_capability Kettle_1 openable)
+  (has_capability Kettle_1 canFillWithLiquid)
+  (has_capability Knife_1 pickupable)
+  (has_capability Lettuce_1 pickupable)
+  (has_capability Lettuce_1 sliceable)
+  (has_capability LightSwitch_1 toggleable)
+  (has_capability Microwave_1 openable)
+  (has_capability Microwave_1 toggleable)
+  (has_capability Microwave_1 moveable)
+  (has_capability Mug_1 pickupable)
+  (has_capability Mug_1 breakable)
+  (has_capability Mug_1 dirtyable)
+  (has_capability Mug_1 canFillWithLiquid)
+  (has_capability Pan_1 pickupable)
+  (has_capability Pan_1 dirtyable)
+  (has_capability PepperShaker_1 pickupable)
+  (has_capability Plate_1 pickupable)
+  (has_capability Plate_1 breakable)
+  (has_capability Plate_1 dirtyable)
+  (has_capability Pot_1 pickupable)
+  (has_capability Pot_1 dirtyable)
+  (has_capability Pot_1 canFillWithLiquid)
+  (has_capability Potato_1 pickupable)
+  (has_capability Potato_1 sliceable)
+  (has_capability Potato_1 cookable)
+  (has_capability SaltShaker_1 pickupable)
+  (has_capability SoapBottle_1 pickupable)
+  (has_capability Spatula_1 pickupable)
+  (has_capability Spoon_1 pickupable)
+  (has_capability Stool_1 moveable)
+  (has_capability StoveKnob_1 toggleable)
+  (has_capability StoveKnob_2 toggleable)
+  (has_capability StoveKnob_3 toggleable)
+  (has_capability StoveKnob_4 toggleable)
+  (has_capability Toaster_1 toggleable)
+  (has_capability Toaster_1 moveable)
+  (has_capability Tomato_1 pickupable)
+  (has_capability Tomato_1 sliceable)
+  (has_capability Window_1 breakable)
+  (has_capability WineBottle_1 pickupable)
+  (has_capability WineBottle_1 breakable)
+  (has_capability WineBottle_1 canFillWithLiquid)
+  (has_capability robot1 GoToObject)
+  (has_capability robot1 OpenObject)
+  (has_capability robot1 CloseObject)
+  (has_capability robot1 BreakObject)
+  (has_capability robot1 SliceObject)
+  (has_capability robot1 SwitchOn)
+  (has_capability robot1 SwitchOff)
+  (has_capability robot1 PickupObject)
+  (has_capability robot1 PutObject)
+  (has_capability robot1 DropHandObject)
+  (has_capability robot1 ThrowObject)
+  (has_capability robot1 PushObject)
+  (has_capability robot1 PullObject)
+  (has_capability robot2 GoToObject)
+  (has_capability robot2 OpenObject)
+  (has_capability robot2 CloseObject)
+  (has_capability robot2 BreakObject)
+  (has_capability robot2 SliceObject)
+  (has_capability robot2 SwitchOn)
+  (has_capability robot2 SwitchOff)
+  (has_capability robot2 PickupObject)
+  (has_capability robot2 PutObject)
+  (has_capability robot2 DropHandObject)
+  (has_capability robot2 ThrowObject)
+  (has_capability robot2 PushObject)
+  (has_capability robot2 PullObject)
+  (has_capability robot3 GoToObject)
+  (has_capability robot3 OpenObject)
+  (has_capability robot3 CloseObject)
+  (has_capability robot3 BreakObject)
+  (has_capability robot3 SliceObject)
+  (has_capability robot3 SwitchOn)
+  (has_capability robot3 SwitchOff)
+  (has_capability robot3 PickupObject)
+  (has_capability robot3 PutObject)
+  (has_capability robot3 DropHandObject)
+  (has_capability robot3 ThrowObject)
+  (has_capability robot3 PushObject)
+  (has_capability robot3 PullObject)
+
+object states as ground truth (isOpen False is rendered isClosed by the prompt):
+  (isOpen Blinds_1 False)
+  (isOpen Cabinet_1 False)
+  (isOpen Cabinet_2 False)
+  (isOpen Cabinet_3 False)
+  (isOpen Cabinet_4 False)
+  (isOpen Cabinet_5 False)
+  (isOpen Cabinet_6 False)
+  (isOpen Cabinet_7 False)
+  (isOpen Cabinet_8 False)
+  (isOpen Cabinet_9 False)
+  (isOpen Cabinet_10 False)
+  (isOpen Cabinet_11 False)
+  (isHeatSource CoffeeMachine_1 True)
+  (isOpen Drawer_1 False)
+  (isOpen Drawer_2 False)
+  (isOpen Drawer_3 False)
+  (isOpen Fridge_1 False)
+  (isColdSource Fridge_1 True)
+  (isOpen Kettle_1 False)
+  (isToggled LightSwitch_1 True)
+  (isOpen Microwave_1 False)
+  (isHeatSource Microwave_1 True)
+  (isHeatSource StoveBurner_1 True)
+  (isHeatSource StoveBurner_2 True)
+  (isHeatSource StoveBurner_3 True)
+  (isHeatSource StoveBurner_4 True)
+  (isHeatSource Toaster_1 True)
+  (isFilledWithLiquid WineBottle_1 True)
+
+relation edges (containment / support) as ground truth:
+  (inside Kettle_1 Cabinet_8)
+  (inside Cup_1 Cabinet_9)
+  (on Mug_1 CoffeeMachine_1)
+  (on Plate_1 CounterTop_1)
+  (on CoffeeMachine_1 CounterTop_1)
+  (on WineBottle_1 CounterTop_1)
+  (on Mug_1 CounterTop_1)
+  (on Apple_1 CounterTop_1)
+  (on Toaster_1 CounterTop_1)
+  (on Tomato_1 CounterTop_1)
+  (on Pan_1 CounterTop_1)
+  (on DishSponge_1 CounterTop_1)
+  (on SoapBottle_1 CounterTop_1)
+  (on Spatula_1 CounterTop_2)
+  (on Bowl_1 CounterTop_2)
+  (on Knife_1 DiningTable_1)
+  (on SaltShaker_1 DiningTable_1)
+  (on PepperShaker_1 DiningTable_1)
+  (on Bread_1 DiningTable_1)
+  (on Lettuce_1 DiningTable_1)
+  (on Potato_1 DiningTable_1)
+  (inside Fork_1 Drawer_2)
+  (inside Spoon_1 Drawer_2)
+  (on Stool_1 Floor_1)
+  (on DiningTable_1 Floor_1)
+  (on GarbageBag_1 Floor_1)
+  (on Fridge_1 Floor_1)
+  (on GarbageCan_1 Floor_1)
+  (inside Egg_1 Fridge_1)
+  (on ButterKnife_1 SinkBasin_1)
+  (on Pot_1 StoveBurner_1)
+  (on Pot_1 StoveBurner_2)
+
+reach edges:
+  (has_location Apple_1 location_100)
+  (has_location Blinds_1 location_112)
+  (has_location Bowl_1 location_92)
+  (has_location Bread_1 location_108)
+  (has_location ButterKnife_1 location_61)
+  (has_location Cabinet_1 location_101)
+  (has_location Cabinet_2 location_101)
+  (has_location Cabinet_3 location_100)
+  (has_location Cabinet_4 location_89)
+  (has_location Cabinet_5 location_91)
+  (has_location Cabinet_6 location_80)
+  (has_location Cabinet_7 location_100)
+  (has_location Cabinet_8 location_91)
+  (has_location Cabinet_9 location_91)
+  (has_location Cabinet_10 location_44)
+  (has_location Cabinet_11 location_89)
+  (has_location CoffeeMachine_1 location_100)
+  (has_location CounterTop_1 location_100)
+  (has_location CounterTop_2 location_92)
+  (has_location Cup_1 location_100)
+  (has_location DiningTable_1 location_108)
+  (has_location DishSponge_1 location_44)
+  (has_location Drawer_1 location_92)
+  (has_location Drawer_2 location_100)
+  (has_location Drawer_3 location_100)
+  (has_location Egg_1 location_104)
+  (has_location Faucet_1 location_61)
+  (has_location Floor_1 location_3)
+  (has_location Fork_1 location_100)
+  (has_location Fridge_1 location_98)
+  (has_location GarbageBag_1 location_106)
+  (has_location GarbageCan_1 location_60)
+  (has_location Kettle_1 location_100)
+  (has_location Knife_1 location_75)
+  (has_location Lettuce_1 location_112)
+  (has_location LightSwitch_1 location_52)
+  (has_location Microwave_1 location_91)
+  (has_location Mug_1 location_100)
+  (has_location Pan_1 location_89)
+  (has_location PepperShaker_1 location_103)
+  (has_location Plate_1 location_100)
+  (has_location Pot_1 location_91)
+  (has_location Potato_1 location_103)
+  (has_location SaltShaker_1 location_67)
+  (has_location Sink_1 location_61)
+  (has_location SinkBasin_1 location_61)
+  (has_location SoapBottle_1 location_77)
+  (has_location Spatula_1 location_80)
+  (has_location Spoon_1 location_91)
+  (has_location Stool_1 location_17)
+  (has_location StoveBurner_1 location_91)
+  (has_location StoveBurner_2 location_91)
+  (has_location StoveBurner_3 location_80)
+  (has_location StoveBurner_4 location_80)
+  (has_location StoveKnob_1 location_91)
+  (has_location StoveKnob_2 location_80)
+  (has_location StoveKnob_3 location_91)
+  (has_location StoveKnob_4 location_80)
+  (has_location Toaster_1 location_89)
+  (has_location Tomato_1 location_89)
+  (has_location Window_1 location_112)
+  (has_location WineBottle_1 location_100)
+  (has_location robot1 location_0)
+
+======================================================================
+STAGE 1_goal - raw model output
+======================================================================
+Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Apple_1 Fridge_1)
+(switch-off LightSwitch_1)
+```
+
+======================================================================
+STAGE 2_relation - raw model output
+======================================================================
+```pddl
+(:init
+ (inside Apple_1 Fridge_1)
+ (inside Kettle_1 Cabinet_8)
+ (inside Cup_1 Cabinet_9)
+ (on Mug_1 CoffeeMachine_1)
+ (on Plate_1 CounterTop_1)
+ (on WineBottle_1 CounterTop_1)
+ (on Mug_1 CounterTop_1)
+ (on Tomato_1 CounterTop_1)
+ (on Toaster_1 CounterTop_1)
+ (on Potato_1 CounterTop_1)
+ (on DishSponge_1 CounterTop_1)
+ (on SoapBottle_1 CounterTop_1)
+ (on Spatula_1 CounterTop_2)
+ (on Bowl_1 CounterTop_2)
+ (inside Egg_1 Fridge_1)
+ (on butterknife_1 SinkBasin_1)
+ (on Pot_1 StoveBurner_1)
+ (on Pot_1 StoveBurner_2)
+)
+```
+
+======================================================================
+STAGE 3_property - raw model output
+======================================================================
+```pddl
+(:init
+ (has_capability Apple_1 pickupable)
+ (has_capability Apple_1 sliceable)
+ (has_capability Bowl_1 pickupable)
+ (has_capability Bowl_1 dirtyable)
+ (has_capability Bowl_1 canFillWithLiquid)
+ (has_capability Cabinet_8 openable)
+ (has_capability Cabinet_9 openable)
+ (has_capability Fridge_1 openable)
+ (has_capability Kettle_1 pickupable)
+ (has_capability Kettle_1 openable)
+ (has_capability Kettle_1 canFillWithLiquid)
+ (has_capability Cabinet_1 openable)
+ (has_capability Cabinet_2 openable)
+ (has_capability Cabinet_3 openable)
+ (has_capability Cabinet_4 openable)
+ (has_capability Cabinet_5 openable)
+ (has_capability Cabinet_6 openable)
+ (has_capability Cabinet_7 openable)
+ (has_capability Cabinet_10 openable)
+ (has_capability Cabinet_11 openable)
+ (has_capability CoffeeMachine_1 breakable)
+ (has_capability CoffeeMachine_1 toggleable)
+ (has_capability CoffeeMachine_1 moveable)
+ (isHeatSource CoffeeMachine_1)
+ (has_capability Cup_1 pickupable)
+ (has_capability Cup_1 breakable)
+ (has_capability Cup_1 dirtyable)
+ (has_capability Cup_1 canFillWithLiquid)
+ (has_capability DiningTable_1 moveable)
+ (has_capability DishSponge_1 pickupable)
+ (has_capability Drawer_1 openable)
+ (has_capability Drawer_2 openable)
+ (has_capability Drawer_3 openable)
+ (has_capability Egg_1 pickupable)
+ (has_capability Egg_1 breakable)
+ (has_capability Egg_1 sliceable)
+ (has_capability Faucet_1 toggleable)
+ (has_capability Fork_1 pickupable)
+ (has_capability Fridge_1 openable)
+ (isColdSource Fridge_1)
+ (has_capability GarbageBag_1 moveable)
+ (has_capability GarbageCan_1 moveable)
+ (has_capability Kettle_1 pickupable)
+ (has_capability Kettle_1 openable)
+ (has_capability Kettle_1 canFillWithLiquid)
+ (has_capability Mug_1 pickupable)
+ (has_capability Mug_1 breakable)
+ (has_capability Mug_1 dirtyable)
+ (has_capability Mug_1 canFillWithLiquid)
+ (has_capability Pan_1 pickupable)
+ (has_capability Pan_1 dirtyable)
+ (has_capability PepperShaker_1 pickupable)
+ (has_capability Plate_1 pickupable)
+ (has_capability Plate_1 breakable)
+ (has_capability Plate_1 dirtyable)
+ (has_capability Pot_1 pickupable)
+ (has_capability Pot_1 dirtyable)
+ (has_capability Pot_1 canFillWithLiquid)
+ (has_capability Potato_1 pickupable)
+ (has_capability Potato_1 sliceable)
+ (has_capability Potato_1 cookable)
+ (has_capability SaltShaker_1 pickupable)
+ (has_capability SoapBottle_1 pickupable)
+ (has_capability Spatula_1 pickupable)
+ (has_capability Spoon_1 pickupable)
+ (has_capability Stool_1 moveable)
+ (has_capability Toaster_1 toggleable)
+ (has_capability Toaster_1 moveable)
+ (isHeatSource Toaster_1)
+ (has_capability Tomato_1 pickupable)
+ (has_capability Tomato_1 sliceable)
+ (has_capability WineBottle_1 pickupable)
+ (has_capability WineBottle_1 breakable)
+ (has_capability WineBottle_1 canFillWithLiquid)
+ (isFilledWithLiquid WineBottle_1)
+ (has_capability robot1 GoToObject)
+ (has_capability robot1 OpenObject)
+ (has_capability robot1 CloseObject)
+ (has_capability robot1 BreakObject)
+ (has_capability robot1 SliceObject)
+ (has_capability robot1 SwitchOn)
+ (has_capability robot1 SwitchOff)
+ (has_capability robot1 PickupObject)
+ (has_capability robot1 PutObject)
+ (has_capability robot1 DropHandObject)
+ (has_capability robot1 ThrowObject)
+ (has_capability robot1 PushObject)
+ (has_capability robot1 PullObject)
+)
+```
+
+======================================================================
+STAGE 4_reach - raw model output
+======================================================================
+(:init
+ (has_location Apple_1 location_100)
+ (has_location Bowl_1 location_92)
+ (has_location Cabinet_1 location_101)
+ (has_location Cabinet_2 location_101)
+ (has_location Cabinet_3 location_100)
+ (has_location Cabinet_4 location_89)
+ (has_location Cabinet_5 location_91)
+ (has_location Cabinet_6 location_80)
+ (has_location Cabinet_7 location_100)
+ (has_location Cabinet_8 location_91)
+ (has_location Cabinet_9 location_91)
+ (has_location Cabinet_10 location_44)
+ (has_location Cabinet_11 location_89)
+ (has_location CoffeeMachine_1 location_100)
+ (has_location CounterTop_1 location_100)
+ (has_location CounterTop_2 location_92)
+ (has_location Cup_1 location_100)
+ (has_location DiningTable_1 location_108)
+ (has_location DishSponge_1 location_44)
+ (has_location Drawer_1 location_92)
+ (has_location Drawer_2 location_100)
+ (has_location Drawer_3 location_100)
+ (has_location Egg_1 location_104)
+ (has_location Faucet_1 location_61)
+ (has_location Floor_1 location_3)
+ (has_location Fork_1 location_100)
+ (has_location Fridge_1 location_98)
+ (has_location GarbageBag_1 location_106)
+ (has_location GarbageCan_1 location_60)
+ (has_location Kettle_1 location_100)
+ (has_location Mug_1 location_100)
+ (has_location Pan_1 location_89)
+ (has_location PepperShaker_1 location_103)
+ (has_location Plate_1 location_100)
+ (has_location Pot_1 location_91)
+ (has_location Potato_1 location_103)
+ (has_location SaltShaker_1 location_67)
+ (has_location Sink_1 location_61)
+ (has_location SinkBasin_1 location_61)
+ (has_location SoapBottle_1 location_77)
+ (has_location Spatula_1 location_80)
+ (has_location Spoon_1 location_91)
+ (has_location Stool_1 location_17)
+ (has_location StoveBurner_1 location_91)
+ (has_location StoveBurner_2 location_91)
+ (has_location StoveBurner_3 location_80)
+ (has_location StoveBurner_4 location_80)
+ (has_location StoveKnob_1 location_91)
+ (has_location StoveKnob_2 location_80)
+ (has_location StoveKnob_3 location_91)
+ (has_location StoveKnob_4 location_80)
+ (has_location Toaster_1 location_89)
+ (has_location Tomato_1 location_89)
+ (has_location Window_1 location_112)
+ (has_location WineBottle_1 location_100)
+ (has_location robot1 location_0)
+)
+
+======================================================================
+STAGE 5_pddl - raw model output
+======================================================================
+```pddl
+(define (problem kitchen_cleaning)
+  (:domain robot3)
+  (:objects
+    robot1 - robot
+    Apple_1 Bowl_1 Cabinet_1 Cabinet_2 Cabinet_3 Cabinet_4 Cabinet_5 Cabinet_6 Cabinet_7 Cabinet_8 Cabinet_9 Cabinet_10 Cabinet_11 CoffeeMachine_1 CounterTop_1 CounterTop_2 Cup_1 DiningTable_1 DishSponge_1 Drawer_1 Drawer_2 Drawer_3 Egg_1 Faucet_1 Floor_1 Fork_1 Fridge_1 GarbageBag_1 GarbageCan_1 Kettle_1 Mug_1 Pan_1 PepperShaker_1 Plate_1 Pot_1 Potato_1 SaltShaker_1 Sink_1 SinkBasin_1 SoapBottle_1 Spatula_1 Spoon_1 Stool_1 StoveBurner_1 StoveBurner_2 StoveBurner_3 StoveBurner_4 StoveKnob_1 StoveKnob_2 StoveKnob_3 StoveKnob_4 Toaster_1 Tomato_1 WineBottle_1 - object
+    location_100 location_92 location_101 location_89 location_91 location_80 location_106 location_60 location_61 location_3 location_108 location_44 location_77 location_112
+  )
+  (:init
+    (at robot1 location_0)
+    (at-location Apple_1 location_100)
+    (at-location Bowl_1 location_92)
+    (at-location Cabinet_1 location_101)
+    (at-location Cabinet_2 location_101)
+    (at-location Cabinet_3 location_100)
+    (at-location Cabinet_4 location_89)
+    (at-location Cabinet_5 location_91)
+    (at-location Cabinet_6 location_80)
+    (at-location Cabinet_7 location_100)
+    (at-location Cabinet_8 location_91)
+    (at-location Cabinet_9 location_91)
+    (at-location Cabinet_10 location_44)
+    (at-location Cabinet_11 location_89)
+    (at-location CoffeeMachine_1 location_100)
+    (at-location CounterTop_1 location_100)
+    (at-location CounterTop_2 location_92)
+    (at-location Cup_1 location_100)
+    (at-location DiningTable_1 location_108)
+    (at-location DishSponge_1 location_44)
+    (at-location Drawer_1 location_92)
+    (at-location Drawer_2 location_100)
+    (at-location Drawer_3 location_100)
+    (at-location Egg_1 location_104)
+    (at-location Faucet_1 location_61)
+    (at-location Floor_1 location_3)
+    (at-location Fork_1 location_100)
+    (at-location Fridge_1 location_98)
+    (at-location GarbageBag_1 location_106)
+    (at-location GarbageCan_1 location_60)
+    (at-location Kettle_1 location_100)
+    (at-location Mug_1 location_100)
+    (at-location Pan_1 location_89)
+    (at-location PepperShaker_1 location_103)
+    (at-location Plate_1 location_100)
+    (at-location Pot_1 location_91)
+    (at-location Potato_1 location_103)
+    (at-location SaltShaker_1 location_67)
+    (at-location Sink_1 location_61)
+    (at-location SinkBasin_1 location_61)
+    (at-location SoapBottle_1 location_77)
+    (at-location Spatula_1 location_80)
+    (at-location Spoon_1 location_91)
+    (at-location Stool_1 location_17)
+    (at-location StoveBurner_1 location_91)
+    (at-location StoveBurner_2 location_91)
+    (at-location StoveBurner_3 location_80)
+    (at-location StoveBurner_4 location_80)
+    (at-location StoveKnob_1 location_91)
+    (at-location StoveKnob_2 location_80)
+    (at-location StoveKnob_3 location_91)
+    (at-location StoveKnob_4 location_80)
+    (at-location Toaster_1 location_89)
+    (at-location Tomato_1 location_89)
+    (at-location Window_1 location_112)
+    (at-location WineBottle_1 location_100)
+  )
+  (:goal
+    (and
+      (at-location Apple_1 Fridge_1)
+      (switch-off LightSwitch_1)
+    )
+  )
+)
+```
+
+======================================================================
+GENERATED PROBLEM PDDL
+======================================================================
+(define (problem kitchen_cleaning)
+  (:domain robot3)
+  (:objects
+    robot1 - robot
+    Apple_1 Bowl_1 Cabinet_1 Cabinet_2 Cabinet_3 Cabinet_4 Cabinet_5 Cabinet_6 Cabinet_7 Cabinet_8 Cabinet_9 Cabinet_10 Cabinet_11 CoffeeMachine_1 CounterTop_1 CounterTop_2 Cup_1 DiningTable_1 DishSponge_1 Drawer_1 Drawer_2 Drawer_3 Egg_1 Faucet_1 Floor_1 Fork_1 Fridge_1 GarbageBag_1 GarbageCan_1 Kettle_1 Mug_1 Pan_1 PepperShaker_1 Plate_1 Pot_1 Potato_1 SaltShaker_1 Sink_1 SinkBasin_1 SoapBottle_1 Spatula_1 Spoon_1 Stool_1 StoveBurner_1 StoveBurner_2 StoveBurner_3 StoveBurner_4 StoveKnob_1 StoveKnob_2 StoveKnob_3 StoveKnob_4 Toaster_1 Tomato_1 WineBottle_1 - object
+    location_100 location_92 location_101 location_89 location_91 location_80 location_106 location_60 location_61 location_3 location_108 location_44 location_77 location_112
+  )
+  (:init
+    (at robot1 location_0)
+    (at-location Apple_1 location_100)
+    (at-location Bowl_1 location_92)
+    (at-location Cabinet_1 location_101)
+    (at-location Cabinet_2 location_101)
+    (at-location Cabinet_3 location_100)
+    (at-location Cabinet_4 location_89)
+    (at-location Cabinet_5 location_91)
+    (at-location Cabinet_6 location_80)
+    (at-location Cabinet_7 location_100)
+    (at-location Cabinet_8 location_91)
+    (at-location Cabinet_9 location_91)
+    (at-location Cabinet_10 location_44)
+    (at-location Cabinet_11 location_89)
+    (at-location CoffeeMachine_1 location_100)
+    (at-location CounterTop_1 location_100)
+    (at-location CounterTop_2 location_92)
+    (at-location Cup_1 location_100)
+    (at-location DiningTable_1 location_108)
+    (at-location DishSponge_1 location_44)
+    (at-location Drawer_1 location_92)
+    (at-location Drawer_2 location_100)
+    (at-location Drawer_3 location_100)
+    (at-location Egg_1 location_104)
+    (at-location Faucet_1 location_61)
+    (at-location Floor_1 location_3)
+    (at-location Fork_1 location_100)
+    (at-location Fridge_1 location_98)
+    (at-location GarbageBag_1 location_106)
+    (at-location GarbageCan_1 location_60)
+    (at-location Kettle_1 location_100)
+    (at-location Mug_1 location_100)
+    (at-location Pan_1 location_89)
+    (at-location PepperShaker_1 location_103)
+    (at-location Plate_1 location_100)
+    (at-location Pot_1 location_91)
+    (at-location Potato_1 location_103)
+    (at-location SaltShaker_1 location_67)
+    (at-location Sink_1 location_61)
+    (at-location SinkBasin_1 location_61)
+    (at-location SoapBottle_1 location_77)
+    (at-location Spatula_1 location_80)
+    (at-location Spoon_1 location_91)
+    (at-location Stool_1 location_17)
+    (at-location StoveBurner_1 location_91)
+    (at-location StoveBurner_2 location_91)
+    (at-location StoveBurner_3 location_80)
+    (at-location StoveBurner_4 location_80)
+    (at-location StoveKnob_1 location_91)
+    (at-location StoveKnob_2 location_80)
+    (at-location StoveKnob_3 location_91)
+    (at-location StoveKnob_4 location_80)
+    (at-location Toaster_1 location_89)
+    (at-location Tomato_1 location_89)
+    (at-location Window_1 location_112)
+    (at-location WineBottle_1 location_100)
+  )
+  (:goal
+    (and
+      (at-location Apple_1 Fridge_1)
+      (switch-off LightSwitch_1)
+    )
+  )
+)
+
+======================================================================
+FAST DOWNWARD PLAN OUTPUT (model output as-is)
+======================================================================
+INFO     planner time limit: None
+INFO     planner memory limit: None
+
+INFO     Running translator.
+INFO     translator stdin: None
+INFO     translator time limit: None
+INFO     translator memory limit: None
+INFO     translator command line string: /scratch/users/ntu/mehr0004/pixi-envs/lamma-p-8228362785854327053/envs/default/bin/python3 /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/translate/translate.py resources/robot3_guarded.pddl resources/kglamp_problems/floorplan15_problem.pddl --sas-file output.sas
+Parsing...
+Parsing: [0.010s CPU, 0.027s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.016s wall-clock]
+Preparing model... [0.000s CPU, 0.001s wall-clock]
+Generated 40 rules.
+Computing model... [0.110s CPU, 0.108s wall-clock]
+14249 relevant atoms
+14055 auxiliary atoms
+28304 final queue length
+48500 total queue pushes
+Completing instantiation... [0.170s CPU, 0.168s wall-clock]
+Instantiating: [0.280s CPU, 0.295s wall-clock]
+No relaxed solution! Generating unsolvable task...
+Translator variables: 1
+Translator derived variables: 0
+Translator facts: 2
+Translator goal facts: 1
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 0
+Translator axioms: 0
+Translator task size: 4
+Translator peak memory: 68096 KB
+Writing output... [0.000s CPU, 0.003s wall-clock]
+Done! [0.300s CPU, 0.331s wall-clock]
+translate exit code: 0
+
+INFO     Running search (release).
+INFO     search stdin: output.sas
+INFO     search time limit: None
+INFO     search memory limit: None
+INFO     search command line string: /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/downward --search 'astar(lmcut())' --internal-plan-file resources/kglamp_problems/floorplan15_problem.plan < output.sas
+[t=0.000908s, 54008 KB] reading input...
+[t=0.001061s, 54008 KB] done reading input!
+[t=0.002794s, 54404 KB] Initializing landmark cut heuristic...
+[t=0.002889s, 54404 KB] Building successor generator...done!
+[t=0.002962s, 54404 KB] peak memory difference for successor generator creation: 0 KB
+[t=0.002979s, 54404 KB] time for successor generation creation: 0.000017s
+[t=0.003003s, 54404 KB] Variables: 1
+[t=0.003022s, 54404 KB] FactPairs: 2
+[t=0.003038s, 54404 KB] Bytes per state: 4
+[t=0.003077s, 54404 KB] Conducting best first search with reopening closed nodes, (real) bound = 2147483647
+[t=0.003126s, 54404 KB] Initial state is a dead end.
+[t=0.003148s, 54404 KB] Initial heuristic value for lmcut: infinity
+[t=0.003165s, 54404 KB] pruning method: none
+[t=0.003182s, 54404 KB] Completely explored state space -- no solution!
+[t=0.003198s, 54404 KB] Actual search time: 0.000031s
+[t=0.003215s, 54404 KB] Expanded 0 state(s).
+[t=0.003215s, 54404 KB] Reopened 0 state(s).
+[t=0.003215s, 54404 KB] Evaluated 1 state(s).
+[t=0.003215s, 54404 KB] Evaluations: 1
+[t=0.003215s, 54404 KB] Generated 0 state(s).
+[t=0.003215s, 54404 KB] Dead ends: 0 state(s).
+[t=0.003215s, 54404 KB] Number of registered states: 1
+[t=0.003215s, 54404 KB] Int hash set load factor: 1/1 = 1.000000
+[t=0.003215s, 54404 KB] Int hash set resizes: 0
+[t=0.003215s, 54404 KB] Search time: 0.000148s
+[t=0.003215s, 54404 KB] Total time: 0.003215s
+Search stopped without finding a solution.
+Peak memory: 54404 KB
+Remove intermediate file output.sas
+search exit code: 12
+
+Driver aborting after search
+INFO     Planner time: 0.43s
+
+
+======================================================================
+SYNTAX REPAIR (24 change(s); affordances / goal / fact values untouched)
+======================================================================
+  - coerced type of location_100: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_92: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_101: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_89: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_91: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_80: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_106: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_60: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_61: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_3: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_108: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_44: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_77: 'None' -> 'object' (type not declared in the domain)
+  - coerced type of location_112: 'None' -> 'object' (type not declared in the domain)
+  - declared missing robot robot2
+  - declared missing robot robot3
+  - declared undeclared symbol lightswitch_1 as object
+  - declared undeclared symbol location_0 as object
+  - declared undeclared symbol location_103 as object
+  - declared undeclared symbol location_104 as object
+  - declared undeclared symbol location_17 as object
+  - declared undeclared symbol location_67 as object
+  - declared undeclared symbol location_98 as object
+  - declared undeclared symbol window_1 as object
+
+======================================================================
+FAST DOWNWARD PLAN OUTPUT (after syntax repair)
+======================================================================
+INFO     planner time limit: None
+INFO     planner memory limit: None
+
+INFO     Running translator.
+INFO     translator stdin: None
+INFO     translator time limit: None
+INFO     translator memory limit: None
+INFO     translator command line string: /scratch/users/ntu/mehr0004/pixi-envs/lamma-p-8228362785854327053/envs/default/bin/python3 /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/translate/translate.py resources/robot3_guarded.pddl runs_4/FP15_t0_easy_20260913-130607/problem_repaired.pddl --sas-file output.sas
+Parsing...
+Parsing: [0.000s CPU, 0.003s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.002s wall-clock]
+Preparing model... [0.000s CPU, 0.001s wall-clock]
+Generated 40 rules.
+Computing model... [0.220s CPU, 0.226s wall-clock]
+45646 relevant atoms
+19925 auxiliary atoms
+65571 final queue length
+119230 total queue pushes
+Completing instantiation... [0.830s CPU, 0.827s wall-clock]
+Instantiating: [1.060s CPU, 1.062s wall-clock]
+Computing fact groups...
+Finding invariants...
+25 initial candidates
+Finding invariants: [0.000s CPU, 0.003s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.001s wall-clock]
+Choosing groups...
+5118 uncovered facts
+Choosing groups: [0.000s CPU, 0.001s wall-clock]
+Building translation key... [0.010s CPU, 0.010s wall-clock]
+Computing fact groups: [0.040s CPU, 0.041s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.003s wall-clock]
+Building dictionary for full mutex groups... [0.010s CPU, 0.002s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.002s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Translator axioms removed by simplifying: 0
+Processing axioms: [0.040s CPU, 0.043s wall-clock]
+Translating task: [0.920s CPU, 0.931s wall-clock]
+31995 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+110 propositions removed
+Detecting unreachable propositions: [0.520s CPU, 0.520s wall-clock]
+Reordering and filtering variables...
+319 of 5063 variables necessary.
+0 of 0 mutex groups necessary.
+717 of 40290 operators necessary.
+0 of 0 axiom rules necessary.
+Reordering and filtering variables: [0.150s CPU, 0.146s wall-clock]
+Translator variables: 319
+Translator derived variables: 0
+Translator facts: 638
+Translator goal facts: 2
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 717
+Translator axioms: 0
+Translator task size: 22064
+Translator peak memory: 188672 KB
+Writing output... [0.020s CPU, 0.020s wall-clock]
+Done! [2.750s CPU, 2.765s wall-clock]
+translate exit code: 0
+
+INFO     Running search (release).
+INFO     search stdin: output.sas
+INFO     search time limit: None
+INFO     search memory limit: None
+INFO     search command line string: /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/downward --search 'astar(lmcut())' --internal-plan-file runs_4/FP15_t0_easy_20260913-130607/problem_repaired.plan < output.sas
+[t=0.000328s, 54008 KB] reading input...
+[t=0.009367s, 54932 KB] done reading input!
+[t=0.011271s, 55620 KB] Initializing landmark cut heuristic...
+[t=0.011348s, 55620 KB] Building successor generator...done!
+[t=0.011631s, 55752 KB] peak memory difference for successor generator creation: 132 KB
+[t=0.011652s, 55752 KB] time for successor generation creation: 0.000208s
+[t=0.011677s, 55752 KB] Variables: 319
+[t=0.011699s, 55752 KB] FactPairs: 638
+[t=0.011719s, 55752 KB] Bytes per state: 40
+[t=0.011751s, 55752 KB] Conducting best first search with reopening closed nodes, (real) bound = 2147483647
+[t=0.012016s, 55752 KB] New best heuristic value for lmcut: 6
+[t=0.012041s, 55752 KB] g=0, 1 evaluated, 0 expanded
+[t=0.012061s, 55752 KB] f = 6, 1 evaluated, 0 expanded
+[t=0.012083s, 55752 KB] Initial heuristic value for lmcut: 6
+[t=0.012106s, 55752 KB] pruning method: none
+[t=0.017245s, 55752 KB] New best heuristic value for lmcut: 5
+[t=0.017268s, 55752 KB] g=1, 28 evaluated, 1 expanded
+[t=0.060768s, 55752 KB] New best heuristic value for lmcut: 4
+[t=0.060800s, 55752 KB] g=2, 268 evaluated, 2 expanded
+[t=0.103749s, 55752 KB] New best heuristic value for lmcut: 3
+[t=0.103779s, 55752 KB] g=3, 552 evaluated, 3 expanded
+[t=0.294227s, 55904 KB] New best heuristic value for lmcut: 2
+[t=0.294256s, 55904 KB] g=4, 1984 evaluated, 11 expanded
+[t=0.323305s, 55904 KB] New best heuristic value for lmcut: 1
+[t=0.323333s, 55904 KB] g=5, 2273 evaluated, 12 expanded
+[t=0.338418s, 55904 KB] New best heuristic value for lmcut: 0
+[t=0.338444s, 55904 KB] g=6, 2511 evaluated, 13 expanded
+[t=0.338463s, 55904 KB] Solution found!
+[t=0.338480s, 55904 KB] Actual search time: 0.326369s
+gotoobject robot1 lightswitch_1 (1)
+gotoobject robot2 location_100 (1)
+pickupobject robot2 apple_1 location_100 (1)
+gotoobject robot2 fridge_1 (1)
+putobject robot2 apple_1 fridge_1 (1)
+switchoff robot1 lightswitch_1 (1)
+[t=0.338500s, 55904 KB] Plan length: 6 step(s).
+[t=0.338500s, 55904 KB] Plan cost: 6
+[t=0.338500s, 55904 KB] Expanded 14 state(s).
+[t=0.338500s, 55904 KB] Reopened 0 state(s).
+[t=0.338500s, 55904 KB] Evaluated 2511 state(s).
+[t=0.338500s, 55904 KB] Evaluations: 2511
+[t=0.338500s, 55904 KB] Generated 3108 state(s).
+[t=0.338500s, 55904 KB] Dead ends: 0 state(s).
+[t=0.338500s, 55904 KB] Expanded until last jump: 0 state(s).
+[t=0.338500s, 55904 KB] Reopened until last jump: 0 state(s).
+[t=0.338500s, 55904 KB] Evaluated until last jump: 1 state(s).
+[t=0.338500s, 55904 KB] Generated until last jump: 0 state(s).
+[t=0.338500s, 55904 KB] Number of registered states: 2511
+[t=0.338500s, 55904 KB] Int hash set load factor: 2511/4096 = 0.613037
+[t=0.338500s, 55904 KB] Int hash set resizes: 12
+[t=0.338500s, 55904 KB] Search time: 0.326752s
+[t=0.338500s, 55904 KB] Total time: 0.338500s
+Solution found.
+Peak memory: 55904 KB
+Remove intermediate file output.sas
+search exit code: 0
+
+INFO     Planner time: 3.19s
+
+
+======================================================================
+FINDINGS
+======================================================================
+======================================================================
+HALLUCINATION REPORT  -  33 finding(s)
+======================================================================
+
+DROPPED_CRITICAL_FACT  (16)
+  [:init] cabinet_2
+      -> KG says cabinet_2 is closed, but no (object-close cabinet_2) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_9
+      -> KG says cabinet_9 is closed, but no (object-close cabinet_9) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_6
+      -> KG says cabinet_6 is closed, but no (object-close cabinet_6) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_8
+      -> KG says cabinet_8 is closed, but no (object-close cabinet_8) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] fridge_1
+      -> KG says fridge_1 is closed, but no (object-close fridge_1) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_11
+      -> KG says cabinet_11 is closed, but no (object-close cabinet_11) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_4
+      -> KG says cabinet_4 is closed, but no (object-close cabinet_4) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] drawer_1
+      -> KG says drawer_1 is closed, but no (object-close drawer_1) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] drawer_3
+      -> KG says drawer_3 is closed, but no (object-close drawer_3) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] kettle_1
+      -> KG says kettle_1 is closed, but no (object-close kettle_1) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_7
+      -> KG says cabinet_7 is closed, but no (object-close cabinet_7) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_10
+      -> KG says cabinet_10 is closed, but no (object-close cabinet_10) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] drawer_2
+      -> KG says drawer_2 is closed, but no (object-close drawer_2) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_5
+      -> KG says cabinet_5 is closed, but no (object-close cabinet_5) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_1
+      -> KG says cabinet_1 is closed, but no (object-close cabinet_1) fact was emitted - pickup/put through it would be wrongly allowed
+  [:init] cabinet_3
+      -> KG says cabinet_3 is closed, but no (object-close cabinet_3) fact was emitted - pickup/put through it would be wrongly allowed
+
+UNDECLARED_OBJECT  (8)
+  [:init] location_0
+      -> used in :init but never declared under :objects - the planner cannot parse this problem
+  [:init] location_104
+      -> used in :init but never declared under :objects - the planner cannot parse this problem
+  [:init] location_98
+      -> used in :init but never declared under :objects - the planner cannot parse this problem
+  [:init] location_103
+      -> used in :init but never declared under :objects - the planner cannot parse this problem
+  [:init] location_67
+      -> used in :init but never declared under :objects - the planner cannot parse this problem
+  [:init] location_17
+      -> used in :init but never declared under :objects - the planner cannot parse this problem
+  [:init] window_1
+      -> used in :init but never declared under :objects - the planner cannot parse this problem
+  [:goal] lightswitch_1
+      -> used in :goal but never declared under :objects - the planner cannot parse this problem
+
+MISSING_AFFORDANCE  (4)
+  [:init] (pickupable apple_1)
+      -> apple_1 appears in the goal and the KG says it is pickupable, but (pickupable apple_1) was not emitted - actions requiring that affordance are inapplicable to it
+  [:init] (sliceable apple_1)
+      -> apple_1 appears in the goal and the KG says it is sliceable, but (sliceable apple_1) was not emitted - actions requiring that affordance are inapplicable to it
+  [:init] (openable fridge_1)
+      -> fridge_1 appears in the goal and the KG says it is openable, but (openable fridge_1) was not emitted - actions requiring that affordance are inapplicable to it
+  [:init] (toggleable lightswitch_1)
+      -> lightswitch_1 appears in the goal and the KG says it is toggleable, but (toggleable lightswitch_1) was not emitted - actions requiring that affordance are inapplicable to it
+
+CONTRADICTION  (2)
+  [2_relation] (inside apple_1 fridge_1)
+      -> KG places apple_1 on/in countertop_1, location_100, not fridge_1; fridge_1 actually holds egg_1
+  [2_relation] (on potato_1 countertop_1)
+      -> KG places potato_1 on/in diningtable_1, location_103, not countertop_1; countertop_1 actually holds apple_1, coffeemachine_1, dishsponge_1, mug_1, pan_1, plate_1, soapbottle_1, toaster_1, tomato_1, winebottle_1
+
+MISSING_ROBOT  (2)
+  [:objects] robot2
+      -> robot2 is available for this task but was never declared - the planner cannot assign any action to it
+  [:objects] robot3
+      -> robot3 is available for this task but was never declared - the planner cannot assign any action to it
+
+UNSOLVABLE  (1)
+  [planner] no plan
+      -> the problem parses but no plan exists - the initial state or goal is semantically wrong (e.g. a required affordance was omitted, making the needed action inapplicable)

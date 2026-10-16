@@ -46,7 +46,7 @@ echo "=== starting vLLM ==="
 # repetition_penalty 1.05). Do NOT pass --generation-config vllm: it strips
 # Qwen's repetition penalty and greedy decoding then loops.
 pixi run -e serve vllm serve "$MODEL" \
-    --port "$PORT" --max-model-len 8192 --gpu-memory-utilization 0.90 \
+    --port "$PORT" --max-model-len 32768 --gpu-memory-utilization 0.90 \
     > logs/vllm_local.log 2>&1 &
 SERVER_PID=$!
 trap 'echo "--- stopping vLLM ---"; kill $SERVER_PID 2>/dev/null || true' EXIT INT TERM

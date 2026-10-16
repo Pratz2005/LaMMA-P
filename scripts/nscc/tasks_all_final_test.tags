@@ -1,0 +1,74 @@
+# floor|index|dataset|tier|rules|task
+15|0|FloorPlan15.json|easy|R1_open_before_put,R4_toggle_needed|Put apple in fridge and switch off the light
+15|0|FloorPlan15pddl.json|complex|R1_open_before_put,R4_toggle_needed|Put apple in fridge and switch off the light
+15|1|FloorPlan15pddl.json|complex|R4_toggle_needed|Slice the lettuce, trash the mug and switch off the light
+15|2|FloorPlan15pddl.json|complex|R1_open_before_put|Cook the potato and put it in the Fridge
+15|3|FloorPlan15pddl.json|complex|R2_open_before_pickup|Microwave a plate containing a egg and a tomato
+15|4|FloorPlan15pddl.json|complex|-|put mug in the coffee machine and switch on the coffee machine
+15|5|FloorPlan15pddl.json|complex|R1_open_before_put|slice the lettuce and tomoate, then store in fridge
+15|6|FloorPlan15pddl.json|complex|-|Slice the potato, clean the plate, and put potato on the plate
+15|7|FloorPlan15pddl.json|complex|R1_open_before_put|Put apple and lettuce in the Fridge
+15|8|FloorPlan15pddl.json|complex|R1_open_before_put|Rotate 3 times between two veges
+15|9|FloorPlan15pddl.json|complex|R1_open_before_put|slice the potato, then put in fridge
+15|0|FloorPlan15vague.json|vague|R1_open_before_put|Prepare ingrediants for cooking a sandwich tomorrow
+15|1|FloorPlan15vague.json|vague|R1_open_before_put|Put a plate of food into the heating appliance
+15|2|FloorPlan15vague.json|vague|R1_open_before_put,R4_toggle_needed|Secure the kitchen for the night
+15|3|FloorPlan15vague.json|vague|R4_toggle_needed|Execute a deep clean and waste disposal cycle
+15|4|FloorPlan15vague.json|vague|R1_open_before_put|Process and archive nutritional supplies
+15|5|FloorPlan15vague.json|vague|R2_open_before_pickup|Initialize multi-component thermal treatment
+15|6|FloorPlan15vague.json|vague|-|Simulate a morning caffeine routine
+15|7|FloorPlan15vague.json|vague|R1_open_before_put|Perform bulk vegetable decomposition
+15|8|FloorPlan15vague.json|vague|-|Sanitize and organize carbohydrate assets
+15|9|FloorPlan15vague.json|vague|R1_open_before_put|Consolidate organic inventory
+15|10|FloorPlan15vague.json|vague|R1_open_before_put|Execute repetitive vegetable spatial rotation
+15|11|FloorPlan15vague.json|vague|R1_open_before_put|Demonstrate a meal prep workflow
+15|12|FloorPlan15vague.json|vague|R1_open_before_put|Stage ingredients for future consumption
+15|13|FloorPlan15vague.json|vague|R1_open_before_put|Transfer payload to heat-induction chamber
+201|0|FloorPlan201.json|easy|R1_open_before_put|Put the watch and Keychain inside the drawer
+201|1|FloorPlan201.json|easy|-|Put the Box on the sofa and the bowl in the box
+201|2|FloorPlan201.json|easy|R3_open_goal|Put the vase on the dining table and open the book
+201|3|FloorPlan201.json|easy|R3_open_goal,R4_toggle_needed|Open the Laptop and Turn it ON.
+201|0|FloorPlan201pddl.json|complex|R1_open_before_put|Put the watch and Keychain inside the drawer, and turn on TV
+209|0|FloorPlan209.json|easy|R4_toggle_needed|Break a vase and Turn on TV
+209|1|FloorPlan209.json|easy|-|Put the watch in the box and watering can on the coffeetable
+209|2|FloorPlan209.json|easy|-|Trash the book and newspaper
+209|3|FloorPlan209.json|easy|-|Put the vase on the sofa
+209|0|FloorPlan209pddlvague.json|vague|R4_toggle_needed|Execute a chaotic living room reset
+209|1|FloorPlan209pddlvague.json|vague|-|Organize personal inventory and garden tools
+209|2|FloorPlan209pddlvague.json|vague|-|De-clutter the reading area
+209|3|FloorPlan209pddlvague.json|vague|-|Stage the furniture for a home staging photoshoot
+21|0|FloorPlan21.json|easy|R1_open_before_put|Chill the apple and wash the knife
+21|1|FloorPlan21.json|easy|R1_open_before_put|Put two vegetables in the fridge parallely
+21|2|FloorPlan21.json|easy|-|Wash the fork and put it in the bowl
+21|3|FloorPlan21.json|easy|-|Toast a slice of the breadloaf
+21|4|FloorPlan21.json|easy|-|Slice apple and throw it in the trash
+21|0|FloorPlan21pddl.json|complex|R1_open_before_put|Slice lettuce and put in fridge
+21|1|FloorPlan21pddl.json|complex|-|Slice apple and lettuce parallelly, and throw them in the trash
+21|2|FloorPlan21pddl.json|complex|-|Wash the fork and put it in the bowl, and turn off the light
+21|3|FloorPlan21pddl.json|complex|-|Wash the knife and put it in the bowl, and slice lettuce
+303|0|FloorPlan303.json|easy|-|Put the baseballbat and tennis racket on the bed
+303|1|FloorPlan303.json|easy|-|Put the book in the box and Turn on the mobile phone
+303|2|FloorPlan303.json|easy|-|Break the Cellphone and Close the blinds
+303|3|FloorPlan303.json|easy|-|Place the laptop on the bed
+303|0|FloorPlan303pddl.json|complex|-|Parallely put pen and book on the bed
+303|1|FloorPlan303pddl.json|complex|-|Break all High-tech electronics
+303|2|FloorPlan303pddl.json|complex|R4_toggle_needed|Put the baseballbat and tennis racket on the bed and turn off the light
+303|3|FloorPlan303pddl.json|complex|R4_toggle_needed|Put the book in the box, turn on the mobile phone, and clear the desk
+303|4|FloorPlan303pddl.json|complex|-|Break the Cellphone, close the blinds, and put the newspaper in the garbage can
+303|5|FloorPlan303pddl.json|complex|-|Place the laptop on the bed and put the pen on the bed
+303|6|FloorPlan303pddl.json|complex|R3_open_goal|Put the pen and book on the bed and open the blinds
+303|7|FloorPlan303pddl.json|complex|-|Break the Cellphone and the Television and clear the coffee table
+303|0|FloorPlan303pddlvague.json|vague|R3_open_goal|Demonstrate the  living status of working software engineer
+303|1|FloorPlan303pddlvague.json|vague|-|Break all the high tech electronics
+303|2|FloorPlan303pddlvague.json|vague|-|Place all high tech electronics on the bed
+303|3|FloorPlan303pddlvague.json|vague|-|Parallely gather up 3 school supplies on the bed
+414|0|FloorPlan414.json|easy|-|Place the Bar of soap in the sink first and then place dishsponge in the sink
+414|1|FloorPlan414.json|easy|R4_toggle_needed|Put plunger in cabinet and Turn off the light
+414|2|FloorPlan414.json|easy|R4_toggle_needed|Turn on Sink faucet and put toilet paper in the trash
+414|0|FloorPlan414pddlvague.json|vague|R4_toggle_needed|prepare hot water for shower and put toilet paper in the trash
+6|0|FloorPlan6.json|easy|-|Slice the tomato
+6|1|FloorPlan6.json|easy|-|Wash the lettuce and place lettuce on the Countertop
+6|2|FloorPlan6.json|easy|-|Throw the Spatula in the trash
+6|0|FloorPlan6pddl.json|complex|-|Wash the lettuce and place lettuce, tomato on the Countertop
+6|1|FloorPlan6pddl.json|complex|-|Throw the Spatula and knife in the trash
+6|2|FloorPlan6pddl.json|complex|R1_open_before_put|Put a plate of slice lettuce into the microwave

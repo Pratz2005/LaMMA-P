@@ -1,0 +1,85 @@
+## 1. Contextual Example
+Relations describe the physical hierarchy of the scene (containers and surfaces).
+- Containment: (inside ?obj ?container) — the object is enclosed inside the container.
+- Support: (on ?obj ?surface) — the object rests on top of the surface.
+
+Example:
+(inside ObjectA_1 ReceptacleA_1)
+(on ObjectB_1 SurfaceA_1)
+
+## 2. Scenario
+Goal: Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Watch_1 Drawer_1)
+(at-location KeyChain_1 Drawer_1)
+```
+Task: Put the watch and Keychain inside the drawer
+
+## 3. Spatial Data
+Scene Tuples:
+(on Plate_1 Chair_1)
+(on DiningTable_1 Chair_1)
+(on DiningTable_1 Chair_2)
+(on Book_1 Chair_2)
+(on Laptop_1 Chair_3)
+(on DiningTable_1 Chair_3)
+(on Laptop_1 Chair_4)
+(on CreditCard_1 Chair_4)
+(on DiningTable_1 Chair_4)
+(on DiningTable_1 Chair_5)
+(on Newspaper_1 Chair_5)
+(on DiningTable_1 Chair_6)
+(on Pencil_1 Chair_6)
+(on Pen_1 Chair_6)
+(on Bowl_1 CoffeeTable_1)
+(on Laptop_1 DiningTable_1)
+(on CreditCard_1 DiningTable_1)
+(on Plate_1 DiningTable_1)
+(on Book_1 DiningTable_1)
+(on Newspaper_1 DiningTable_1)
+(on Pencil_1 DiningTable_1)
+(on Pen_1 DiningTable_1)
+(on Curtains_1 Floor_1)
+(on ArmChair_2 Floor_1)
+(on TVStand_1 Floor_1)
+(on Shelf_2 Floor_1)
+(on CoffeeTable_1 Floor_1)
+(on Shelf_3 Floor_1)
+(on SideTable_1 Floor_1)
+(on Sofa_1 Floor_1)
+(on Box_1 Floor_1)
+(on ArmChair_1 Floor_1)
+(on Chair_3 Floor_1)
+(on DiningTable_1 Floor_1)
+(on Chair_4 Floor_1)
+(on Chair_1 Floor_1)
+(on FloorLamp_1 Floor_1)
+(on Chair_2 Floor_1)
+(on Chair_5 Floor_1)
+(on SideTable_3 Floor_1)
+(on SideTable_2 Floor_1)
+(on GarbageCan_1 Floor_1)
+(on Chair_6 Floor_1)
+(on DeskLamp_1 SideTable_1)
+(on Vase_1 SideTable_1)
+(on KeyChain_1 SideTable_1)
+(on HousePlant_1 SideTable_2)
+(on Statue_1 SideTable_3)
+(on Watch_1 SideTable_3)
+(on RemoteControl_1 SideTable_3)
+(on Pillow_1 Sofa_1)
+(on Television_1 TVStand_1)
+(on TissueBox_1 TVStand_1)
+
+## 4. Output Constraints
+Generate the relationship condition as a PDDL (:init) format.
+1. Relations: Only include relations of type "inside" (containment) or "on" (support).
+2. Relevance: Only include objects that are related to the Goal or Task. Ignore irrelevant background clutter.
+3. Source: Every tuple you output must appear verbatim in the Scene Tuples above. Copy it
+   unchanged - do not reword, re-case, merge or invent tuples. The example above uses
+   placeholder names that do not exist in this scene; never copy them into your answer.
+4. Time: the Scene Tuples describe the world BEFORE any robot has acted. The Goal is shown
+   only so you can judge which objects matter. Never emit a relation because the Goal
+   requires it - if the Goal says an object should end up in a container, and the Scene
+   Tuples place it somewhere else, report where the Scene Tuples place it.

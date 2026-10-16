@@ -1,0 +1,2 @@
+(openable fridge_1)
+(object-close fridge_1)

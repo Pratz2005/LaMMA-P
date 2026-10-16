@@ -1,0 +1,22 @@
+```pddl
+(:init
+ (inside Apple_1 Fridge_1)
+ (inside Kettle_1 Cabinet_8)
+ (inside Cup_1 Cabinet_9)
+ (on Mug_1 CoffeeMachine_1)
+ (on Plate_1 CounterTop_1)
+ (on WineBottle_1 CounterTop_1)
+ (on Mug_1 CounterTop_1)
+ (on Tomato_1 CounterTop_1)
+ (on Toaster_1 CounterTop_1)
+ (on Potato_1 CounterTop_1)
+ (on DishSponge_1 CounterTop_1)
+ (on SoapBottle_1 CounterTop_1)
+ (on Spatula_1 CounterTop_2)
+ (on Bowl_1 CounterTop_2)
+ (inside Egg_1 Fridge_1)
+ (on butterknife_1 SinkBasin_1)
+ (on Pot_1 StoveBurner_1)
+ (on Pot_1 StoveBurner_2)
+)
+```

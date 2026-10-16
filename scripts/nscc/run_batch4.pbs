@@ -1,0 +1,177 @@
+#!/bin/bash
+#PBS -N kg-runs4
+#PBS -P personal-mehr0004
+#PBS -q normal
+#PBS -l select=1:ngpus=1:ncpus=16:mem=64gb
+#PBS -l walltime=05:00:00
+#PBS -j oe
+#PBS -o logs/kg_runs4.log
+
+# runs_4: the whole pipeline, end to end, on EVERY MAT-THOR task.
+#
+#   KGLAMP (5 LLM stages -> PDDL)  ->  Fast Downward  ->  Safety-DAG check
+#     ->  LLM :init repair (one call)  ->  3 screening passes  ->  replan  ->  re-check
+#
+# Two differences from run_batch_mat2.pbs, both deliberate:
+#
+#   * the manifest is ALL 73 tasks of data/final_test, not the 38 a DAG rule can
+#     fire on. The other 35 are the negative control: the check is supposed to
+#     stay silent on them, and that only means something if they were run.
+#   * the repair seat holds the MODEL, not the deterministic injector. One call
+#     per violated task, no resampling, no fallback behind it - a reply that
+#     screening rejects is recorded as a failure and stays in the table.
+#
+# Resubmitting is safe: the sweep runs with --resume, so a job killed at
+# walltime does not pay for its finished model calls twice. Set SKIP_KGLAMP=1
+# to go straight to the sweep over an existing runs_4.
+
+set -u
+cd "$PBS_O_WORKDIR" || exit 1
+
+RUNS=runs_4
+TASKLOGS=logs/runs_4
+mkdir -p logs "$TASKLOGS" "$RUNS"
+LIVE="logs/live_runs4_${PBS_JOBID%%.*}.log"
+exec > >(tee "$LIVE") 2>&1
+echo "live log: $LIVE"
+echo "started : $(date)"
+
+export PATH="$HOME/.pixi/bin:$PATH"
+export HF_HOME=/scratch/users/ntu/mehr0004/hf-cache
+export HF_HUB_OFFLINE=1
+export VLLM_CACHE_ROOT=/scratch/users/ntu/mehr0004/vllm-cache
+export LD_LIBRARY_PATH=/app/apps/gcc/12.3.0-nscc/lib64:${LD_LIBRARY_PATH:-}
+
+# Earlier run trees are finished results - this batch must not write into them.
+export KGLAMP_RUNS_DIR="$RUNS"
+# The working-tree resources/robot3.pddl guards only fridges, which makes the
+# :init repair inert for drawers and cabinets. Pin the committed domain.
+export KGLAMP_DOMAIN=resources/robot3_guarded.pddl
+
+MODEL=Qwen/Qwen2-7B-Instruct
+PORT=8000
+MANIFEST=scripts/nscc/tasks_all_final_test.manifest
+TAGS=scripts/nscc/tasks_all_final_test.tags
+SERVER_LOG="logs/vllm_${PBS_JOBID%%.*}.log"
+FD_TIMEOUT=300          # FP201 t0 times out at 60s and solves at 300s
+
+echo "=================== node ==================="
+hostname; nvidia-smi || { echo "!! no GPU"; exit 1; }
+echo "manifest: $MANIFEST  ($(grep -cvE '^#|^$' "$MANIFEST") tasks)"
+
+# PBS hands out GPUs by UUID; vllm calls int() on CUDA_VISIBLE_DEVICES.
+if [[ "${CUDA_VISIBLE_DEVICES:-}" == GPU-* ]]; then
+    mapped=""
+    IFS=',' read -ra _u <<< "$CUDA_VISIBLE_DEVICES"
+    for u in "${_u[@]}"; do
+        u="$(echo "$u" | xargs)"
+        i=$(nvidia-smi --query-gpu=index,uuid --format=csv,noheader \
+            | awk -F',' -v u="$u" '{gsub(/ /,"",$1);gsub(/ /,"",$2)} $2==u{print $1}')
+        [ -z "$i" ] && { echo "!! cannot map $u"; exit 1; }
+        mapped="${mapped:+$mapped,}$i"
+    done
+    export CUDA_VISIBLE_DEVICES="$mapped"
+fi
+echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+
+# ---------------------------------------------------------------- scenes ----
+# All seven floor plans are already cached in resources/kg_fixtures; this only
+# catches the case where one has been deleted.
+echo; echo "=================== scene fixtures ==================="
+for icd in /usr/share/vulkan/icd.d/nvidia_icd.json /etc/vulkan/icd.d/nvidia_icd.json; do
+    [ -f "$icd" ] && { export VK_ICD_FILENAMES="$icd"; break; }
+done
+for FLOOR in $(grep -vE '^#|^$' "$MANIFEST" | cut -d'|' -f1 | tr -d ' ' | sort -un); do
+    FIX="resources/kg_fixtures/FloorPlan${FLOOR}_metadata.json"
+    if [ -f "$FIX" ]; then
+        echo "  FloorPlan${FLOOR}: cached"
+    else
+        echo "  FloorPlan${FLOOR}: capturing..."
+        AI2THOR_PLATFORM=CloudRendering \
+            pixi run python scripts/knowledge_graph.py --floor-plan "$FLOOR" \
+            || echo "  !! FloorPlan${FLOOR} capture FAILED - its tasks will be skipped"
+    fi
+done
+
+# ------------------------------------------------------------------ vLLM ----
+echo; echo "=================== starting vLLM ==================="
+pixi run -e serve vllm serve "$MODEL" \
+    --port "$PORT" --max-model-len 32768 --gpu-memory-utilization 0.90 \
+    > "$SERVER_LOG" 2>&1 &
+SERVER_PID=$!
+cleanup() { echo "--- stopping vLLM ---"; kill "$SERVER_PID" 2>/dev/null; wait "$SERVER_PID" 2>/dev/null; }
+trap cleanup EXIT INT TERM
+
+DEADLINE=$((SECONDS+900))
+until curl -sf "http://localhost:${PORT}/health" >/dev/null 2>&1; do
+    kill -0 "$SERVER_PID" 2>/dev/null || { echo "!! vLLM died:"; tail -40 "$SERVER_LOG"; exit 1; }
+    [ "$SECONDS" -ge "$DEADLINE" ] && { echo "!! timeout:"; tail -40 "$SERVER_LOG"; exit 1; }
+    sleep 5
+done
+echo "server up after ${SECONDS}s"
+
+export KGLAMP_LLM_BASE_URL="http://localhost:${PORT}/v1"
+export KGLAMP_MODEL="$MODEL"
+
+# ----------------------------------------------------- stage 1: KGLAMP ------
+# Each task also gets its own log under logs/runs_4/, so a single task can be
+# read back without scrolling the batch log.
+if [ "${SKIP_KGLAMP:-0}" = "1" ]; then
+    echo; echo "SKIP_KGLAMP=1 - going straight to the sweep"
+else
+echo; echo "=================== stage 1: KGLAMP over the manifest ==================="
+OK=0; FAIL=0; SKIP=0; N=0
+TOTAL=$(grep -cvE '^#|^$' "$MANIFEST")
+while IFS='|' read -r FLOOR IDX DATASET; do
+    FLOOR=$(echo "$FLOOR" | tr -d ' '); IDX=$(echo "$IDX" | tr -d ' ')
+    DATASET=$(echo "$DATASET" | xargs)
+    [ -z "${FLOOR:-}" ] && continue
+    N=$((N+1))
+    FIX="resources/kg_fixtures/FloorPlan${FLOOR}_metadata.json"
+    BASE=$(basename "$DATASET" .json)
+    TIER=$(case "$BASE" in *vague*) echo vague;; *pddl*) echo complex;; *) echo easy;; esac)
+    TLOG="$TASKLOGS/FP${FLOOR}_t${IDX}_${TIER}.log"
+    if [ ! -f "$FIX" ]; then
+        echo "--- SKIP FloorPlan${FLOOR} task ${IDX}: no fixture"; SKIP=$((SKIP+1)); continue
+    fi
+    echo; echo "----------------------------------------------------------------"
+    echo "--- [$N/$TOTAL] FloorPlan${FLOOR}  task ${IDX}  ${TIER}  ($DATASET)"
+    echo "--- log: $TLOG"
+    echo "----------------------------------------------------------------"
+    # one task failing must not abort the batch. PIPESTATUS, not the pipeline's
+    # status: the latter is tee's, which succeeds even when the task did not.
+    pixi run python scripts/run_kg_task.py \
+        --dataset "$DATASET" --task-index "$IDX" \
+        --floor-plan "$FLOOR" --fixture "$FIX" 2>&1 | tee "$TLOG"
+    if [ "${PIPESTATUS[0]}" -eq 0 ]; then
+        OK=$((OK+1))
+    else
+        echo "!! task failed (continuing)"; FAIL=$((FAIL+1))
+    fi
+done < <(grep -vE '^#|^$' "$MANIFEST")
+echo; echo "--- KGLAMP done: ok=$OK failed=$FAIL skipped=$SKIP ---"
+fi
+
+# ------------------------------- stage 2: DAG + LLM repair + screening ------
+# Needs the server, so it runs inside this job. Writes its json every iteration
+# and takes --resume, so a walltime kill here is recoverable.
+echo; echo "=================== stage 2: Safety-DAG + LLM :init repair ==================="
+pixi run python -u scripts/llmarm_sweep.py \
+    --runs "$RUNS" --tags "$TAGS" --timeout "$FD_TIMEOUT" \
+    --out "$RUNS/llmarm_sweep.json" --resume 2>&1 | tee "logs/runs_4_sweep.log"
+RC=${PIPESTATUS[0]}
+
+# ------------------------------------------- stage 3: the paper's table -----
+echo; echo "=================== stage 3: results table ==================="
+pixi run python scripts/make_table4.py \
+    --sweep "$RUNS/llmarm_sweep.json" --out-dir "$RUNS" 2>&1 | tee "logs/runs_4_table.log"
+
+echo; echo "=================== done ==================="
+echo "finished  : $(date)"
+echo "run dirs  : $(ls -1d $RUNS/FP* 2>/dev/null | wc -l)"
+echo "table     : $RUNS/TABLE.tex"
+echo "extended  : $RUNS/TABLE_ext.tex"
+echo "report    : $RUNS/RESULTS.md"
+echo "per-task  : $TASKLOGS/"
+echo "vLLM log  : $SERVER_LOG"
+exit $RC

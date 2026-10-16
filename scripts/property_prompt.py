@@ -25,10 +25,10 @@ Properties describe object attributes and robot capabilities that constrain feas
   and must never be silently dropped like other false states.
 
 Example:
-(has_capability Apple_1 pickupable)
-(isOpen Fridge_1)
-(isClosed Drawer_1)
-(has_capability RobotA pickup)
+(has_capability ObjectA_1 pickupable)
+(isOpen ReceptacleA_1)
+(isClosed ReceptacleB_1)
+(has_capability robotX pickup)
 
 ## 2. Scenario
 Goal: {goal}

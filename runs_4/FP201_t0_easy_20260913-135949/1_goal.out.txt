@@ -1,0 +1,6 @@
+Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Watch_1 Drawer_1)
+(at-location KeyChain_1 Drawer_1)
+```

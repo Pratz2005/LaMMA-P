@@ -1,0 +1,77 @@
+INFO     planner time limit: None
+INFO     planner memory limit: None
+
+INFO     Running translator.
+INFO     translator stdin: None
+INFO     translator time limit: None
+INFO     translator memory limit: None
+INFO     translator command line string: /scratch/users/ntu/mehr0004/pixi-envs/lamma-p-8228362785854327053/envs/default/bin/python3 /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/translate/translate.py resources/robot3_guarded.pddl resources/kglamp_problems/floorplan15_problem.pddl --sas-file output.sas
+Parsing...
+Parsing: [0.010s CPU, 0.027s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.016s wall-clock]
+Preparing model... [0.000s CPU, 0.001s wall-clock]
+Generated 40 rules.
+Computing model... [0.110s CPU, 0.108s wall-clock]
+14249 relevant atoms
+14055 auxiliary atoms
+28304 final queue length
+48500 total queue pushes
+Completing instantiation... [0.170s CPU, 0.168s wall-clock]
+Instantiating: [0.280s CPU, 0.295s wall-clock]
+No relaxed solution! Generating unsolvable task...
+Translator variables: 1
+Translator derived variables: 0
+Translator facts: 2
+Translator goal facts: 1
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 0
+Translator axioms: 0
+Translator task size: 4
+Translator peak memory: 68096 KB
+Writing output... [0.000s CPU, 0.003s wall-clock]
+Done! [0.300s CPU, 0.331s wall-clock]
+translate exit code: 0
+
+INFO     Running search (release).
+INFO     search stdin: output.sas
+INFO     search time limit: None
+INFO     search memory limit: None
+INFO     search command line string: /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/downward --search 'astar(lmcut())' --internal-plan-file resources/kglamp_problems/floorplan15_problem.plan < output.sas
+[t=0.000908s, 54008 KB] reading input...
+[t=0.001061s, 54008 KB] done reading input!
+[t=0.002794s, 54404 KB] Initializing landmark cut heuristic...
+[t=0.002889s, 54404 KB] Building successor generator...done!
+[t=0.002962s, 54404 KB] peak memory difference for successor generator creation: 0 KB
+[t=0.002979s, 54404 KB] time for successor generation creation: 0.000017s
+[t=0.003003s, 54404 KB] Variables: 1
+[t=0.003022s, 54404 KB] FactPairs: 2
+[t=0.003038s, 54404 KB] Bytes per state: 4
+[t=0.003077s, 54404 KB] Conducting best first search with reopening closed nodes, (real) bound = 2147483647
+[t=0.003126s, 54404 KB] Initial state is a dead end.
+[t=0.003148s, 54404 KB] Initial heuristic value for lmcut: infinity
+[t=0.003165s, 54404 KB] pruning method: none
+[t=0.003182s, 54404 KB] Completely explored state space -- no solution!
+[t=0.003198s, 54404 KB] Actual search time: 0.000031s
+[t=0.003215s, 54404 KB] Expanded 0 state(s).
+[t=0.003215s, 54404 KB] Reopened 0 state(s).
+[t=0.003215s, 54404 KB] Evaluated 1 state(s).
+[t=0.003215s, 54404 KB] Evaluations: 1
+[t=0.003215s, 54404 KB] Generated 0 state(s).
+[t=0.003215s, 54404 KB] Dead ends: 0 state(s).
+[t=0.003215s, 54404 KB] Number of registered states: 1
+[t=0.003215s, 54404 KB] Int hash set load factor: 1/1 = 1.000000
+[t=0.003215s, 54404 KB] Int hash set resizes: 0
+[t=0.003215s, 54404 KB] Search time: 0.000148s
+[t=0.003215s, 54404 KB] Total time: 0.003215s
+Search stopped without finding a solution.
+Peak memory: 54404 KB
+Remove intermediate file output.sas
+search exit code: 12
+
+Driver aborting after search
+INFO     Planner time: 0.43s

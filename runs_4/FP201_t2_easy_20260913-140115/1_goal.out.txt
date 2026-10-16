@@ -1,0 +1,6 @@
+Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Vase_1 DiningTable_1)
+(object-open Book_1)
+```

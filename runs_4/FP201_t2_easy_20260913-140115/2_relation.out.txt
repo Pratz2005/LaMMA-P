@@ -1,0 +1,6 @@
+### :init
+
+```
+(on Vase_1 SideTable_1)
+(on Book_1 Chair_2)
+```

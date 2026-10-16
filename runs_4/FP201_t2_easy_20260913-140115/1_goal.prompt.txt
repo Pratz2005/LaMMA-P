@@ -1,0 +1,83 @@
+## 1. Contextual Example
+A Goal is a formal, structured target state derived from a natural-language Task,
+grounded against the objects that actually exist in the environment.
+
+Example:
+Task: "put ObjectA and ObjectB inside ReceptacleA, and switch off DeviceA"
+Objects: ObjectA_1, ObjectB_1, ReceptacleA_1, DeviceA_1, ...
+Goal:
+(at-location ObjectA_1 ReceptacleA_1)
+(at-location ObjectB_1 ReceptacleA_1)
+(switch-off DeviceA_1)
+
+## 2. Task
+Put the vase on the dining table and open the book
+
+## 3. Objects
+ArmChair_1
+ArmChair_2
+Book_1
+Bowl_1
+Box_1
+Chair_1
+Chair_2
+Chair_3
+Chair_4
+Chair_5
+Chair_6
+CoffeeTable_1
+CreditCard_1
+Curtains_1
+DeskLamp_1
+DiningTable_1
+Drawer_1
+Drawer_2
+Floor_1
+FloorLamp_1
+GarbageCan_1
+HousePlant_1
+KeyChain_1
+Laptop_1
+LightSwitch_1
+Newspaper_1
+Painting_1
+Pen_1
+Pencil_1
+Pillow_1
+Plate_1
+RemoteControl_1
+Shelf_1
+Shelf_2
+Shelf_3
+SideTable_1
+SideTable_2
+SideTable_3
+Sofa_1
+Statue_1
+Television_1
+TissueBox_1
+TVStand_1
+Vase_1
+Watch_1
+Window_1
+Window_2
+
+
+## 4. Output Constraints
+Generate the Goal as a set of PDDL-style predicate tuples.
+1. Grounding: Only use object identifiers that appear in the Objects list above. Do not
+   invent objects. The example above uses placeholder names that do not exist in this
+   scene - never copy them into your answer.
+2. Relevance: Only include goal conditions implied by the Task. Ignore objects unrelated to the Task.
+3. Format: One predicate tuple per line, e.g. "(predicate arg1 arg2)".
+   A goal describes the state of the WORLD, not which robot brings it about, so no
+   goal predicate takes a robot argument. Write (switch-off LightSwitch_1), never
+   (switch-off robot1 LightSwitch_1) - the extra argument makes the file unparseable.
+4. Predicates: use ONLY predicates the domain defines --
+   (at-location ?object ?location) for "X is in/on/at Y",
+   (object-open ?object) for "X is open",
+   (object-close ?object) for "X is closed",
+   (sliced ?object), (break ?object), (cleaned ?object),
+   (switch-on ?object) for "X is on", (switch-off ?object) for "X is off".
+   Do NOT invent predicates such as "in", "on", "open" or "inside" - the planner
+   rejects the whole problem file if the goal names a predicate the domain lacks.

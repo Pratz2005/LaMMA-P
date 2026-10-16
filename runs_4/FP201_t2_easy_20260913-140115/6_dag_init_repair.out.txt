@@ -1,0 +1,2 @@
+(object-open book_1)
+(openable book_1)

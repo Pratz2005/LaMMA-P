@@ -6,13 +6,22 @@
     (inaction ?robot - robot)
     (holding ?robot - robot ?object - object)
     (at-location  ?object - object ?location - object)
-    (switch-on ?robot - robot ?object - object)
-    (switch-off ?robot - robot ?object - object)
-    (object-open ?robot - robot ?object - object)
-    (object-close ?robot - robot ?object - object)
-    (break ?robot - robot ?object - object)
+    ; --- world state -------------------------------------------------------
+    ; These describe the state of an OBJECT, not a relationship between a robot
+    ; and an object: a light is off, a drawer is open. Indexing them by robot
+    ; (the form inherited from the LaMMA-P domain) had two costs. It made goals
+    ; unstateable without naming an agent, which KGLAMP's goal stage is not
+    ; given - its own example goal is (watch, in, drawer), with no robot - and
+    ; it meant a closed container had to be asserted closed once per robot or a
+    ; second robot could reach inside it. Both disappear when the state belongs
+    ; to the object.
+    (switch-on ?object - object)
+    (switch-off ?object - object)
+    (object-open ?object - object)
+    (object-close ?object - object)
+    (break ?object - object)
     (sliced ?object - object)
-    (cleaned ?robot - robot ?object - object)
+    (cleaned ?object - object)
 
     ; --- affordances -------------------------------------------------------
     ; The domain previously modelled only object STATE (object-open /
@@ -59,7 +68,7 @@
                     (at-location ?object ?location)
                     (at ?robot ?location)
                     (not(inaction ?robot))
-                    (not (object-close ?robot ?location))
+                    (not (object-close ?location))
     )
     :effect (and
               (holding ?robot ?object)
@@ -73,7 +82,7 @@
                     (holding ?robot ?object)
                     (at ?robot ?location)
                     (not(inaction ?robot))
-                    (not (object-close ?robot ?location))
+                    (not (object-close ?location))
     )
     :effect (and
               (at-location ?object ?location)
@@ -90,7 +99,8 @@
     )   
     :effect (and
               (not(inaction ?robot))
-              (switch-on ?robot ?object)
+              (switch-on ?object)
+              (not (switch-off ?object))
     ) 
   )
 
@@ -103,7 +113,8 @@
     )
     :effect (and
                 (not(inaction ?robot))
-                (switch-off ?robot ?object)
+                (switch-off ?object)
+                (not (switch-on ?object))
     )    
   )
 
@@ -118,8 +129,8 @@
 
     :effect (and
                 (not(inaction ?robot))
-                (object-open ?robot ?object)
-                (not (object-close ?robot ?object))
+                (object-open ?object)
+                (not (object-close ?object))
     )
   )
 
@@ -132,7 +143,7 @@
     )
     :effect (and
               (not(inaction ?robot))
-              (break ?robot ?object)
+              (break ?object)
     )
   )
  
@@ -146,8 +157,8 @@
     )
     :effect (and
               (not(inaction ?robot))
-              (object-close ?robot ?object)
-              (not (object-open ?robot ?object))
+              (object-close ?object)
+              (not (object-open ?object))
   )
   )
 
@@ -173,7 +184,7 @@
     )
     :effect (and
               (not(inaction ?robot))
-              (cleaned ?robot ?object)
+              (cleaned ?object)
     )    
   )
 )

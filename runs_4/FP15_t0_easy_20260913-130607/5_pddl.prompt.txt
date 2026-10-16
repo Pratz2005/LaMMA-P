@@ -1,0 +1,233 @@
+## 1. Contextual Example
+A Problem PDDL instantiates the domain for a specific scenario: it declares the objects
+that exist, the initial state as a conjunction of ground predicates, and the goal condition.
+
+Example:
+(define (problem example_problem)
+  (:domain robot3)
+  (:objects
+    robotX - robot
+    ObjectA_1 ObjectB_1 ReceptacleA_1 location_901 - object
+  )
+  (:init
+    (at robotX location_901)
+    (at-location ObjectA_1 location_901)
+    (at-location ObjectB_1 location_901)
+    (at-location ReceptacleA_1 location_901)
+    (openable ReceptacleA_1)
+    (pickupable ObjectA_1)
+    (pickupable ObjectB_1)
+  )
+  (:goal
+    (and
+      (at-location ObjectA_1 ReceptacleA_1)
+      (at-location ObjectB_1 ReceptacleA_1)
+    )
+  )
+)
+
+## 2. Task Constraints
+Goal: Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Apple_1 Fridge_1)
+(switch-off LightSwitch_1)
+```
+
+## 3. Define the World and Agent
+Relation:
+```pddl
+(:init
+ (inside Apple_1 Fridge_1)
+ (inside Kettle_1 Cabinet_8)
+ (inside Cup_1 Cabinet_9)
+ (on Mug_1 CoffeeMachine_1)
+ (on Plate_1 CounterTop_1)
+ (on WineBottle_1 CounterTop_1)
+ (on Mug_1 CounterTop_1)
+ (on Tomato_1 CounterTop_1)
+ (on Toaster_1 CounterTop_1)
+ (on Potato_1 CounterTop_1)
+ (on DishSponge_1 CounterTop_1)
+ (on SoapBottle_1 CounterTop_1)
+ (on Spatula_1 CounterTop_2)
+ (on Bowl_1 CounterTop_2)
+ (inside Egg_1 Fridge_1)
+ (on butterknife_1 SinkBasin_1)
+ (on Pot_1 StoveBurner_1)
+ (on Pot_1 StoveBurner_2)
+)
+```
+
+Property:
+```pddl
+(:init
+ (has_capability Apple_1 pickupable)
+ (has_capability Apple_1 sliceable)
+ (has_capability Bowl_1 pickupable)
+ (has_capability Bowl_1 dirtyable)
+ (has_capability Bowl_1 canFillWithLiquid)
+ (has_capability Cabinet_8 openable)
+ (has_capability Cabinet_9 openable)
+ (has_capability Fridge_1 openable)
+ (has_capability Kettle_1 pickupable)
+ (has_capability Kettle_1 openable)
+ (has_capability Kettle_1 canFillWithLiquid)
+ (has_capability Cabinet_1 openable)
+ (has_capability Cabinet_2 openable)
+ (has_capability Cabinet_3 openable)
+ (has_capability Cabinet_4 openable)
+ (has_capability Cabinet_5 openable)
+ (has_capability Cabinet_6 openable)
+ (has_capability Cabinet_7 openable)
+ (has_capability Cabinet_10 openable)
+ (has_capability Cabinet_11 openable)
+ (has_capability CoffeeMachine_1 breakable)
+ (has_capability CoffeeMachine_1 toggleable)
+ (has_capability CoffeeMachine_1 moveable)
+ (isHeatSource CoffeeMachine_1)
+ (has_capability Cup_1 pickupable)
+ (has_capability Cup_1 breakable)
+ (has_capability Cup_1 dirtyable)
+ (has_capability Cup_1 canFillWithLiquid)
+ (has_capability DiningTable_1 moveable)
+ (has_capability DishSponge_1 pickupable)
+ (has_capability Drawer_1 openable)
+ (has_capability Drawer_2 openable)
+ (has_capability Drawer_3 openable)
+ (has_capability Egg_1 pickupable)
+ (has_capability Egg_1 breakable)
+ (has_capability Egg_1 sliceable)
+ (has_capability Faucet_1 toggleable)
+ (has_capability Fork_1 pickupable)
+ (has_capability Fridge_1 openable)
+ (isColdSource Fridge_1)
+ (has_capability GarbageBag_1 moveable)
+ (has_capability GarbageCan_1 moveable)
+ (has_capability Kettle_1 pickupable)
+ (has_capability Kettle_1 openable)
+ (has_capability Kettle_1 canFillWithLiquid)
+ (has_capability Mug_1 pickupable)
+ (has_capability Mug_1 breakable)
+ (has_capability Mug_1 dirtyable)
+ (has_capability Mug_1 canFillWithLiquid)
+ (has_capability Pan_1 pickupable)
+ (has_capability Pan_1 dirtyable)
+ (has_capability PepperShaker_1 pickupable)
+ (has_capability Plate_1 pickupable)
+ (has_capability Plate_1 breakable)
+ (has_capability Plate_1 dirtyable)
+ (has_capability Pot_1 pickupable)
+ (has_capability Pot_1 dirtyable)
+ (has_capability Pot_1 canFillWithLiquid)
+ (has_capability Potato_1 pickupable)
+ (has_capability Potato_1 sliceable)
+ (has_capability Potato_1 cookable)
+ (has_capability SaltShaker_1 pickupable)
+ (has_capability SoapBottle_1 pickupable)
+ (has_capability Spatula_1 pickupable)
+ (has_capability Spoon_1 pickupable)
+ (has_capability Stool_1 moveable)
+ (has_capability Toaster_1 toggleable)
+ (has_capability Toaster_1 moveable)
+ (isHeatSource Toaster_1)
+ (has_capability Tomato_1 pickupable)
+ (has_capability Tomato_1 sliceable)
+ (has_capability WineBottle_1 pickupable)
+ (has_capability WineBottle_1 breakable)
+ (has_capability WineBottle_1 canFillWithLiquid)
+ (isFilledWithLiquid WineBottle_1)
+ (has_capability robot1 GoToObject)
+ (has_capability robot1 OpenObject)
+ (has_capability robot1 CloseObject)
+ (has_capability robot1 BreakObject)
+ (has_capability robot1 SliceObject)
+ (has_capability robot1 SwitchOn)
+ (has_capability robot1 SwitchOff)
+ (has_capability robot1 PickupObject)
+ (has_capability robot1 PutObject)
+ (has_capability robot1 DropHandObject)
+ (has_capability robot1 ThrowObject)
+ (has_capability robot1 PushObject)
+ (has_capability robot1 PullObject)
+)
+```
+
+Reach:
+(:init
+ (has_location Apple_1 location_100)
+ (has_location Bowl_1 location_92)
+ (has_location Cabinet_1 location_101)
+ (has_location Cabinet_2 location_101)
+ (has_location Cabinet_3 location_100)
+ (has_location Cabinet_4 location_89)
+ (has_location Cabinet_5 location_91)
+ (has_location Cabinet_6 location_80)
+ (has_location Cabinet_7 location_100)
+ (has_location Cabinet_8 location_91)
+ (has_location Cabinet_9 location_91)
+ (has_location Cabinet_10 location_44)
+ (has_location Cabinet_11 location_89)
+ (has_location CoffeeMachine_1 location_100)
+ (has_location CounterTop_1 location_100)
+ (has_location CounterTop_2 location_92)
+ (has_location Cup_1 location_100)
+ (has_location DiningTable_1 location_108)
+ (has_location DishSponge_1 location_44)
+ (has_location Drawer_1 location_92)
+ (has_location Drawer_2 location_100)
+ (has_location Drawer_3 location_100)
+ (has_location Egg_1 location_104)
+ (has_location Faucet_1 location_61)
+ (has_location Floor_1 location_3)
+ (has_location Fork_1 location_100)
+ (has_location Fridge_1 location_98)
+ (has_location GarbageBag_1 location_106)
+ (has_location GarbageCan_1 location_60)
+ (has_location Kettle_1 location_100)
+ (has_location Mug_1 location_100)
+ (has_location Pan_1 location_89)
+ (has_location PepperShaker_1 location_103)
+ (has_location Plate_1 location_100)
+ (has_location Pot_1 location_91)
+ (has_location Potato_1 location_103)
+ (has_location SaltShaker_1 location_67)
+ (has_location Sink_1 location_61)
+ (has_location SinkBasin_1 location_61)
+ (has_location SoapBottle_1 location_77)
+ (has_location Spatula_1 location_80)
+ (has_location Spoon_1 location_91)
+ (has_location Stool_1 location_17)
+ (has_location StoveBurner_1 location_91)
+ (has_location StoveBurner_2 location_91)
+ (has_location StoveBurner_3 location_80)
+ (has_location StoveBurner_4 location_80)
+ (has_location StoveKnob_1 location_91)
+ (has_location StoveKnob_2 location_80)
+ (has_location StoveKnob_3 location_91)
+ (has_location StoveKnob_4 location_80)
+ (has_location Toaster_1 location_89)
+ (has_location Tomato_1 location_89)
+ (has_location Window_1 location_112)
+ (has_location WineBottle_1 location_100)
+ (has_location robot1 location_0)
+)
+
+## 4. Define Problem Structure & Robot Logic
+The domain is `robot3`, with types `robot` and `object`, and predicates:
+(at ?robot ?object), (at-location ?object ?location), (holding ?robot ?object),
+(inaction ?robot), (switch-on ?object), (switch-off ?object),
+(object-open ?object), (object-close ?object), (break ?object),
+(sliced ?object), (cleaned ?object),
+(openable ?object), (pickupable ?object), (sliceable ?object), (toggleable ?object).
+1. Objects: Declare every robot and every object referenced in the Relation, Property, or Reach sections above (including location symbols) under `:objects`.
+2. Initial state: Encode the Relation, Property, and Reach tuples as `:init` predicates using only the domain predicates listed above.
+3. Goal: Encode the Goal as the `:goal` condition, using only entities declared in `:objects`.
+4. Grounding: Do not invent objects, robots, or predicates that are not present in the sections above or the domain predicate list. The example in section 1 uses placeholder names (robotX, ObjectA_1, location_901) that do not exist in this scene - never copy them into your answer.
+5. Never use "not" inside `:init`. PDDL's closed-world assumption means any predicate not listed there is already false — only list positive ground facts in `:init`. "not" may only appear inside `:goal` or action preconditions, never in `:init`.
+6. Never declare `(inaction ?robot)` in `:init`. Every action in the domain requires `(not (inaction ?robot))` as a precondition and no action ever removes `inaction` — if a robot starts as `inaction`, no action involving it will ever be applicable and the problem becomes unsolvable. Simply omit the `inaction` predicate for every robot.
+7. Object state: the Property section's `(isOpen X)`, `(isClosed X)` and `(isToggled X)` facts are not domain predicates themselves — translate them. `(isOpen X)` becomes `(object-open X)`; `(isClosed X)` becomes `(object-close X)`; `(isToggled X)` becomes `(switch-on X)`. These describe the object, not a robot, so each is declared exactly ONCE with a single argument — never once per robot, and never with a robot argument. PickupObject and PutObject require `(not (object-close ?location))`, so a container asserted closed blocks every robot equally. A container with no isOpen/isClosed fact needs no object-open/object-close fact at all (open by default).
+8. Affordances are SEPARATE from state and both must be stated. `(has_capability X openable)` in the Property section becomes `(openable X)` in `:init`; likewise `pickupable` -> `(pickupable X)`, `sliceable` -> `(sliceable X)`, `toggleable` -> `(toggleable X)`. The `openable` affordance is what makes opening legal at all: OpenObject and CloseObject both require `(openable ?object)`. Stating that a container is closed while omitting `(openable X)` makes it permanently unopenable and its contents unreachable. Never drop an affordance the Property section lists, and never assert one it does not.
+9. Output ONLY the PDDL code in a single ```pddl code block, starting with `(define (problem ...)` and ending with the matching closing parenthesis. Do not include any prose, explanation, or headings before or after the code block.
+
+## 5. Generate PDDL problem

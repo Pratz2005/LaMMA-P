@@ -1,0 +1,136 @@
+INFO     planner time limit: None
+INFO     planner memory limit: None
+
+INFO     Running translator.
+INFO     translator stdin: None
+INFO     translator time limit: None
+INFO     translator memory limit: None
+INFO     translator command line string: /scratch/users/ntu/mehr0004/pixi-envs/lamma-p-8228362785854327053/envs/default/bin/python3 /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/translate/translate.py resources/robot3_guarded.pddl runs_4/FP15_t0_easy_20260913-130607/problem_repaired.pddl --sas-file output.sas
+Parsing...
+Parsing: [0.000s CPU, 0.003s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.002s wall-clock]
+Preparing model... [0.000s CPU, 0.001s wall-clock]
+Generated 40 rules.
+Computing model... [0.220s CPU, 0.226s wall-clock]
+45646 relevant atoms
+19925 auxiliary atoms
+65571 final queue length
+119230 total queue pushes
+Completing instantiation... [0.830s CPU, 0.827s wall-clock]
+Instantiating: [1.060s CPU, 1.062s wall-clock]
+Computing fact groups...
+Finding invariants...
+25 initial candidates
+Finding invariants: [0.000s CPU, 0.003s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.001s wall-clock]
+Choosing groups...
+5118 uncovered facts
+Choosing groups: [0.000s CPU, 0.001s wall-clock]
+Building translation key... [0.010s CPU, 0.010s wall-clock]
+Computing fact groups: [0.040s CPU, 0.041s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.003s wall-clock]
+Building dictionary for full mutex groups... [0.010s CPU, 0.002s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.002s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Translator axioms removed by simplifying: 0
+Processing axioms: [0.040s CPU, 0.043s wall-clock]
+Translating task: [0.920s CPU, 0.931s wall-clock]
+31995 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+110 propositions removed
+Detecting unreachable propositions: [0.520s CPU, 0.520s wall-clock]
+Reordering and filtering variables...
+319 of 5063 variables necessary.
+0 of 0 mutex groups necessary.
+717 of 40290 operators necessary.
+0 of 0 axiom rules necessary.
+Reordering and filtering variables: [0.150s CPU, 0.146s wall-clock]
+Translator variables: 319
+Translator derived variables: 0
+Translator facts: 638
+Translator goal facts: 2
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 717
+Translator axioms: 0
+Translator task size: 22064
+Translator peak memory: 188672 KB
+Writing output... [0.020s CPU, 0.020s wall-clock]
+Done! [2.750s CPU, 2.765s wall-clock]
+translate exit code: 0
+
+INFO     Running search (release).
+INFO     search stdin: output.sas
+INFO     search time limit: None
+INFO     search memory limit: None
+INFO     search command line string: /home/users/ntu/mehr0004/FYP/LaMMA-P/downward/builds/release/bin/downward --search 'astar(lmcut())' --internal-plan-file runs_4/FP15_t0_easy_20260913-130607/problem_repaired.plan < output.sas
+[t=0.000328s, 54008 KB] reading input...
+[t=0.009367s, 54932 KB] done reading input!
+[t=0.011271s, 55620 KB] Initializing landmark cut heuristic...
+[t=0.011348s, 55620 KB] Building successor generator...done!
+[t=0.011631s, 55752 KB] peak memory difference for successor generator creation: 132 KB
+[t=0.011652s, 55752 KB] time for successor generation creation: 0.000208s
+[t=0.011677s, 55752 KB] Variables: 319
+[t=0.011699s, 55752 KB] FactPairs: 638
+[t=0.011719s, 55752 KB] Bytes per state: 40
+[t=0.011751s, 55752 KB] Conducting best first search with reopening closed nodes, (real) bound = 2147483647
+[t=0.012016s, 55752 KB] New best heuristic value for lmcut: 6
+[t=0.012041s, 55752 KB] g=0, 1 evaluated, 0 expanded
+[t=0.012061s, 55752 KB] f = 6, 1 evaluated, 0 expanded
+[t=0.012083s, 55752 KB] Initial heuristic value for lmcut: 6
+[t=0.012106s, 55752 KB] pruning method: none
+[t=0.017245s, 55752 KB] New best heuristic value for lmcut: 5
+[t=0.017268s, 55752 KB] g=1, 28 evaluated, 1 expanded
+[t=0.060768s, 55752 KB] New best heuristic value for lmcut: 4
+[t=0.060800s, 55752 KB] g=2, 268 evaluated, 2 expanded
+[t=0.103749s, 55752 KB] New best heuristic value for lmcut: 3
+[t=0.103779s, 55752 KB] g=3, 552 evaluated, 3 expanded
+[t=0.294227s, 55904 KB] New best heuristic value for lmcut: 2
+[t=0.294256s, 55904 KB] g=4, 1984 evaluated, 11 expanded
+[t=0.323305s, 55904 KB] New best heuristic value for lmcut: 1
+[t=0.323333s, 55904 KB] g=5, 2273 evaluated, 12 expanded
+[t=0.338418s, 55904 KB] New best heuristic value for lmcut: 0
+[t=0.338444s, 55904 KB] g=6, 2511 evaluated, 13 expanded
+[t=0.338463s, 55904 KB] Solution found!
+[t=0.338480s, 55904 KB] Actual search time: 0.326369s
+gotoobject robot1 lightswitch_1 (1)
+gotoobject robot2 location_100 (1)
+pickupobject robot2 apple_1 location_100 (1)
+gotoobject robot2 fridge_1 (1)
+putobject robot2 apple_1 fridge_1 (1)
+switchoff robot1 lightswitch_1 (1)
+[t=0.338500s, 55904 KB] Plan length: 6 step(s).
+[t=0.338500s, 55904 KB] Plan cost: 6
+[t=0.338500s, 55904 KB] Expanded 14 state(s).
+[t=0.338500s, 55904 KB] Reopened 0 state(s).
+[t=0.338500s, 55904 KB] Evaluated 2511 state(s).
+[t=0.338500s, 55904 KB] Evaluations: 2511
+[t=0.338500s, 55904 KB] Generated 3108 state(s).
+[t=0.338500s, 55904 KB] Dead ends: 0 state(s).
+[t=0.338500s, 55904 KB] Expanded until last jump: 0 state(s).
+[t=0.338500s, 55904 KB] Reopened until last jump: 0 state(s).
+[t=0.338500s, 55904 KB] Evaluated until last jump: 1 state(s).
+[t=0.338500s, 55904 KB] Generated until last jump: 0 state(s).
+[t=0.338500s, 55904 KB] Number of registered states: 2511
+[t=0.338500s, 55904 KB] Int hash set load factor: 2511/4096 = 0.613037
+[t=0.338500s, 55904 KB] Int hash set resizes: 12
+[t=0.338500s, 55904 KB] Search time: 0.326752s
+[t=0.338500s, 55904 KB] Total time: 0.338500s
+Solution found.
+Peak memory: 55904 KB
+Remove intermediate file output.sas
+search exit code: 0
+
+INFO     Planner time: 3.19s

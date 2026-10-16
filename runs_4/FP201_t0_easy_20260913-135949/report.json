@@ -1,0 +1,532 @@
+{
+  "task": "Put the watch and Keychain inside the drawer",
+  "dataset": "data/final_test/FloorPlan201.json",
+  "task_index": 0,
+  "floor_plan": 201,
+  "model": "Qwen/Qwen2-7B-Instruct",
+  "temperature": 0,
+  "robots": [
+    {
+      "name": "robot1",
+      "dataset_id": 2
+    },
+    {
+      "name": "robot2",
+      "dataset_id": 3
+    },
+    {
+      "name": "robot3",
+      "dataset_id": 5
+    }
+  ],
+  "kg_entity_count": 83,
+  "ground_truth_object_states": [
+    {
+      "name": "Drawer",
+      "contains": [
+        "Watch",
+        "KeyChain"
+      ],
+      "state": null
+    }
+  ],
+  "planner_ran": true,
+  "repair_changes": [
+    "deduped :objects declaration of location_230 (2 -> 1)",
+    "deduped :objects declaration of location_232 (3 -> 1)",
+    "coerced type of robot1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of robot2: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of robot3: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of watch_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of keychain_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of drawer_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of drawer_2: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of sidetable_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of sidetable_2: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of sidetable_3: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of armchair_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of armchair_2: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of book_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of bowl_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of box_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of chair_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of chair_2: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of chair_3: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of chair_4: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of chair_5: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of chair_6: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of coffeetable_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of creditcard_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of desklamp_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of diningtable_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of floorlamp_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of garbagecan_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of houseplant_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of laptop_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of lightswitch_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of newspaper_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of painting_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of pen_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of pencil_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of pillow_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of plate_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of remotecontrol_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of shelf_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of shelf_2: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of shelf_3: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of sofa_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of statue_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of television_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of tissuebox_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of tvstand_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of vase_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of window_1: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of window_2: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_130: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_229: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_230: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_136: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_164: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_57: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_195: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_99: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_77: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_23: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_189: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_93: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_193: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_233: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_160: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_232: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_213: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_75: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_78: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_150: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_124: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_70: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_47: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_181: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_191: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_167: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_173: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_226: 'None' -> 'object' (type not declared in the domain)",
+    "dropped unknown predicate: (on watch_1 sidetable_3)",
+    "dropped unknown predicate: (on keychain_1 sidetable_1)",
+    "dropped unknown predicate: (has_location armchair_1 location_130)",
+    "dropped unknown predicate: (has_location armchair_2 location_229)",
+    "dropped unknown predicate: (has_location book_1 location_230)",
+    "dropped unknown predicate: (has_location bowl_1 location_136)",
+    "dropped unknown predicate: (has_location box_1 location_164)",
+    "dropped unknown predicate: (has_location chair_1 location_57)",
+    "dropped unknown predicate: (has_location chair_2 location_230)",
+    "dropped unknown predicate: (has_location chair_3 location_195)",
+    "dropped unknown predicate: (has_location chair_4 location_99)",
+    "dropped unknown predicate: (has_location chair_5 location_77)",
+    "dropped unknown predicate: (has_location chair_6 location_23)",
+    "dropped unknown predicate: (has_location coffeetable_1 location_189)",
+    "dropped unknown predicate: (has_location creditcard_1 location_93)",
+    "dropped unknown predicate: (has_location desklamp_1 location_193)",
+    "dropped unknown predicate: (has_location diningtable_1 location_233)",
+    "dropped unknown predicate: (has_location drawer_1 location_160)",
+    "dropped unknown predicate: (has_location drawer_2 location_232)",
+    "dropped unknown predicate: (has_location floor_1 location_213)",
+    "dropped unknown predicate: (has_location floorlamp_1 location_213)",
+    "dropped unknown predicate: (has_location garbagecan_1 location_75)",
+    "dropped unknown predicate: (has_location houseplant_1 location_78)",
+    "dropped unknown predicate: (has_location keychain_1 location_150)",
+    "dropped unknown predicate: (has_location laptop_1 location_124)",
+    "dropped unknown predicate: (has_location lightswitch_1 location_70)",
+    "dropped unknown predicate: (has_location newspaper_1 location_47)",
+    "dropped unknown predicate: (has_location painting_1 location_232)",
+    "dropped unknown predicate: (has_location pen_1 location_23)",
+    "dropped unknown predicate: (has_location pencil_1 location_57)",
+    "dropped unknown predicate: (has_location pillow_1 location_107)",
+    "dropped unknown predicate: (has_location plate_1 location_57)",
+    "dropped unknown predicate: (has_location remotecontrol_1 location_78)",
+    "dropped unknown predicate: (has_location shelf_1 location_189)",
+    "dropped unknown predicate: (has_location shelf_2 location_191)",
+    "dropped unknown predicate: (has_location shelf_3 location_189)",
+    "dropped unknown predicate: (has_location sidetable_1 location_160)",
+    "dropped unknown predicate: (has_location sidetable_2 location_78)",
+    "dropped unknown predicate: (has_location sidetable_3 location_232)",
+    "dropped unknown predicate: (has_location sofa_1 location_136)",
+    "dropped unknown predicate: (has_location statue_1 location_231)",
+    "dropped unknown predicate: (has_location television_1 location_202)",
+    "dropped unknown predicate: (has_location tissuebox_1 location_181)",
+    "dropped unknown predicate: (has_location tvstand_1 location_191)",
+    "dropped unknown predicate: (has_location vase_1 location_167)",
+    "dropped unknown predicate: (has_location watch_1 location_232)",
+    "dropped unknown predicate: (has_location window_1 location_173)",
+    "dropped unknown predicate: (has_location window_2 location_226)",
+    "declared undeclared symbol location_0 as object"
+  ],
+  "solved_after_repair": true,
+  "findings": [
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "location_230",
+      "detail": "location_230 is declared 2 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "location_232",
+      "detail": "location_232 is declared 3 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "UNSUPPORTED_FACT",
+      "where": ":init",
+      "fact": "(at robot2 location_0)",
+      "detail": "KG does not place robot2 at location_0"
+    },
+    {
+      "code": "UNSUPPORTED_FACT",
+      "where": ":init",
+      "fact": "(at robot3 location_0)",
+      "detail": "KG does not place robot3 at location_0"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(on watch_1 sidetable_3)",
+      "detail": "'on' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(on keychain_1 sidetable_1)",
+      "detail": "'on' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location armchair_1 location_130)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location armchair_2 location_229)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location book_1 location_230)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location bowl_1 location_136)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location box_1 location_164)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location chair_1 location_57)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location chair_2 location_230)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location chair_3 location_195)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location chair_4 location_99)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location chair_5 location_77)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location chair_6 location_23)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location coffeetable_1 location_189)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location creditcard_1 location_93)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location desklamp_1 location_193)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location diningtable_1 location_233)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location drawer_1 location_160)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location drawer_2 location_232)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location floor_1 location_213)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location floorlamp_1 location_213)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location garbagecan_1 location_75)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location houseplant_1 location_78)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location keychain_1 location_150)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location laptop_1 location_124)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location lightswitch_1 location_70)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location newspaper_1 location_47)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location painting_1 location_232)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location pen_1 location_23)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location pencil_1 location_57)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location pillow_1 location_107)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location plate_1 location_57)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location remotecontrol_1 location_78)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location shelf_1 location_189)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location shelf_2 location_191)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location shelf_3 location_189)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location sidetable_1 location_160)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location sidetable_2 location_78)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location sidetable_3 location_232)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location sofa_1 location_136)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location statue_1 location_231)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location television_1 location_202)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location tissuebox_1 location_181)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location tvstand_1 location_191)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location vase_1 location_167)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location watch_1 location_232)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location window_1 location_173)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_location window_2 location_226)",
+      "detail": "'has_location' is not a domain predicate"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_0",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "floor_1",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_107",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_231",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_202",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "drawer_1",
+      "detail": "KG says drawer_1 is closed, but no (object-close drawer_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "book_1",
+      "detail": "KG says book_1 is closed, but no (object-close book_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "drawer_2",
+      "detail": "KG says drawer_2 is closed, but no (object-close drawer_2) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "INVALID_PDDL",
+      "where": "planner",
+      "fact": "error: duplicate object 'location_230'; error: duplicate object 'location_232'; error: duplicate object 'location_232'",
+      "detail": "Fast Downward's translator rejected the problem file - it is not valid PDDL, so no plan was even attempted"
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+==============================================================================
+KG-LaMMA-P PIPELINE TRACE
+==============================================================================
+task     : Put the vase on the dining table and open the book
+dataset  : data/final_test/FloorPlan201.json  index 2
+tier     : easy   (MAT-THOR: easy / complex / vague)
+scene    : AI2-THOR FloorPlan201
+fixture  : resources/kg_fixtures/FloorPlan201_metadata.json
+robot    : robot1 = dataset robot25  ['GoToObject', 'PickupObject', 'PutObject']
+robot    : robot2 = dataset robot23  ['GoToObject', 'OpenObject', 'CloseObject']
+model    : Qwen/Qwen2-7B-Instruct   temperature 0  seed 0  repetition_penalty 1.05
+gt states: [{'name': 'DiningTable', 'contains': ['Vase'], 'state': None}, {'name': 'Book', 'contains': [], 'state': 'OPENED'}]
+
+==============================================================================
+KNOWLEDGE GRAPH  (built mechanically from AI2-THOR metadata, no LLM)
+==============================================================================
+property 72   relation 53   reach 48   entities 82
+
+-- affordances of task-relevant objects --
+   (has_capability Book_1 pickupable)
+   (has_capability Book_1 openable)
+   (has_capability DiningTable_1 moveable)
+   (has_capability Drawer_1 openable)
+   (has_capability Drawer_2 openable)
+   (has_capability Vase_1 pickupable)
+   (has_capability Vase_1 breakable)
+
+-- open/closed state (only meaningful for openable objects) --
+   (isOpen Book_1 False)   [CLOSED - needs (openable) to be opened]
+   (isOpen Drawer_1 False)   [CLOSED - needs (openable) to be opened]
+   (isOpen Drawer_2 False)   [CLOSED - needs (openable) to be opened]
+
+-- robot skills --
+   (has_capability robot1 GoToObject)
+   (has_capability robot1 PickupObject)
+   (has_capability robot1 PutObject)
+   (has_capability robot2 GoToObject)
+   (has_capability robot2 OpenObject)
+   (has_capability robot2 CloseObject)
+
+-- relations touching task objects --
+   (on DiningTable_1 Chair_1)
+   (on DiningTable_1 Chair_2)
+   (on Book_1 Chair_2)
+   (on DiningTable_1 Chair_3)
+   (on DiningTable_1 Chair_4)
+   (on DiningTable_1 Chair_5)
+   (on DiningTable_1 Chair_6)
+   (on Laptop_1 DiningTable_1)
+   (on CreditCard_1 DiningTable_1)
+   (on Plate_1 DiningTable_1)
+   (on Book_1 DiningTable_1)
+   (on Newspaper_1 DiningTable_1)
+   (on Pencil_1 DiningTable_1)
+   (on Pen_1 DiningTable_1)
+   (on DiningTable_1 Floor_1)
+   (on Vase_1 SideTable_1)
+
+==============================================================================
+STAGE 1 - GOAL
+==============================================================================
+Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Vase_1 DiningTable_1)
+(object-open Book_1)
+```
+
+==============================================================================
+STAGE 2 - RELATION
+==============================================================================
+### :init
+
+```
+(on Vase_1 SideTable_1)
+(on Book_1 Chair_2)
+```
+
+==============================================================================
+STAGE 3 - PROPERTY
+==============================================================================
+### :init
+
+```
+(has_capability robot1 GoToObject)
+(has_capability robot1 PickupObject)
+(has_capability robot1 PutObject)
+(has_capability robot2 GoToObject)
+(has_capability robot2 OpenObject)
+(has_capability robot2 CloseObject)
+
+(has_capability ArmChair_1 moveable)
+(has_capability ArmChair_2 moveable)
+(has_capability Book_1 pickupable)
+(has_capability Book_1 openable)
+(has_capability Bowl_1 pickupable)
+(has_capability Bowl_1 breakable)
+(has_capability Bowl_1 dirtyable)
+(has_capability Bowl_1 canFillWithLiquid)
+(has_capability Box_1 pickupable)
+(has_capability Box_1 openable)
+(has_capability Chair_1 moveable)
+(has_capability Chair_2 moveable)
+(has_capability Chair_3 moveable)
+(has_capability Chair_4 moveable)
+(has_capability Chair_5 moveable)
+(has_capability Chair_6 moveable)
+(has_capability CoffeeTable_1 moveable)
+(has_capability CreditCard_1 pickupable)
+(has_capability DeskLamp_1 toggleable)
+(has_capability DeskLamp_1 moveable)
+(has_capability DiningTable_1 moveable)
+(has_capability Drawer_1 openable)
+(has_capability Drawer_2 openable)
+(has_capability FloorLamp_1 toggleable)
+(has_capability FloorLamp_1 moveable)
+(has_capability GarbageCan_1 moveable)
+(has_capability HousePlant_1 moveable)
+(has_capability HousePlant_1 canFillWithLiquid)
+(has_capability KeyChain_1 pickupable)
+(has_capability Laptop_1 pickupable)
+(has_capability Laptop_1 openable)
+(has_capability Laptop_1 breakable)
+(has_capability Laptop_1 toggleable)
+(has_capability LightSwitch_1 toggleable)
+(has_capability Newspaper_1 pickupable)
+(has_capability Pen_1 pickupable)
+(has_capability Pencil_1 pickupable)
+(has_capability Pillow_1 pickupable)
+(has_capability Plate_1 pickupable)
+(has_capability Plate_1 breakable)
+(has_capability Plate_1 dirtyable)
+(has_capability RemoteControl_1 pickupable)
+(has_capability SideTable_1 moveable)
+(has_capability SideTable_2 moveable)
+(has_capability SideTable_3 moveable)
+(has_capability Sofa_1 moveable)
+(has_capability Statue_1 pickupable)
+(has_capability Statue_1 breakable)
+(has_capability Television_1 breakable)
+(has_capability Television_1 toggleable)
+(has_capability Television_1 moveable)
+(has_capability TissueBox_1 pickupable)
+(has_capability TVStand_1 moveable)
+(has_capability Vase_1 pickupable)
+(has_capability Vase_1 breakable)
+(has_capability Watch_1 pickupable)
+(has_capability Window_1 breakable)
+(has_capability Window_2 breakable)
+
+(has_capability robotX pickup)
+(has_capability robotX put)
+
+(at-location Vase_1 SideTable_1)
+(at-location Book_1 Chair_2)
+```
+   >>> INVENTED_OBJECT: robotx
+   >>> INVENTED_OBJECT: pickup
+   >>> INVENTED_OBJECT: put
+
+==============================================================================
+STAGE 4 - REACH
+==============================================================================
+### :init
+
+```
+(has_location ArmChair_1 location_130)
+(has_location ArmChair_2 location_229)
+(has_location Book_1 location_230)
+(has_location Bowl_1 location_136)
+(has_location Box_1 location_164)
+   ... 43 more lines
+
+==============================================================================
+STAGE 5 - PDDL
+==============================================================================
+```pddl
+(define (problem example_problem)
+  (:domain robot3)
+  (:objects
+    robotX - robot
+    Vase_1 - object
+    DiningTable_1 - object
+    Book_1 - object
+    ArmChair_1 - object
+    ArmChair_2 - object
+    Chair_2 - object
+    SideTable_1 - object
+    Book_1 - object
+    Chair_2 - object
+    Chair_3 - object
+    Chair_4 - object
+    Chair_5 - object
+    Chair_6 - object
+    CoffeeTable_1 - object
+    CreditCard_1 - object
+   ... 110 more lines (full text in 5_pddl.out.txt)
+
+==============================================================================
+PROBLEM PDDL  (after 71 syntax-only repairs)
+==============================================================================
+(openable ...) for ['book_1', 'drawer_2', 'drawer_1']:  ABSENT   <<< dropped by the model
+(pickupable ...) for ['vase_1', 'book_1']:  ABSENT   <<< dropped by the model
+
+(:goal
+    (and
+      (at-location Vase_1 DiningTable_1)
+      (object-open Book_1)
+    )
+
+==============================================================================
+FAST DOWNWARD PLAN
+==============================================================================
+   <no plan - see FINDINGS>
+
+==============================================================================
+VERDICT
+==============================================================================
+planner  : NO PLAN
+task     : NOT ACCOMPLISHED
+
+findings : 88
+   INVENTED_PREDICATE       x62   e.g. (on vase_1 sidetable_1)
+   DUPLICATE_DECLARATION    x6    e.g. book_1
+   UNDECLARED_OBJECT        x6    e.g. location_0
+   INVENTED_OBJECT          x5    e.g. robotx
+   MISSING_AFFORDANCE       x3    e.g. (openable book_1)
+   DROPPED_CRITICAL_FACT    x3    e.g. drawer_2
+   MISSING_ROBOT            x2    e.g. robot1
+   INVALID_PDDL             x1    e.g. error: duplicate object 'book_1'; error: duplicate o
+
+the knowledge graph is derived mechanically from AI2-THOR metadata.
+every fact above marked <<< was present in the graph and in the prompt.

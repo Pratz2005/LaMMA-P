@@ -1,3 +1,67 @@
+# PreCoNeR: Precedence-Constrained Neurosymbolic Repair (`kglamp` branch)
+
+This branch adds **PreCoNeR** on top of a KGLAMP-style LLM-to-PDDL pipeline built on the LaMMA-P codebase and the MAT-THOR benchmark.
+
+The PreCoNeR loop works in four steps:
+1. Derive a Safety-DAG of precedence constraints from the scene knowledge graph.
+2. Check every plan against it, even when the planner reports success.
+3. When an edge is violated, send one narrowly scoped LLM call that proposes the missing `(:init ...)` atoms.
+4. Screen those atoms (syntax, domain vocabulary, graph truth), inject the survivors, and replan.
+
+## Files
+
+| path | role |
+|---|---|
+| `scripts/kglamp_pipeline.py`, `scripts/*_prompt.py`, `scripts/knowledge_graph.py` | Upstream LLM-to-PDDL pipeline: scene → knowledge graph → five LLM stages → PDDL problem |
+| `scripts/run_kg_task.py` | Runs one MAT-THOR task through the pipeline and Fast Downward |
+| `scripts/safety_dag.py` | Builds the Safety-DAG from the graph and checks plans against it |
+| `scripts/dag_llm_init.py` | LLM repair: prompt, reply parser, three screening passes |
+| `scripts/dag_inject.py` | Injects screened atoms into `:init` and replans |
+| `scripts/llmarm_trace.py`, `scripts/llmarm_sweep.py` | Repair loop on one run / across a run tree |
+| `scripts/make_table4.py` | Builds `RESULTS.md` and the tables from the sweep JSON |
+| `resources/robot3.pddl` | PDDL domain used in all experiments |
+| `resources/kg_fixtures/` | Cached AI2-THOR scene metadata (no simulator needed to rerun) |
+| `data/final_test/` | MAT-THOR tasks |
+| `runs_4/` | Paper runs: prompts, raw model replies, PDDL before and after repair, plans |
+
+### Paper Table 1 → run directories
+
+| task | run dir | plan before → after repair |
+|---|---|---|
+| Task 0: FloorPlan201, watch + keychain → drawer | `runs_4/FP201_t0_easy_20260913-135949` | 9 → 10 |
+| Task 1: FloorPlan15, apple → fridge, light off | `runs_4/FP15_t0_easy_20260913-130607` | 7 → 8 |
+| Task 2: FloorPlan201, vase → table, open book | `runs_4/FP201_t2_easy_20260913-140115` | no plan → 7 |
+
+`runs_4/llmarm_sweep.json` and `runs_4/RESULTS.md` hold the full sweep over the benchmark.
+
+## Reproducing
+
+Setup (pixi environment, Qwen2-7B-Instruct weights, Fast Downward build) is described in `SETUP.md`. All LLM calls go to a local vLLM server serving `Qwen/Qwen2-7B-Instruct` at temperature 0, seed 0.
+
+```bash
+git submodule update --init downward && (cd downward && ./build.py release)
+
+# 1. Upstream pipeline for one task (starts vLLM, runs KG -> PDDL -> plan)
+FLOOR=201 TASK=0 ./scripts/local/run_task.sh
+
+# 2. Safety-DAG check (CPU only)
+pixi run python scripts/safety_dag.py 'runs_4/FP*'
+
+# 3. LLM repair + screening + replan on one run (needs the vLLM server)
+export KGLAMP_LLM_BASE_URL=http://localhost:8000/v1 KGLAMP_MODEL=Qwen/Qwen2-7B-Instruct
+pixi run python scripts/llmarm_trace.py runs_4/FP201_t0_easy_20260913-135949
+
+# 4. Full sweep + tables (what scripts/nscc/run_batch4.pbs runs)
+pixi run python scripts/llmarm_sweep.py --runs runs_4 \
+    --tags scripts/nscc/tasks_all_final_test.tags --timeout 300 \
+    --out runs_4/llmarm_sweep.json --resume
+pixi run python scripts/make_table4.py --sweep runs_4/llmarm_sweep.json --out-dir runs_4
+```
+
+`KGLAMP_REPAIR_ATTEMPTS` (default 3) limits how many repair calls are made per violated task. The original LaMMA-P README follows.
+
+---
+
 # **LaMMA-P: Generalizable Multi-Agent Long-Horizon Task Allocation and Planning with LM-Driven PDDL Planner**
 
 This is the official repository for the LaMMA-P codebase. It includes instructions for configuring and running LaMMA-P on the MAT-THOR datasets in the AI2-THOR simulator. It is accepted as a conference paper by the IEEE International Conference on Robotics and Automation (ICRA), Atlanta, 2025.

@@ -1,0 +1,3 @@
+(:init
+(on Watch_1 SideTable_3)
+(on KeyChain_1 SideTable_1))

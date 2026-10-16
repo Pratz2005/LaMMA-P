@@ -1,0 +1,199 @@
+## 1. Contextual Example
+A Problem PDDL instantiates the domain for a specific scenario: it declares the objects
+that exist, the initial state as a conjunction of ground predicates, and the goal condition.
+
+Example:
+(define (problem example_problem)
+  (:domain robot3)
+  (:objects
+    robotX - robot
+    ObjectA_1 ObjectB_1 ReceptacleA_1 location_901 - object
+  )
+  (:init
+    (at robotX location_901)
+    (at-location ObjectA_1 location_901)
+    (at-location ObjectB_1 location_901)
+    (at-location ReceptacleA_1 location_901)
+    (openable ReceptacleA_1)
+    (pickupable ObjectA_1)
+    (pickupable ObjectB_1)
+  )
+  (:goal
+    (and
+      (at-location ObjectA_1 ReceptacleA_1)
+      (at-location ObjectB_1 ReceptacleA_1)
+    )
+  )
+)
+
+## 2. Task Constraints
+Goal: Here's the generated goal based on the provided task and objects:
+
+```
+(at-location Watch_1 Drawer_1)
+(at-location KeyChain_1 Drawer_1)
+```
+
+## 3. Define the World and Agent
+Relation:
+(:init
+(on Watch_1 SideTable_3)
+(on KeyChain_1 SideTable_1))
+
+Property:
+```pddl
+(:init
+(has_capability ArmChair_1 moveable)
+(has_capability ArmChair_2 moveable)
+(has_capability Book_1 pickupable)
+(has_capability Book_1 openable)
+(has_capability Bowl_1 pickupable)
+(has_capability Bowl_1 breakable)
+(has_capability Bowl_1 dirtyable)
+(has_capability Bowl_1 canFillWithLiquid)
+(has_capability Box_1 pickupable)
+(has_capability Box_1 openable)
+(has_capability Chair_1 moveable)
+(has_capability Chair_2 moveable)
+(has_capability Chair_3 moveable)
+(has_capability Chair_4 moveable)
+(has_capability Chair_5 moveable)
+(has_capability Chair_6 moveable)
+(has_capability CoffeeTable_1 moveable)
+(has_capability CreditCard_1 pickupable)
+(has_capability DeskLamp_1 toggleable)
+(has_capability DeskLamp_1 moveable)
+(has_capability DiningTable_1 moveable)
+(has_capability Drawer_1 openable)
+(has_capability Drawer_2 openable)
+(has_capability FloorLamp_1 toggleable)
+(has_capability FloorLamp_1 moveable)
+(has_capability GarbageCan_1 moveable)
+(has_capability HousePlant_1 moveable)
+(has_capability HousePlant_1 canFillWithLiquid)
+(has_capability KeyChain_1 pickupable)
+(has_capability Laptop_1 pickupable)
+(has_capability Laptop_1 openable)
+(has_capability Laptop_1 breakable)
+(has_capability Laptop_1 toggleable)
+(has_capability LightSwitch_1 toggleable)
+(has_capability Newspaper_1 pickupable)
+(has_capability Pen_1 pickupable)
+(has_capability Pencil_1 pickupable)
+(has_capability Pillow_1 pickupable)
+(has_capability Plate_1 pickupable)
+(has_capability Plate_1 breakable)
+(has_capability Plate_1 dirtyable)
+(has_capability RemoteControl_1 pickupable)
+(has_capability SideTable_1 moveable)
+(has_capability SideTable_2 moveable)
+(has_capability SideTable_3 moveable)
+(has_capability Sofa_1 moveable)
+(has_capability Statue_1 pickupable)
+(has_capability Statue_1 breakable)
+(has_capability Television_1 breakable)
+(has_capability Television_1 toggleable)
+(has_capability Television_1 moveable)
+(has_capability TissueBox_1 pickupable)
+(has_capability TVStand_1 moveable)
+(has_capability Vase_1 pickupable)
+(has_capability Vase_1 breakable)
+(has_capability Watch_1 pickupable)
+(has_capability robot1 GoToObject)
+(has_capability robot1 OpenObject)
+(has_capability robot1 CloseObject)
+(has_capability robot1 PickupObject)
+(has_capability robot1 PutObject)
+(has_capability robot1 DropHandObject)
+(has_capability robot1 ThrowObject)
+(has_capability robot1 PushObject)
+(has_capability robot1 PullObject)
+(has_capability robot2 GoToObject)
+(has_capability robot2 OpenObject)
+(has_capability robot2 CloseObject)
+(has_capability robot2 PickupObject)
+(has_capability robot2 PutObject)
+(has_capability robot2 DropHandObject)
+(has_capability robot2 ThrowObject)
+(has_capability robot2 PushObject)
+(has_capability robot2 PullObject)
+(has_capability robot3 GoToObject)
+(has_capability robot3 OpenObject)
+(has_capability robot3 CloseObject)
+(has_capability robot3 PickupObject)
+(has_capability robot3 PutObject)
+(has_capability robot3 DropHandObject)
+(has_capability robot3 ThrowObject)
+(has_capability robot3 PushObject)
+(has_capability robot3 PullObject)
+)
+```
+
+Reach:
+(:init
+(has_location ArmChair_1 location_130)
+(has_location ArmChair_2 location_229)
+(has_location Book_1 location_230)
+(has_location Bowl_1 location_136)
+(has_location Box_1 location_164)
+(has_location Chair_1 location_57)
+(has_location Chair_2 location_230)
+(has_location Chair_3 location_195)
+(has_location Chair_4 location_99)
+(has_location Chair_5 location_77)
+(has_location Chair_6 location_23)
+(has_location CoffeeTable_1 location_189)
+(has_location CreditCard_1 location_93)
+(has_location DeskLamp_1 location_193)
+(has_location DiningTable_1 location_233)
+(has_location Drawer_1 location_160)
+(has_location Drawer_2 location_232)
+(has_location Floor_1 location_213)
+(has_location FloorLamp_1 location_213)
+(has_location GarbageCan_1 location_75)
+(has_location HousePlant_1 location_78)
+(has_location KeyChain_1 location_150)
+(has_location Laptop_1 location_124)
+(has_location LightSwitch_1 location_70)
+(has_location Newspaper_1 location_47)
+(has_location Painting_1 location_232)
+(has_location Pen_1 location_23)
+(has_location Pencil_1 location_57)
+(has_location Pillow_1 location_107)
+(has_location Plate_1 location_57)
+(has_location RemoteControl_1 location_78)
+(has_location Shelf_1 location_189)
+(has_location Shelf_2 location_191)
+(has_location Shelf_3 location_189)
+(has_location SideTable_1 location_160)
+(has_location SideTable_2 location_78)
+(has_location SideTable_3 location_232)
+(has_location Sofa_1 location_136)
+(has_location Statue_1 location_231)
+(has_location Television_1 location_202)
+(has_location TissueBox_1 location_181)
+(has_location TVStand_1 location_191)
+(has_location Vase_1 location_167)
+(has_location Watch_1 location_232)
+(has_location Window_1 location_173)
+(has_location Window_2 location_226)
+(has_location robot1 location_0))
+
+## 4. Define Problem Structure & Robot Logic
+The domain is `robot3`, with types `robot` and `object`, and predicates:
+(at ?robot ?object), (at-location ?object ?location), (holding ?robot ?object),
+(inaction ?robot), (switch-on ?object), (switch-off ?object),
+(object-open ?object), (object-close ?object), (break ?object),
+(sliced ?object), (cleaned ?object),
+(openable ?object), (pickupable ?object), (sliceable ?object), (toggleable ?object).
+1. Objects: Declare every robot and every object referenced in the Relation, Property, or Reach sections above (including location symbols) under `:objects`.
+2. Initial state: Encode the Relation, Property, and Reach tuples as `:init` predicates using only the domain predicates listed above.
+3. Goal: Encode the Goal as the `:goal` condition, using only entities declared in `:objects`.
+4. Grounding: Do not invent objects, robots, or predicates that are not present in the sections above or the domain predicate list. The example in section 1 uses placeholder names (robotX, ObjectA_1, location_901) that do not exist in this scene - never copy them into your answer.
+5. Never use "not" inside `:init`. PDDL's closed-world assumption means any predicate not listed there is already false — only list positive ground facts in `:init`. "not" may only appear inside `:goal` or action preconditions, never in `:init`.
+6. Never declare `(inaction ?robot)` in `:init`. Every action in the domain requires `(not (inaction ?robot))` as a precondition and no action ever removes `inaction` — if a robot starts as `inaction`, no action involving it will ever be applicable and the problem becomes unsolvable. Simply omit the `inaction` predicate for every robot.
+7. Object state: the Property section's `(isOpen X)`, `(isClosed X)` and `(isToggled X)` facts are not domain predicates themselves — translate them. `(isOpen X)` becomes `(object-open X)`; `(isClosed X)` becomes `(object-close X)`; `(isToggled X)` becomes `(switch-on X)`. These describe the object, not a robot, so each is declared exactly ONCE with a single argument — never once per robot, and never with a robot argument. PickupObject and PutObject require `(not (object-close ?location))`, so a container asserted closed blocks every robot equally. A container with no isOpen/isClosed fact needs no object-open/object-close fact at all (open by default).
+8. Affordances are SEPARATE from state and both must be stated. `(has_capability X openable)` in the Property section becomes `(openable X)` in `:init`; likewise `pickupable` -> `(pickupable X)`, `sliceable` -> `(sliceable X)`, `toggleable` -> `(toggleable X)`. The `openable` affordance is what makes opening legal at all: OpenObject and CloseObject both require `(openable ?object)`. Stating that a container is closed while omitting `(openable X)` makes it permanently unopenable and its contents unreachable. Never drop an affordance the Property section lists, and never assert one it does not.
+9. Output ONLY the PDDL code in a single ```pddl code block, starting with `(define (problem ...)` and ending with the matching closing parenthesis. Do not include any prose, explanation, or headings before or after the code block.
+
+## 5. Generate PDDL problem

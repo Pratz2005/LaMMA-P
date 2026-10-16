@@ -1,0 +1,265 @@
+{
+  "task": "Put apple in fridge and switch off the light",
+  "dataset": "data/final_test/FloorPlan15.json",
+  "task_index": 0,
+  "floor_plan": 15,
+  "model": "Qwen/Qwen2-7B-Instruct",
+  "temperature": 0,
+  "robots": [
+    {
+      "name": "robot1",
+      "dataset_id": 1
+    },
+    {
+      "name": "robot2",
+      "dataset_id": 2
+    },
+    {
+      "name": "robot3",
+      "dataset_id": 3
+    }
+  ],
+  "kg_entity_count": 87,
+  "ground_truth_object_states": [
+    {
+      "name": "Fridge",
+      "contains": [
+        "Apple"
+      ],
+      "state": "None"
+    },
+    {
+      "name": "LightSwitch",
+      "contains": [],
+      "state": "OFF"
+    }
+  ],
+  "planner_ran": true,
+  "repair_changes": [
+    "coerced type of location_100: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_92: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_101: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_89: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_91: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_80: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_106: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_60: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_61: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_3: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_108: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_44: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_77: 'None' -> 'object' (type not declared in the domain)",
+    "coerced type of location_112: 'None' -> 'object' (type not declared in the domain)",
+    "declared missing robot robot2",
+    "declared missing robot robot3",
+    "declared undeclared symbol lightswitch_1 as object",
+    "declared undeclared symbol location_0 as object",
+    "declared undeclared symbol location_103 as object",
+    "declared undeclared symbol location_104 as object",
+    "declared undeclared symbol location_17 as object",
+    "declared undeclared symbol location_67 as object",
+    "declared undeclared symbol location_98 as object",
+    "declared undeclared symbol window_1 as object"
+  ],
+  "solved_after_repair": true,
+  "findings": [
+    {
+      "code": "CONTRADICTION",
+      "where": "2_relation",
+      "fact": "(inside apple_1 fridge_1)",
+      "detail": "KG places apple_1 on/in countertop_1, location_100, not fridge_1; fridge_1 actually holds egg_1"
+    },
+    {
+      "code": "CONTRADICTION",
+      "where": "2_relation",
+      "fact": "(on potato_1 countertop_1)",
+      "detail": "KG places potato_1 on/in diningtable_1, location_103, not countertop_1; countertop_1 actually holds apple_1, coffeemachine_1, dishsponge_1, mug_1, pan_1, plate_1, soapbottle_1, toaster_1, tomato_1, winebottle_1"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_0",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_104",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_98",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_103",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_67",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_17",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "window_1",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":goal",
+      "fact": "lightswitch_1",
+      "detail": "used in :goal but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "MISSING_ROBOT",
+      "where": ":objects",
+      "fact": "robot2",
+      "detail": "robot2 is available for this task but was never declared - the planner cannot assign any action to it"
+    },
+    {
+      "code": "MISSING_ROBOT",
+      "where": ":objects",
+      "fact": "robot3",
+      "detail": "robot3 is available for this task but was never declared - the planner cannot assign any action to it"
+    },
+    {
+      "code": "MISSING_AFFORDANCE",
+      "where": ":init",
+      "fact": "(pickupable apple_1)",
+      "detail": "apple_1 appears in the goal and the KG says it is pickupable, but (pickupable apple_1) was not emitted - actions requiring that affordance are inapplicable to it"
+    },
+    {
+      "code": "MISSING_AFFORDANCE",
+      "where": ":init",
+      "fact": "(sliceable apple_1)",
+      "detail": "apple_1 appears in the goal and the KG says it is sliceable, but (sliceable apple_1) was not emitted - actions requiring that affordance are inapplicable to it"
+    },
+    {
+      "code": "MISSING_AFFORDANCE",
+      "where": ":init",
+      "fact": "(openable fridge_1)",
+      "detail": "fridge_1 appears in the goal and the KG says it is openable, but (openable fridge_1) was not emitted - actions requiring that affordance are inapplicable to it"
+    },
+    {
+      "code": "MISSING_AFFORDANCE",
+      "where": ":init",
+      "fact": "(toggleable lightswitch_1)",
+      "detail": "lightswitch_1 appears in the goal and the KG says it is toggleable, but (toggleable lightswitch_1) was not emitted - actions requiring that affordance are inapplicable to it"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_2",
+      "detail": "KG says cabinet_2 is closed, but no (object-close cabinet_2) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_9",
+      "detail": "KG says cabinet_9 is closed, but no (object-close cabinet_9) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_6",
+      "detail": "KG says cabinet_6 is closed, but no (object-close cabinet_6) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_8",
+      "detail": "KG says cabinet_8 is closed, but no (object-close cabinet_8) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "fridge_1",
+      "detail": "KG says fridge_1 is closed, but no (object-close fridge_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_11",
+      "detail": "KG says cabinet_11 is closed, but no (object-close cabinet_11) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_4",
+      "detail": "KG says cabinet_4 is closed, but no (object-close cabinet_4) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "drawer_1",
+      "detail": "KG says drawer_1 is closed, but no (object-close drawer_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "drawer_3",
+      "detail": "KG says drawer_3 is closed, but no (object-close drawer_3) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "kettle_1",
+      "detail": "KG says kettle_1 is closed, but no (object-close kettle_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_7",
+      "detail": "KG says cabinet_7 is closed, but no (object-close cabinet_7) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_10",
+      "detail": "KG says cabinet_10 is closed, but no (object-close cabinet_10) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "drawer_2",
+      "detail": "KG says drawer_2 is closed, but no (object-close drawer_2) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_5",
+      "detail": "KG says cabinet_5 is closed, but no (object-close cabinet_5) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_1",
+      "detail": "KG says cabinet_1 is closed, but no (object-close cabinet_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "cabinet_3",
+      "detail": "KG says cabinet_3 is closed, but no (object-close cabinet_3) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "UNSOLVABLE",
+      "where": "planner",
+      "fact": "no plan",
+      "detail": "the problem parses but no plan exists - the initial state or goal is semantically wrong (e.g. a required affordance was omitted, making the needed action inapplicable)"
+    }
+  ]
+}

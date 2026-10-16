@@ -1,0 +1,1 @@
+(object-open drawer_1)

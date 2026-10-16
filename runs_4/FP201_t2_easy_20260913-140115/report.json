@@ -1,0 +1,638 @@
+{
+  "task": "Put the vase on the dining table and open the book",
+  "dataset": "data/final_test/FloorPlan201.json",
+  "task_index": 2,
+  "floor_plan": 201,
+  "model": "Qwen/Qwen2-7B-Instruct",
+  "temperature": 0,
+  "robots": [
+    {
+      "name": "robot1",
+      "dataset_id": 25
+    },
+    {
+      "name": "robot2",
+      "dataset_id": 23
+    }
+  ],
+  "kg_entity_count": 82,
+  "ground_truth_object_states": [
+    {
+      "name": "DiningTable",
+      "contains": [
+        "Vase"
+      ],
+      "state": null
+    },
+    {
+      "name": "Book",
+      "contains": [],
+      "state": "OPENED"
+    }
+  ],
+  "planner_ran": true,
+  "repair_changes": [
+    "deduped :objects declaration of book_1 (2 -> 1)",
+    "deduped :objects declaration of chair_2 (2 -> 1)",
+    "deduped :objects declaration of diningtable_1 (2 -> 1)",
+    "deduped :objects declaration of laptop_1 (2 -> 1)",
+    "deduped :objects declaration of sidetable_1 (2 -> 1)",
+    "deduped :objects declaration of vase_1 (2 -> 1)",
+    "declared missing robot robot1",
+    "declared missing robot robot2",
+    "dropped unknown predicate: (on vase_1 sidetable_1)",
+    "dropped unknown predicate: (on book_1 chair_2)",
+    "dropped unknown predicate: (has_capability robotx pickup)",
+    "dropped unknown predicate: (has_capability robotx put)",
+    "dropped unknown predicate: (has_capability armchair_1 moveable)",
+    "dropped unknown predicate: (has_capability armchair_2 moveable)",
+    "dropped unknown predicate: (has_capability book_1 pickupable)",
+    "dropped unknown predicate: (has_capability book_1 openable)",
+    "dropped unknown predicate: (has_capability bowl_1 pickupable)",
+    "dropped unknown predicate: (has_capability bowl_1 breakable)",
+    "dropped unknown predicate: (has_capability bowl_1 dirtyable)",
+    "dropped unknown predicate: (has_capability bowl_1 canfillwithliquid)",
+    "dropped unknown predicate: (has_capability box_1 pickupable)",
+    "dropped unknown predicate: (has_capability box_1 openable)",
+    "dropped unknown predicate: (has_capability chair_1 moveable)",
+    "dropped unknown predicate: (has_capability chair_2 moveable)",
+    "dropped unknown predicate: (has_capability chair_3 moveable)",
+    "dropped unknown predicate: (has_capability chair_4 moveable)",
+    "dropped unknown predicate: (has_capability chair_5 moveable)",
+    "dropped unknown predicate: (has_capability chair_6 moveable)",
+    "dropped unknown predicate: (has_capability coffeetable_1 moveable)",
+    "dropped unknown predicate: (has_capability creditcard_1 pickupable)",
+    "dropped unknown predicate: (has_capability desklamp_1 toggleable)",
+    "dropped unknown predicate: (has_capability desklamp_1 moveable)",
+    "dropped unknown predicate: (has_capability diningtable_1 moveable)",
+    "dropped unknown predicate: (has_capability drawer_1 openable)",
+    "dropped unknown predicate: (has_capability drawer_2 openable)",
+    "dropped unknown predicate: (has_capability floorlamp_1 toggleable)",
+    "dropped unknown predicate: (has_capability floorlamp_1 moveable)",
+    "dropped unknown predicate: (has_capability garbagecan_1 moveable)",
+    "dropped unknown predicate: (has_capability houseplant_1 moveable)",
+    "dropped unknown predicate: (has_capability houseplant_1 canfillwithliquid)",
+    "dropped unknown predicate: (has_capability keychain_1 pickupable)",
+    "dropped unknown predicate: (has_capability laptop_1 pickupable)",
+    "dropped unknown predicate: (has_capability laptop_1 openable)",
+    "dropped unknown predicate: (has_capability laptop_1 breakable)",
+    "dropped unknown predicate: (has_capability laptop_1 toggleable)",
+    "dropped unknown predicate: (has_capability lightswitch_1 toggleable)",
+    "dropped unknown predicate: (has_capability newspaper_1 pickupable)",
+    "dropped unknown predicate: (has_capability pen_1 pickupable)",
+    "dropped unknown predicate: (has_capability pencil_1 pickupable)",
+    "dropped unknown predicate: (has_capability pillow_1 pickupable)",
+    "dropped unknown predicate: (has_capability plate_1 pickupable)",
+    "dropped unknown predicate: (has_capability plate_1 breakable)",
+    "dropped unknown predicate: (has_capability plate_1 dirtyable)",
+    "dropped unknown predicate: (has_capability remotecontrol_1 pickupable)",
+    "dropped unknown predicate: (has_capability sidetable_1 moveable)",
+    "dropped unknown predicate: (has_capability sidetable_2 moveable)",
+    "dropped unknown predicate: (has_capability sidetable_3 moveable)",
+    "dropped unknown predicate: (has_capability sofa_1 moveable)",
+    "dropped unknown predicate: (has_capability statue_1 pickupable)",
+    "dropped unknown predicate: (has_capability statue_1 breakable)",
+    "dropped unknown predicate: (has_capability television_1 breakable)",
+    "dropped unknown predicate: (has_capability television_1 toggleable)",
+    "dropped unknown predicate: (has_capability television_1 moveable)",
+    "dropped unknown predicate: (has_capability tissuebox_1 pickupable)",
+    "dropped unknown predicate: (has_capability tvstand_1 moveable)",
+    "dropped unknown predicate: (has_capability vase_1 pickupable)",
+    "dropped unknown predicate: (has_capability vase_1 breakable)",
+    "dropped unknown predicate: (has_capability watch_1 pickupable)",
+    "dropped unknown predicate: (has_capability window_1 breakable)",
+    "dropped unknown predicate: (has_capability window_2 breakable)",
+    "declared undeclared symbol location_0 as object"
+  ],
+  "solved_after_repair": false,
+  "findings": [
+    {
+      "code": "INVENTED_OBJECT",
+      "where": "3_property",
+      "fact": "robotx",
+      "detail": "symbol not present in the knowledge graph"
+    },
+    {
+      "code": "INVENTED_OBJECT",
+      "where": "3_property",
+      "fact": "pickup",
+      "detail": "symbol not present in the knowledge graph"
+    },
+    {
+      "code": "INVENTED_OBJECT",
+      "where": "3_property",
+      "fact": "put",
+      "detail": "symbol not present in the knowledge graph"
+    },
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "book_1",
+      "detail": "book_1 is declared 2 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "chair_2",
+      "detail": "chair_2 is declared 2 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "diningtable_1",
+      "detail": "diningtable_1 is declared 2 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "laptop_1",
+      "detail": "laptop_1 is declared 2 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "sidetable_1",
+      "detail": "sidetable_1 is declared 2 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "DUPLICATE_DECLARATION",
+      "where": ":objects",
+      "fact": "vase_1",
+      "detail": "vase_1 is declared 2 times under :objects - Fast Downward rejects the file outright"
+    },
+    {
+      "code": "INVENTED_OBJECT",
+      "where": ":objects",
+      "fact": "robotx",
+      "detail": "symbol does not exist anywhere in the knowledge graph"
+    },
+    {
+      "code": "INVENTED_OBJECT",
+      "where": ":init",
+      "fact": "(at robotx location_0)",
+      "detail": "references ['robotx'], absent from the knowledge graph"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(on vase_1 sidetable_1)",
+      "detail": "'on' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(on book_1 chair_2)",
+      "detail": "'on' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability robotx pickup)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability robotx put)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability armchair_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability armchair_2 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability book_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability book_1 openable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability bowl_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability bowl_1 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability bowl_1 dirtyable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability bowl_1 canfillwithliquid)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability box_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability box_1 openable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability chair_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability chair_2 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability chair_3 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability chair_4 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability chair_5 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability chair_6 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability coffeetable_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability creditcard_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability desklamp_1 toggleable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability desklamp_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability diningtable_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability drawer_1 openable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability drawer_2 openable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability floorlamp_1 toggleable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability floorlamp_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability garbagecan_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability houseplant_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability houseplant_1 canfillwithliquid)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability keychain_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability laptop_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability laptop_1 openable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability laptop_1 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability laptop_1 toggleable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability lightswitch_1 toggleable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability newspaper_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability pen_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability pencil_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability pillow_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability plate_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability plate_1 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability plate_1 dirtyable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability remotecontrol_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability sidetable_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability sidetable_2 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability sidetable_3 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability sofa_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability statue_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability statue_1 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability television_1 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability television_1 toggleable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability television_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability tissuebox_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability tvstand_1 moveable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability vase_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability vase_1 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability watch_1 pickupable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability window_1 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "INVENTED_PREDICATE",
+      "where": ":init",
+      "fact": "(has_capability window_2 breakable)",
+      "detail": "'has_capability' is not a domain predicate"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "location_0",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "pickup",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "put",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "bowl_1",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "box_1",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "UNDECLARED_OBJECT",
+      "where": ":init",
+      "fact": "chair_1",
+      "detail": "used in :init but never declared under :objects - the planner cannot parse this problem"
+    },
+    {
+      "code": "MISSING_ROBOT",
+      "where": ":objects",
+      "fact": "robot1",
+      "detail": "robot1 is available for this task but was never declared - the planner cannot assign any action to it"
+    },
+    {
+      "code": "MISSING_ROBOT",
+      "where": ":objects",
+      "fact": "robot2",
+      "detail": "robot2 is available for this task but was never declared - the planner cannot assign any action to it"
+    },
+    {
+      "code": "MISSING_AFFORDANCE",
+      "where": ":init",
+      "fact": "(openable book_1)",
+      "detail": "book_1 appears in the goal and the KG says it is openable, but (openable book_1) was not emitted - actions requiring that affordance are inapplicable to it"
+    },
+    {
+      "code": "MISSING_AFFORDANCE",
+      "where": ":init",
+      "fact": "(pickupable book_1)",
+      "detail": "book_1 appears in the goal and the KG says it is pickupable, but (pickupable book_1) was not emitted - actions requiring that affordance are inapplicable to it"
+    },
+    {
+      "code": "MISSING_AFFORDANCE",
+      "where": ":init",
+      "fact": "(pickupable vase_1)",
+      "detail": "vase_1 appears in the goal and the KG says it is pickupable, but (pickupable vase_1) was not emitted - actions requiring that affordance are inapplicable to it"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "drawer_2",
+      "detail": "KG says drawer_2 is closed, but no (object-close drawer_2) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "drawer_1",
+      "detail": "KG says drawer_1 is closed, but no (object-close drawer_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "DROPPED_CRITICAL_FACT",
+      "where": ":init",
+      "fact": "book_1",
+      "detail": "KG says book_1 is closed, but no (object-close book_1) fact was emitted - pickup/put through it would be wrongly allowed"
+    },
+    {
+      "code": "INVALID_PDDL",
+      "where": "planner",
+      "fact": "error: duplicate object 'book_1'; error: duplicate object 'chair_2'; error: duplicate object 'diningtable_1'; error: duplicate object 'laptop_1'; error: duplicate object 'sidetable_1'; error: duplicate object 'vase_1'",
+      "detail": "Fast Downward's translator rejected the problem file - it is not valid PDDL, so no plan was even attempted"
+    }
+  ]
+}

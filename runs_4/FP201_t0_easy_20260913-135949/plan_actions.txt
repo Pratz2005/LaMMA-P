@@ -1,0 +1,7 @@
+(gotoobject robot1 sidetable_1)
+(pickupobject robot1 keychain_1 sidetable_1)
+(gotoobject robot1 sidetable_3)
+(pickupobject robot1 watch_1 sidetable_3)
+(gotoobject robot1 drawer_1)
+(putobject robot1 watch_1 drawer_1)
+(putobject robot1 keychain_1 drawer_1)

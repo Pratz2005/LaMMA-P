@@ -1,0 +1,229 @@
+You are the repair step of a symbolic robot planning pipeline. You edit exactly
+one thing: the (:init ...) block of a PDDL problem file. You add ground facts to
+it. You never delete a fact, and you never touch (:objects ...) or (:goal ...).
+
+## 1. What went wrong
+Task: Put apple in fridge and switch off the light
+
+A planner was given the problem file below and returned a plan it reported as
+solved. A safety check then compared that plan against the scene's knowledge
+graph - facts read mechanically from the simulator's object metadata, not
+written by any model - and found the plan does something the world does not
+allow:
+
+    missing_predecessor: Open(fridge_1) must happen before Put(apple_1, fridge_1)
+
+The plan is not the thing to fix. The plan is correct for the problem file it
+was given; the problem file is wrong about the world. A fact the knowledge graph
+asserts is missing from (:init ...), and PDDL uses the closed-world assumption,
+so a fact that is not written down is FALSE. The omission did not leave the
+planner uncertain - it told the planner the opposite. Silence granted permission.
+
+## 2. Ground truth - what the knowledge graph asserts about these entities
+Every line below is true of the scene right now. Some of them are already
+written into section 3 and some are not; working out which is part of the job.
+
+    (Fridge_1, isOpen, False)
+    (Fridge_1, has_capability, openable)
+    (Apple_1, has_capability, pickupable)
+    (Apple_1, has_capability, sliceable)
+
+## 3. The problem file the planner was actually given
+These are the only names you may use as arguments. An atom naming anything not
+declared here is rejected.
+
+(:objects
+    robot1 robot2 robot3 - robot
+    apple_1 bowl_1 cabinet_1 cabinet_10 cabinet_11 cabinet_2 - object
+    cabinet_3 cabinet_4 cabinet_5 cabinet_6 cabinet_7 cabinet_8 - object
+    cabinet_9 coffeemachine_1 countertop_1 countertop_2 cup_1 diningtable_1 - object
+    dishsponge_1 drawer_1 drawer_2 drawer_3 egg_1 faucet_1 - object
+    floor_1 fork_1 fridge_1 garbagebag_1 garbagecan_1 kettle_1 - object
+    lightswitch_1 location_0 location_100 location_101 location_103 location_104 - object
+    location_106 location_108 location_112 location_17 location_3 location_44 - object
+    location_60 location_61 location_67 location_77 location_80 location_89 - object
+    location_91 location_92 location_98 mug_1 pan_1 peppershaker_1 - object
+    plate_1 pot_1 potato_1 saltshaker_1 sink_1 sinkbasin_1 - object
+    soapbottle_1 spatula_1 spoon_1 stool_1 stoveburner_1 stoveburner_2 - object
+    stoveburner_3 stoveburner_4 stoveknob_1 stoveknob_2 stoveknob_3 stoveknob_4 - object
+    toaster_1 tomato_1 window_1 winebottle_1 - object
+  )
+
+(:init
+    (at robot1 location_0)
+    (at-location apple_1 location_100)
+    (at-location bowl_1 location_92)
+    (at-location cabinet_1 location_101)
+    (at-location cabinet_2 location_101)
+    (at-location cabinet_3 location_100)
+    (at-location cabinet_4 location_89)
+    (at-location cabinet_5 location_91)
+    (at-location cabinet_6 location_80)
+    (at-location cabinet_7 location_100)
+    (at-location cabinet_8 location_91)
+    (at-location cabinet_9 location_91)
+    (at-location cabinet_10 location_44)
+    (at-location cabinet_11 location_89)
+    (at-location coffeemachine_1 location_100)
+    (at-location countertop_1 location_100)
+    (at-location countertop_2 location_92)
+    (at-location cup_1 location_100)
+    (at-location diningtable_1 location_108)
+    (at-location dishsponge_1 location_44)
+    (at-location drawer_1 location_92)
+    (at-location drawer_2 location_100)
+    (at-location drawer_3 location_100)
+    (at-location egg_1 location_104)
+    (at-location faucet_1 location_61)
+    (at-location floor_1 location_3)
+    (at-location fork_1 location_100)
+    (at-location fridge_1 location_98)
+    (at-location garbagebag_1 location_106)
+    (at-location garbagecan_1 location_60)
+    (at-location kettle_1 location_100)
+    (at-location mug_1 location_100)
+    (at-location pan_1 location_89)
+    (at-location peppershaker_1 location_103)
+    (at-location plate_1 location_100)
+    (at-location pot_1 location_91)
+    (at-location potato_1 location_103)
+    (at-location saltshaker_1 location_67)
+    (at-location sink_1 location_61)
+    (at-location sinkbasin_1 location_61)
+    (at-location soapbottle_1 location_77)
+    (at-location spatula_1 location_80)
+    (at-location spoon_1 location_91)
+    (at-location stool_1 location_17)
+    (at-location stoveburner_1 location_91)
+    (at-location stoveburner_2 location_91)
+    (at-location stoveburner_3 location_80)
+    (at-location stoveburner_4 location_80)
+    (at-location stoveknob_1 location_91)
+    (at-location stoveknob_2 location_80)
+    (at-location stoveknob_3 location_91)
+    (at-location stoveknob_4 location_80)
+    (at-location toaster_1 location_89)
+    (at-location tomato_1 location_89)
+    (at-location window_1 location_112)
+    (at-location winebottle_1 location_100)
+  )
+
+## 4. The vocabulary you may write in
+The facts in section 2 are in the knowledge graph's notation. (:init ...) is in
+the domain's, and they are not the same words. The domain declares these
+predicates and no others:
+
+    at at-location break cleaned holding inaction
+    object-close object-open openable pickupable sliceable sliced
+    switch-off switch-on toggleable
+
+Translate with this table:
+
+    (X, has_capability, openable)              ->  (openable x)
+    (X, has_capability, pickupable)            ->  (pickupable x)
+    (X, has_capability, sliceable)             ->  (sliceable x)
+    (X, has_capability, toggleable)            ->  (toggleable x)
+    (X, isBroken, True)                        ->  (break x)
+    (X, isOpen, False)                         ->  (object-close x)
+    (X, isOpen, True)                          ->  (object-open x)
+    (X, isSliced, True)                        ->  (sliced x)
+    (X, isToggled, False)                      ->  (switch-off x)
+    (X, isToggled, True)                       ->  (switch-on x)
+
+Read these predicate names carefully; two of them are easy to misread:
+
+    (object-close x)   x is CLOSED - shut. It has nothing to do with distance,
+                       and does NOT mean "close to" or "near" anything. This is
+                       the predicate for a container whose door is shut.
+    (object-open x)    x is OPEN. The exact opposite of the line above.
+
+A container that is shut is (object-close x). Asserting (object-open x) about a
+shut container states the opposite of the truth.
+
+Fast Downward drops a predicate it does not know WITHOUT REPORTING AN ERROR, so
+a line in the wrong vocabulary is not a repair that fails loudly - it is a repair
+that appears to happen and changes nothing. Two spellings in particular are NOT
+domain predicates and must never appear: the graph's (isOpen X false) and the
+property stage's (isClosed X). Write every predicate and every object in lower
+case, and name objects exactly as the (:objects ...) block declares them -
+Drawer_1 in the graph is drawer_1 in the problem file.
+
+## 5. How to choose what to add
+Add the smallest set of facts that makes the initial state true - not the set
+that makes the plan look acceptable. Two rules:
+
+  a. Every atom you write must be one section 2 asserts. You are restoring facts
+     that were dropped, not inventing new ones. Never add a fact because it
+     makes an action possible; add it because it is true. Note that the false
+     repair is available to you here and would clear the violation just as well:
+     do not take it.
+  b. A blocking fact needs its release. (object-close x) stops PutObject until x
+     is opened, but OpenObject requires (openable x) as a POSITIVE precondition.
+     If you write (object-close x) and (openable x) is not already in the :init
+     above, write it as well - otherwise you seal the container and turn a wrong
+     plan into no plan at all.
+
+  c. CHECK THE POLARITY BEFORE YOU WRITE. Section 2 gives each fact with its
+     truth value, and the table in section 4 has an entry for each value
+     separately. isOpen False and isOpen True are different facts with
+     different predicates. Find the section 2 line for the entity, read its
+     value, and take the matching row of the table - do not pick the predicate
+     that merely sounds related. Asserting the opposite value is the single
+     most common way this step goes wrong, and it is worse than adding nothing:
+     it clears the violation while leaving the world description false.
+
+Do not repeat an atom that is already present in the :init above.
+
+## 6. Worked example - a different scene. Copy the shape, not the content.
+The container below is a footlocker, which does not exist in your scene. If an
+object name from this example appears in your answer, you have copied instead
+of reasoning, and the answer is wrong.
+
+    graph facts   (Footlocker_1, has_capability, openable)
+                  (Footlocker_1, isOpen, False)
+    violation     missing_predecessor: Open(footlocker_1) must happen before
+                  Put(plunger_1, footlocker_1)
+    :init had     (at-location plunger_1 sinkbasin_1)
+                  (pickupable plunger_1)
+    answer
+(object-close footlocker_1)
+(openable footlocker_1)
+
+## 7. Output format
+Output only the atoms to add, one per line. No prose, no explanation, no
+numbering, no bullets, no code fences, no blank lines between atoms. Each line
+must be exactly one balanced S-expression that starts with '(' and ends with
+')'. If nothing needs to be added, output the single word NONE.
+
+## 8. The violation is still open - try again
+None of what you wrote could be used. Each line below was
+checked against the domain, the object declarations and the
+knowledge graph, and failed:
+
+    (object-open fridge_1)
+        rejected: the knowledge graph does not assert this - it is a new claim about the world, not a restored fact
+
+Re-read these lines from section 2. They are the facts the scene
+actually asserts, each with its truth value:
+
+    (Apple_1, has_capability, pickupable)
+    (Apple_1, has_capability, sliceable)
+    (Fridge_1, has_capability, openable)
+    (Fridge_1, isOpen, False)
+
+You have already proposed each of these in an earlier attempt
+and each was rejected. Writing any of them again wastes the
+attempt - the verdict will not change:
+
+    (object-open fridge_1)
+
+You have still not translated the STATE of: fridge_1.
+Find that entity's state line above - the one whose relation
+is a state, not a capability - read its truth value, and take
+the row of the section 4 table that matches that exact value.
+Do not pick the row for the other value.
+
+Work out, for each one, whether it is already in the (:objects ...)
+and (:init ...) blocks above. Emit the ones that are missing, using
+the section 4 table row that matches the value shown. Output atoms
+only, one per line, in the section 7 format.

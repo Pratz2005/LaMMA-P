@@ -11,16 +11,23 @@ removed first - otherwise the planner fails for the wrong reason.
 WHAT THIS CHANGES (syntax only):
   * duplicate :objects declarations      -> declared once
   * a type not in the domain             -> coerced to `object`
-  * (on X Y) / (inside X Y) in :init     -> (at-location X Y), per the prompt's
-                                            own translation rule
-  * predicates that exist nowhere        -> dropped
+  * predicates that exist nowhere        -> dropped, including (inside X Y)
+                                            and (on X Y): translating relation
+                                            tuples into domain predicates is
+                                            stage 5's job, and doing it here
+                                            silently repaired a model error
   * symbols used but never declared      -> declared as `object`
   * robots in the task but not declared  -> declared as `robot`
 
 WHAT THIS DELIBERATELY DOES NOT CHANGE:
   * affordances. If the model omitted (openable X), it stays omitted. That
     omission is the finding; repairing it would destroy the experiment.
-  * any fact's truth value, or the goal.
+  * any fact's truth value.
+  * the goal, with one declared exception: a world-state literal carrying a
+    spurious leading robot argument, e.g. (switch-off robot1 lightswitch_1)
+    against a predicate of arity 1, is an arity error that aborts Fast
+    Downward's parser before any semantic error can surface. The stray
+    argument is dropped and the edit is reported like any other.
 
 Every edit is reported, so the diff between input and output is auditable.
 """
@@ -33,9 +40,24 @@ sys.path.append(".")
 from scripts.pddl_utils import (_section, parse_facts, parse_objects,
                                 DOMAIN_PREDICATES, DOMAIN_TYPES)
 
-# The prompts tell the model that relation tuples become at-location facts;
-# apply that same rule rather than inventing a new one here.
-RELATION_ALIASES = {"on": "at-location", "inside": "at-location", "in": "at-location"}
+# World-state predicates. These take a single object argument: they describe the
+# object, not the robot that acted on it. A leading robot argument is the common
+# model error (the LaMMA-P domain this repo inherited indexed them by robot), and
+# it aborts Fast Downward's parser on an arity mismatch before any semantic error
+# can surface, so the stray argument is stripped rather than the run being lost.
+OBJECT_STATE_PREDICATES = {
+    "switch-on", "switch-off", "object-open", "object-close", "break", "cleaned",
+}
+
+
+def strip_robot_arg(fact: list, robot_names: list, changes: list, where: str) -> list:
+    """(switch-off robot1 X) -> (switch-off X). Arity repair, not a semantic edit."""
+    if (fact[0] in OBJECT_STATE_PREDICATES and len(fact) == 3
+            and fact[1] in robot_names):
+        changes.append(f"stripped robot argument in {where}: ({' '.join(fact)}) -> "
+                       f"({fact[0]} {fact[2]}) - predicate takes one object argument")
+        return [fact[0], fact[2]]
+    return fact
 
 
 def repair(pddl: str, robot_names: list) -> tuple:
@@ -82,23 +104,25 @@ def repair(pddl: str, robot_names: list) -> tuple:
         if pred == "not":
             changes.append(f"dropped negation in :init: ({' '.join(fact)})")
             continue
-        if pred in RELATION_ALIASES:
-            new = RELATION_ALIASES[pred]
-            changes.append(f"translated ({pred} {' '.join(args)}) -> "
-                           f"({new} {' '.join(args)})")
-            pred = new
         if pred not in DOMAIN_PREDICATES:
             changes.append(f"dropped unknown predicate: ({' '.join(fact)})")
             continue
         if pred == "inaction":
             changes.append(f"dropped (inaction ...) - makes every action inapplicable")
             continue
-        kept.append([pred] + args)
+        kept.append(strip_robot_arg([pred] + args, robot_names, changes, ":init"))
+
+    # ---- goal: strip spurious robot arguments -----------------------------
+    goal_facts = []
+    for f in parse_facts(goal_txt):
+        if f[0] in {"and", "or", "not"}:
+            continue
+        f = strip_robot_arg(f, robot_names, changes, ":goal")
+        goal_facts.append(f)
 
     # ---- declare anything used but undeclared -----------------------------
     used = {a for f in kept for a in f[1:]}
-    used |= {a for f in parse_facts(goal_txt) if f[0] not in {"and", "or", "not"}
-             for a in f[1:]}
+    used |= {a for f in goal_facts for a in f[1:]}
     for sym in sorted(used - set(typed)):
         typed[sym] = "robot" if sym in robot_names else "object"
         changes.append(f"declared undeclared symbol {sym} as {typed[sym]}")
@@ -116,9 +140,7 @@ def repair(pddl: str, robot_names: list) -> tuple:
     out.append("  )")
     out.append("  (:goal")
     out.append("    (and")
-    for f in parse_facts(goal_txt):
-        if f[0] in {"and", "or", "not"}:
-            continue
+    for f in goal_facts:
         out.append(f"      ({' '.join(f)})")
     out.append("    )")
     out.append("  )")

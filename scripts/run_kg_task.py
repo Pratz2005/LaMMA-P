@@ -27,6 +27,7 @@ sys.path.append(".")
 from scripts.kglamp_pipeline import (KGLAMP, load_task, resolve_robots,
                                      extract_pddl_block, DOMAIN_FILE)
 from scripts.repair_pddl import repair as repair_pddl
+from scripts.pipeline_trace import write_trace
 
 from scripts.pddl_utils import (_section, parse_facts, parse_objects,
                                 DOMAIN_PREDICATES, AFFORDANCES, DOMAIN_TYPES)
@@ -105,6 +106,28 @@ def build_ground_truth(triplets: dict, robots: list) -> dict:
 # the checker
 # --------------------------------------------------------------------------
 
+def _norm(sym: str) -> str:
+    """Identity-insensitive form of a symbol, for near-miss detection."""
+    return re.sub(r"[^a-z0-9]", "", sym.lower())
+
+
+def _rename_of(sym: str, gt: dict):
+    """If sym is a mangled spelling of a real entity, return that entity.
+
+    The model rewrites CamelCase into snake_case - CounterTop_1 becomes
+    Counter_top_1, GarbageCan_1 becomes Garbage_can_1. Those are not invented
+    objects: it saw the real object and corrupted the identifier, which is a
+    different (and more tractable) error than fabricating one.
+    """
+    n = _norm(sym)
+    if not n:
+        return None
+    for e in gt["entities"]:
+        if _norm(e) == n and e != sym:
+            return e
+    return None
+
+
 def check_pddl(pddl: str, gt: dict, robots: list) -> list:
     """Classify every fact in the generated problem against the KG."""
     findings = []
@@ -153,10 +176,18 @@ def check_pddl(pddl: str, gt: dict, robots: list) -> list:
                           "Fast Downward will refuse this file.",
             })
         if sym not in gt["entities"]:
-            findings.append({
-                "code": "INVENTED_OBJECT", "where": ":objects", "fact": sym,
-                "detail": "symbol does not exist anywhere in the knowledge graph",
-            })
+            real = _rename_of(sym, gt)
+            if real:
+                findings.append({
+                    "code": "RENAMED_OBJECT", "where": ":objects", "fact": sym,
+                    "detail": f"'{sym}' is a corrupted spelling of '{real}' - the object "
+                              "exists but under this name nothing can bind to it",
+                })
+            else:
+                findings.append({
+                    "code": "INVENTED_OBJECT", "where": ":objects", "fact": sym,
+                    "detail": "symbol does not exist anywhere in the knowledge graph",
+                })
 
     # --- init ---------------------------------------------------------------
     for fact in parse_facts(init_txt):
@@ -188,10 +219,19 @@ def check_pddl(pddl: str, gt: dict, robots: list) -> list:
 
         unknown = [a for a in args if a not in gt["entities"]]
         if unknown:
-            findings.append({
-                "code": "INVENTED_OBJECT", "where": ":init", "fact": rendered,
-                "detail": f"references {unknown}, absent from the knowledge graph",
-            })
+            renamed = {u: _rename_of(u, gt) for u in unknown}
+            if all(renamed.values()):
+                findings.append({
+                    "code": "RENAMED_OBJECT", "where": ":init", "fact": rendered,
+                    "detail": "corrupted spellings of real objects: "
+                              + ", ".join(f"{u} -> {r}" for u, r in renamed.items()),
+                })
+            else:
+                findings.append({
+                    "code": "INVENTED_OBJECT", "where": ":init", "fact": rendered,
+                    "detail": f"references {[u for u in unknown if not renamed[u]]}, "
+                              "absent from the knowledge graph",
+                })
             continue
 
         if pred == "at-location" and len(args) == 2:
@@ -206,14 +246,14 @@ def check_pddl(pddl: str, gt: dict, robots: list) -> list:
                     "code": "UNSUPPORTED_FACT", "where": ":init", "fact": rendered,
                     "detail": f"KG does not place {args[0]} at {args[1]}",
                 })
-        elif pred == "object-open" and len(args) == 2:
-            if args[1] in gt["closed"]:
+        elif pred == "object-open" and len(args) in (1, 2):
+            if args[-1] in gt["closed"]:
                 findings.append({
                     "code": "CONTRADICTION", "where": ":init", "fact": rendered,
                     "detail": f"KG says {args[1]} is CLOSED (isOpen=false)",
                 })
-        elif pred == "object-close" and len(args) == 2:
-            if args[1] in gt["opened"]:
+        elif pred == "object-close" and len(args) in (1, 2):
+            if args[-1] in gt["opened"]:
                 findings.append({
                     "code": "CONTRADICTION", "where": ":init", "fact": rendered,
                     "detail": f"KG says {args[1]} is OPEN (isOpen=true)",
@@ -249,6 +289,29 @@ def check_pddl(pddl: str, gt: dict, robots: list) -> list:
                           "the planner cannot assign any action to it",
             })
 
+    # --- goal already asserted in the initial state -------------------------
+    # The silent failure in its purest form: the model copies the goal literals
+    # into :init, so the planner concludes the task is already done and returns
+    # a ZERO-ACTION plan. Valid PDDL, "Solution found", robots never move.
+    init_set = {tuple(f) for f in parse_facts(init_txt)}
+    goal_lits = [f for f in parse_facts(goal_txt) if f[0] not in {"and", "or", "not"}]
+    already = [f for f in goal_lits if tuple(f) in init_set]
+    if goal_lits and len(already) == len(goal_lits):
+        findings.append({
+            "code": "GOAL_SATISFIED_IN_INIT", "where": ":init",
+            "fact": "; ".join("(" + " ".join(f) + ")" for f in already),
+            "detail": "every goal literal is already asserted in :init, so the planner "
+                      "returns a zero-action plan and the task is never performed - "
+                      "the goal state was hallucinated into the initial state",
+        })
+    elif already:
+        findings.append({
+            "code": "GOAL_SATISFIED_IN_INIT", "where": ":init",
+            "fact": "; ".join("(" + " ".join(f) + ")" for f in already),
+            "detail": f"{len(already)} of {len(goal_lits)} goal literals are already "
+                      "asserted in :init, so the planner skips achieving them",
+        })
+
     # --- missing affordances (the LaMMA-P "incomplete representation" case) --
     # The paper's example: a box encoded as closed, without recording that it is
     # openable, leaves the planner unable to retrieve its contents. Detect that
@@ -261,7 +324,7 @@ def check_pddl(pddl: str, gt: dict, robots: list) -> list:
         if (obj, "openable") in gt["capabilities"] and ("openable", obj) not in asserted:
             findings.append({
                 "code": "MISSING_AFFORDANCE", "where": ":init",
-                "fact": f"(object-close ?r {obj})",
+                "fact": f"(object-close {obj})",
                 "detail": f"{obj} is asserted closed, and the KG says it is openable, but "
                           f"(openable {obj}) was not emitted - OpenObject requires that "
                           "affordance, so the container can never be opened and its "
@@ -289,10 +352,10 @@ def check_pddl(pddl: str, gt: dict, robots: list) -> list:
             continue        # container irrelevant to this problem, fine to omit
         # must be closed *for that container specifically*, not just any
         # object-close fact somewhere in :init
-        if not re.search(rf"\(\s*object-close\s+\S+\s+{re.escape(container)}\s*\)", init_lower):
+        if not re.search(rf"\(\s*object-close\s+(?:\S+\s+)?{re.escape(container)}\s*\)", init_lower):
             findings.append({
                 "code": "DROPPED_CRITICAL_FACT", "where": ":init", "fact": container,
-                "detail": f"KG says {container} is closed, but no (object-close ?r {container}) "
+                "detail": f"KG says {container} is closed, but no (object-close {container}) "
                           "fact was emitted - pickup/put through it would be wrongly allowed",
             })
 
@@ -402,7 +465,11 @@ def main() -> int:
     robots = resolve_robots(task_row["robot list"])
 
     run_id = datetime.now().strftime("%Y%m%d-%H%M%S")
-    out_dir = args.out_dir or f"logs/kgrun/FloorPlan{args.floor_plan}_t{args.task_index}_{run_id}"
+    tier = ("vague" if "vague" in args.dataset else
+            "complex" if "pddl" in args.dataset else "easy")
+    runs_root = os.environ.get("KGLAMP_RUNS_DIR", "runs")
+    out_dir = args.out_dir or os.path.join(
+        runs_root, f"FP{args.floor_plan}_t{args.task_index}_{tier}_{run_id}")
     os.makedirs(out_dir, exist_ok=True)
 
     print(f"task      : {task}")
@@ -480,6 +547,7 @@ def main() -> int:
     # A solvable plan is not a correct plan. Compare the actions against the
     # dataset's ground-truth object_states: a plan the planner accepts can still
     # leave the task undone, which is the silent-failure case that matters.
+    plan_actions_out = []
     effective_plan = plan_repaired if "Solution found" in plan_repaired else (plan_output or "")
     if "Solution found" in effective_plan:
         plan_src = plan_repaired if "Solution found" in plan_repaired else plan_output
@@ -497,6 +565,7 @@ def main() -> int:
         actions = [(a.strip().lower(), b.split()) for a, b in acts]
         with open(os.path.join(out_dir, "plan_actions.txt"), "w") as f:
             f.write("\n".join(f"({a} {' '.join(b)})" for a, b in actions))
+        plan_actions_out = actions
 
         for spec in (task_row.get("object_states") or []):
             name = str(spec.get("name", "")).lower()
@@ -655,7 +724,15 @@ def main() -> int:
                           plan_repaired or "<no output>"))
         f.write(block("FINDINGS", report_text))
 
-    print(f"\nfull run log : {out_dir}/run_log.txt")
+    write_trace(
+        os.path.join(out_dir, "pipeline_trace.txt"),
+        task_row, args, robots, triplets, gt, kglamp.stages,
+        pddl, plan_actions_out,
+        "Solution found" in (plan_repaired or plan_output or ""),
+        findings, repair_changes, kglamp.llm.model, kglamp.out_path)
+
+    print(f"\ntrace        : {out_dir}/pipeline_trace.txt")
+    print(f"full run log : {out_dir}/run_log.txt")
     print(f"problem pddl : {out_dir}/problem.pddl")
     print(f"plan output  : {out_dir}/plan.txt")
     return 0

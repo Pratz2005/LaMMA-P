@@ -1,0 +1,130 @@
+```pddl
+(define (problem example_problem)
+  (:domain robot3)
+  (:objects
+    robotX - robot
+    Vase_1 - object
+    DiningTable_1 - object
+    Book_1 - object
+    ArmChair_1 - object
+    ArmChair_2 - object
+    Chair_2 - object
+    SideTable_1 - object
+    Book_1 - object
+    Chair_2 - object
+    Chair_3 - object
+    Chair_4 - object
+    Chair_5 - object
+    Chair_6 - object
+    CoffeeTable_1 - object
+    CreditCard_1 - object
+    DeskLamp_1 - object
+    DiningTable_1 - object
+    Drawer_1 - object
+    Drawer_2 - object
+    Floor_1 - object
+    FloorLamp_1 - object
+    GarbageCan_1 - object
+    HousePlant_1 - object
+    KeyChain_1 - object
+    Laptop_1 - object
+    Laptop_1 - object
+    LightSwitch_1 - object
+    Newspaper_1 - object
+    Painting_1 - object
+    Pen_1 - object
+    Pencil_1 - object
+    Pillow_1 - object
+    Plate_1 - object
+    RemoteControl_1 - object
+    Shelf_1 - object
+    Shelf_2 - object
+    Shelf_3 - object
+    SideTable_1 - object
+    SideTable_2 - object
+    SideTable_3 - object
+    Sofa_1 - object
+    Statue_1 - object
+    Television_1 - object
+    TissueBox_1 - object
+    TVStand_1 - object
+    Vase_1 - object
+    Watch_1 - object
+    Window_1 - object
+    Window_2 - object
+  )
+  (:init
+    (at robotX location_0)
+    (on Vase_1 SideTable_1)
+    (on Book_1 Chair_2)
+    (has_capability robotX pickup)
+    (has_capability robotX put)
+    (has_capability ArmChair_1 moveable)
+    (has_capability ArmChair_2 moveable)
+    (has_capability Book_1 pickupable)
+    (has_capability Book_1 openable)
+    (has_capability Bowl_1 pickupable)
+    (has_capability Bowl_1 breakable)
+    (has_capability Bowl_1 dirtyable)
+    (has_capability Bowl_1 canFillWithLiquid)
+    (has_capability Box_1 pickupable)
+    (has_capability Box_1 openable)
+    (has_capability Chair_1 moveable)
+    (has_capability Chair_2 moveable)
+    (has_capability Chair_3 moveable)
+    (has_capability Chair_4 moveable)
+    (has_capability Chair_5 moveable)
+    (has_capability Chair_6 moveable)
+    (has_capability CoffeeTable_1 moveable)
+    (has_capability CreditCard_1 pickupable)
+    (has_capability DeskLamp_1 toggleable)
+    (has_capability DeskLamp_1 moveable)
+    (has_capability DiningTable_1 moveable)
+    (has_capability Drawer_1 openable)
+    (has_capability Drawer_2 openable)
+    (has_capability FloorLamp_1 toggleable)
+    (has_capability FloorLamp_1 moveable)
+    (has_capability GarbageCan_1 moveable)
+    (has_capability HousePlant_1 moveable)
+    (has_capability HousePlant_1 canFillWithLiquid)
+    (has_capability KeyChain_1 pickupable)
+    (has_capability Laptop_1 pickupable)
+    (has_capability Laptop_1 openable)
+    (has_capability Laptop_1 breakable)
+    (has_capability Laptop_1 toggleable)
+    (has_capability LightSwitch_1 toggleable)
+    (has_capability Newspaper_1 pickupable)
+    (has_capability Pen_1 pickupable)
+    (has_capability Pencil_1 pickupable)
+    (has_capability Pillow_1 pickupable)
+    (has_capability Plate_1 pickupable)
+    (has_capability Plate_1 breakable)
+    (has_capability Plate_1 dirtyable)
+    (has_capability RemoteControl_1 pickupable)
+    (has_capability SideTable_1 moveable)
+    (has_capability SideTable_2 moveable)
+    (has_capability SideTable_3 moveable)
+    (has_capability Sofa_1 moveable)
+    (has_capability Statue_1 pickupable)
+    (has_capability Statue_1 breakable)
+    (has_capability Television_1 breakable)
+    (has_capability Television_1 toggleable)
+    (has_capability Television_1 moveable)
+    (has_capability TissueBox_1 pickupable)
+    (has_capability TVStand_1 moveable)
+    (has_capability Vase_1 pickupable)
+    (has_capability Vase_1 breakable)
+    (has_capability Watch_1 pickupable)
+    (has_capability Window_1 breakable)
+    (has_capability Window_2 breakable)
+    (at-location Vase_1 SideTable_1)
+    (at-location Book_1 Chair_2)
+  )
+  (:goal
+    (and
+      (at-location Vase_1 DiningTable_1)
+      (object-open Book_1)
+    )
+  )
+)
+```
